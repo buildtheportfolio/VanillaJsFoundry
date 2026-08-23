@@ -1,4 +1,4 @@
-# 🧱 Vanilla JS Foundry
+# Vanilla JS Foundry
 
 A hub for small, self-contained Vanilla JavaScript projects built with **HTML + CSS + JavaScript**.
 
@@ -43,12 +43,12 @@ The hub automatically discovers project folders under `projects/`. No central re
 - Browser and platform APIs are encouraged.
 - TensorFlow.js is permitted only for AI/ML projects.
 
-# 🧱 The Definitive Vanilla JS Project Ideas Reference
+# The Definitive Vanilla JS Project Ideas Reference
 
 > Pure JS + HTML + CSS only (`index.html` · `style.css` · `script.js`) — no frameworks, no libraries.
 > TensorFlow.js is the sole exception for AI/ML projects.
 
-## 📊 Summary Table
+## Summary Table
 
 | # | Project Name | Category | Difficulty |
 |---|---|---|---|
@@ -178,7 +178,7 @@ The hub automatically discovers project folders under `projects/`. No central re
 | 124 | Sentiment Analyzer (TF.js toxicity) | AI/ML | Intermediate |
 | 125 | Face Mesh AR Filter (TF.js) | AI/ML | Advanced |
 
-## 🧩 Category Guide
+## Category Guide
 
 ### DOM & UI
 Autocomplete, virtualization, schema-driven forms, state-machine wizards, theme engines, accessible modals, rich text editing, split panes, command palettes, Kanban boards, and Spotlight-style search.
@@ -225,13 +225,13 @@ Swipe navigation, pull-to-refresh, pinch zoom, haptic drum pads, touch drawing, 
 ### AI/ML
 Browser-based pose estimation, handwriting classification, object detection, toxicity/sentiment analysis, and face-mesh AR using TensorFlow.js only.
 
-## 🏆 Top 10 Most Impressive for a Portfolio
+## Top 10 Most Impressive for a Portfolio
 
 | Rank | Project | Why It Impresses |
 |---|---|---|
-| 🥇 1 | **Rich Text Editor (from scratch)** (#7) | Deep Selection/Range API and browser editing knowledge. |
-| 🥈 2 | **SVG Force-Directed Graph** (#27) | Algorithms, graphics, simulation, and performance without D3. |
-| 🥉 3 | **Encrypted Journal (Web Crypto)** (#56) | Browser cryptography with PBKDF2 and AES-GCM. |
+| 1 | **Rich Text Editor (from scratch)** (#7) | Deep Selection/Range API and browser editing knowledge. |
+| 2 | **SVG Force-Directed Graph** (#27) | Algorithms, graphics, simulation, and performance without D3. |
+| 3 | **Encrypted Journal (Web Crypto)** (#56) | Browser cryptography with PBKDF2 and AES-GCM. |
 | 4 | **Reaction-Diffusion System** (#88) | High-performance Canvas pixel processing and simulation. |
 | 5 | **Multi-Track Audio Mixer** (#80) | Precise Web Audio scheduling and timing. |
 | 6 | **2D Platformer with Physics** (#17) | Collision detection, game loops, tilemaps, and physics. |
@@ -240,7 +240,7 @@ Browser-based pose estimation, handwriting classification, object detection, tox
 | 9 | **Dungeon Crawler Roguelite** (#19) | Procedural generation, FOV, and advanced game architecture. |
 | 10 | **Face Mesh AR Filter** (#125) | Browser ML, webcam processing, and real-time geometry. |
 
-## 📌 Catalog Stats
+## Catalog Stats
 
 - **125 projects** across **15 categories**
 - **7 [CLASSIC]** projects
