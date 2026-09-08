@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Nexus Dashboard - A modern, performant workspace with an advanced command palette interface."
+    />
+    <title>Nexus Workspace — Command Palette</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&family=Geist+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="app-header">
+        <div class="ah-left">
+          <div class="app-logo">
+            <div class="logo-cube" aria-hidden="true">
+              <div class="lc-face lc-top"></div>
+              <div class="lc-face lc-front"></div>
+              <div class="lc-face lc-right"></div>
+            </div>
+            <span class="logo-name">Nexus</span>
+          </div>
+          <nav class="app-nav" aria-label="Main navigation">
+            <a class="nav-link active" href="#" data-section="dashboard"
+              >Dashboard</a
+            >
+            <a class="nav-link" href="#" data-section="projects">Projects</a>
+            <a class="nav-link" href="#" data-section="team">Team</a>
+            <a class="nav-link" href="#" data-section="settings">Settings</a>
+          </nav>
+        </div>
+        <div class="ah-right">
+          <div class="cmd-trigger-wrap">
+            <button
+              class="cmd-trigger"
+              id="cmdTrigger"
+              aria-label="Open command palette"
+              aria-haspopup="dialog"
+              aria-keyshortcuts="Meta+K Control+K"
+            >
+              <svg
+                class="ct-icon"
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              >
+                <circle cx="6.5" cy="6.5" r="4" />
+                <path d="M10 10l3.5 3.5" />
+              </svg>
+              <span class="ct-text">Search commands…</span>
+              <span class="ct-kbd-group">
+                <kbd class="ct-kbd">⌘</kbd>
+                <kbd class="ct-kbd">K</kbd>
+              </span>
+            </button>
+          </div>
+          <div class="user-avatar" aria-label="User profile" title="Alex Kim">
+            AK
+          </div>
+        </div>
+      </header>
+
+      <div class="app-body">
+        <aside class="sidebar" id="sidebar">
+          <div class="sidebar-section">
+            <div class="ss-title">Workspace</div>
+            <nav aria-label="Workspace navigation">
+              <a class="sb-item active" href="#" data-sidebar="overview">
+                <span class="sbi-icon" aria-hidden="true">⊞</span>Overview
+              </a>
+              <a class="sb-item" href="#" data-sidebar="inbox">
+                <span class="sbi-icon" aria-hidden="true">⊟</span>Inbox
+                <span class="sbi-badge">3</span>
+              </a>
+              <a class="sb-item" href="#" data-sidebar="starred">
+                <span class="sbi-icon" aria-hidden="true">◇</span>Starred
+              </a>
+            </nav>
+          </div>
+          <div class="sidebar-section">
+            <div class="ss-title">Projects</div>
+            <nav aria-label="Projects navigation">
+              <a class="sb-item" href="#"
+                ><span class="sbi-dot" style="--c: #6ee7b7"></span>Alpha</a
+              >
+              <a class="sb-item" href="#"
+                ><span class="sbi-dot" style="--c: #93c5fd"></span>Beta</a
+              >
+              <a class="sb-item" href="#"
+                ><span class="sbi-dot" style="--c: #fca5a5"></span>Gamma</a
+              >
+              <a class="sb-item" href="#"
+                ><span class="sbi-dot" style="--c: #fde68a"></span>Delta</a
+              >
+            </nav>
+          </div>
+          <div class="sidebar-section">
+            <div class="ss-title">Labels</div>
+            <nav aria-label="Labels navigation">
+              <a class="sb-item" href="#"
+                ><span class="sbi-dot" style="--c: #a78bfa"></span>Bug</a
+              >
+              <a class="sb-item" href="#"
+                ><span class="sbi-dot" style="--c: #6ee7b7"></span>Feature</a
+              >
+              <a class="sb-item" href="#"
+                ><span class="sbi-dot" style="--c: #f9a8d4"></span>Design</a
+              >
+            </nav>
+          </div>
+        </aside>
+
+        <main
+          class="main-content"
+          id="mainContent"
+          aria-label="Main content area"
+        >
+          <div class="content-header">
+            <div class="ch-left">
+              <h1 class="page-title" id="pageTitle">Dashboard</h1>
+              <div class="page-breadcrumb">
+                Nexus / <span id="bcCurrent">Dashboard</span>
+              </div>
+            </div>
+            <div class="ch-right">
+              <button class="content-action-btn" id="btnNewIssue">
+                + New Issue
+              </button>
+            </div>
+          </div>
+          <div id="dashboardView">
+            <div class="kpi-row">
+              <div class="kpi-card" id="kpiOpen">
+                <div class="kpi-val" id="kpiOpenVal">24</div>
+                <div class="kpi-label">Open Issues</div>
+                <div class="kpi-trend up">↑ 3 this week</div>
+              </div>
+              <div class="kpi-card" id="kpiDone">
+                <div class="kpi-val" id="kpiDoneVal">187</div>
+                <div class="kpi-label">Completed</div>
+                <div class="kpi-trend up">↑ 12 this week</div>
+              </div>
+              <div class="kpi-card" id="kpiPR">
+                <div class="kpi-val">8</div>
+                <div class="kpi-label">In Review</div>
+                <div class="kpi-trend neutral">→ No change</div>
+              </div>
+              <div class="kpi-card" id="kpiTeam">
+                <div class="kpi-val">6</div>
+                <div class="kpi-label">Team Members</div>
+                <div class="kpi-trend up">↑ 1 this month</div>
+              </div>
+            </div>
+
+            <div class="content-section" style="margin-top: 24px">
+              <div class="cs-header">
+                <span class="cs-title">Recent Activity</span>
+                <button class="cs-action">View all</button>
+              </div>
+              <div class="activity-list" id="activityList">
+                <div class="al-item">
+                  <span class="ali-dot" style="--c: #6ee7b7"></span
+                  ><span class="ali-text"
+                    >Issue <strong>#247</strong> was closed by
+                    <strong>Sarah Chen</strong></span
+                  ><span class="ali-time">2m</span>
+                </div>
+                <div class="al-item">
+                  <span class="ali-dot" style="--c: #93c5fd"></span
+                  ><span class="ali-text"
+                    >PR <strong>#89</strong> merged into
+                    <strong>main</strong></span
+                  ><span class="ali-time">14m</span>
+                </div>
+                <div class="al-item">
+                  <span class="ali-dot" style="--c: #fca5a5"></span
+                  ><span class="ali-text"
+                    >New issue <strong>#251</strong> assigned to
+                    <strong>Marcus Lee</strong></span
+                  ><span class="ali-time">1h</span>
+                </div>
+                <div class="al-item">
+                  <span class="ali-dot" style="--c: #fde68a"></span
+                  ><span class="ali-text"
+                    >Milestone <strong>v2.1</strong> reached 80%
+                    completion</span
+                  ><span class="ali-time">3h</span>
+                </div>
+                <div class="al-item">
+                  <span class="ali-dot" style="--c: #a78bfa"></span
+                  ><span class="ali-text"
+                    >Label <strong>Design</strong> added to
+                    <strong>#234</strong></span
+                  ><span class="ali-time">5h</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="hint-section" id="hintSection" style="margin-top: 24px">
+              <div class="hint-label">TRY THE COMMAND PALETTE</div>
+              <div class="hint-keys">
+                <kbd class="hint-kbd">⌘</kbd><kbd class="hint-kbd">K</kbd>
+                <span class="hint-or">or</span>
+                <kbd class="hint-kbd">Ctrl</kbd><kbd class="hint-kbd">K</kbd>
+              </div>
+              <div class="hint-sub">
+                Fuzzy search · Smith-Waterman scoring · 60+ commands
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="dynamicView"
+            class="hint-section"
+            style="
+              display: none;
+              margin-top: 40px;
+              border: none;
+              background: transparent;
+              box-shadow: none;
+            "
+          >
+            <div
+              class="es-icon"
+              id="dvIcon"
+              style="font-size: 48px; margin-bottom: 16px; opacity: 0.5"
+            >
+              ⊡
+            </div>
+            <div
+              class="es-title"
+              id="dvTitle"
+              style="font-size: 18px; font-weight: 600; color: var(--text)"
+            >
+              Projects
+            </div>
+            <div
+              class="es-sub"
+              id="dvSub"
+              style="font-size: 14px; color: var(--text-3); margin-top: 8px"
+            >
+              Content for this section is not yet available.
+            </div>
+          </div>
+
+          <div id="projectsView" style="display: none">
+            <div
+              class="cs-header"
+              style="margin-bottom: 20px; border-bottom: none; padding: 0"
+            >
+              <span class="cs-title" style="font-size: 16px"
+                >Active Projects</span
+              >
+            </div>
+            <div class="kpi-row">
+              <div class="kpi-card" style="cursor: pointer">
+                <div class="kpi-label">Alpha</div>
+                <div
+                  class="kpi-val"
+                  style="font-size: 18px; margin-top: 8px; color: var(--sage)"
+                >
+                  Good
+                </div>
+              </div>
+              <div class="kpi-card" style="cursor: pointer">
+                <div class="kpi-label">Beta</div>
+                <div
+                  class="kpi-val"
+                  style="font-size: 18px; margin-top: 8px; color: var(--amber)"
+                >
+                  At Risk
+                </div>
+              </div>
+              <div class="kpi-card" style="cursor: pointer">
+                <div class="kpi-label">Gamma</div>
+                <div
+                  class="kpi-val"
+                  style="font-size: 18px; margin-top: 8px; color: var(--sage)"
+                >
+                  Good
+                </div>
+              </div>
+              <div class="kpi-card" style="cursor: pointer">
+                <div class="kpi-label">Delta</div>
+                <div
+                  class="kpi-val"
+                  style="font-size: 18px; margin-top: 8px; color: var(--text-3)"
+                >
+                  On Hold
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="teamView" style="display: none">
+            <div
+              class="cs-header"
+              style="margin-bottom: 20px; border-bottom: none; padding: 0"
+            >
+              <span class="cs-title" style="font-size: 16px">Team Members</span>
+            </div>
+            <div class="content-section">
+              <div class="activity-list">
+                <div class="al-item">
+                  <div
+                    class="user-avatar"
+                    style="width: 28px; height: 28px; font-size: 10px"
+                  >
+                    SC
+                  </div>
+                  <span class="ali-text" style="margin-left: 10px"
+                    ><strong>Sarah Chen</strong> (Lead Engineer)</span
+                  >
+                </div>
+                <div class="al-item">
+                  <div
+                    class="user-avatar"
+                    style="width: 28px; height: 28px; font-size: 10px"
+                  >
+                    ML
+                  </div>
+                  <span class="ali-text" style="margin-left: 10px"
+                    ><strong>Marcus Lee</strong> (Product Manager)</span
+                  >
+                </div>
+                <div class="al-item">
+                  <div
+                    class="user-avatar"
+                    style="width: 28px; height: 28px; font-size: 10px"
+                  >
+                    AK
+                  </div>
+                  <span class="ali-text" style="margin-left: 10px"
+                    ><strong>Alex Kim</strong> (Designer)</span
+                  >
+                </div>
+                <div class="al-item">
+                  <div
+                    class="user-avatar"
+                    style="width: 28px; height: 28px; font-size: 10px"
+                  >
+                    JD
+                  </div>
+                  <span class="ali-text" style="margin-left: 10px"
+                    ><strong>John Doe</strong> (Developer)</span
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div id="settingsView" style="display: none">
+            <div
+              class="cs-header"
+              style="margin-bottom: 20px; border-bottom: none; padding: 0"
+            >
+              <span class="cs-title" style="font-size: 16px"
+                >Workspace Settings</span
+              >
+            </div>
+            <div class="content-section" style="padding: 24px">
+              <div style="margin-bottom: 20px">
+                <label
+                  style="
+                    display: block;
+                    color: var(--text-2);
+                    font-size: 12px;
+                    margin-bottom: 8px;
+                  "
+                  >Workspace Name</label
+                >
+                <input
+                  type="text"
+                  value="Nexus"
+                  style="
+                    background: var(--bg-3);
+                    border: 1px solid var(--border-3);
+                    color: var(--text);
+                    padding: 10px 14px;
+                    border-radius: var(--r);
+                    width: 100%;
+                    max-width: 320px;
+                    outline: none;
+                    font-family: var(--font-ui);
+                  "
+                />
+              </div>
+              <div style="margin-bottom: 24px">
+                <label
+                  style="
+                    display: flex;
+                    align-items: center;
+                    gap: 10px;
+                    color: var(--text);
+                    font-size: 13px;
+                    cursor: pointer;
+                  "
+                >
+                  <input
+                    type="checkbox"
+                    checked
+                    style="accent-color: var(--sage); width: 16px; height: 16px"
+                  />
+                  Enable Desktop Notifications
+                </label>
+              </div>
+              <button class="content-action-btn">Save Changes</button>
+            </div>
+          </div>
+
+          <div id="inboxView" style="display: none">
+            <div
+              class="cs-header"
+              style="margin-bottom: 20px; border-bottom: none; padding: 0"
+            >
+              <span class="cs-title" style="font-size: 16px">Inbox</span>
+            </div>
+            <div class="content-section">
+              <div class="activity-list">
+                <div class="al-item" style="border-left: 3px solid var(--sage)">
+                  <span class="ali-dot" style="--c: #6ee7b7"></span
+                  ><span class="ali-text"
+                    ><strong>Sarah Chen</strong> mentioned you in
+                    <strong>#247</strong></span
+                  ><span class="ali-time">2m</span>
+                </div>
+                <div class="al-item" style="border-left: 3px solid var(--sage)">
+                  <span class="ali-dot" style="--c: #93c5fd"></span
+                  ><span class="ali-text"
+                    >Your PR <strong>#89</strong> was approved</span
+                  ><span class="ali-time">1h</span>
+                </div>
+                <div class="al-item" style="border-left: 3px solid var(--sage)">
+                  <span class="ali-dot" style="--c: #fca5a5"></span
+                  ><span class="ali-text"
+                    >You were assigned to <strong>#251</strong></span
+                  ><span class="ali-time">3h</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+
+      <div
+        class="notification-stack"
+        id="notificationStack"
+        aria-live="polite"
+        aria-relevant="additions"
+      ></div>
+    </div>
+
+    <div
+      class="palette-backdrop"
+      id="paletteBackdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Command palette"
+      aria-hidden="true"
+    >
+      <div class="palette" id="palette">
+        <div class="palette-input-row">
+          <div class="pir-prefix" id="pirPrefix">
+            <span class="prefix-icon" id="prefixIcon" aria-hidden="true"
+              >⌘</span
+            >
+          </div>
+          <input
+            class="palette-input"
+            id="paletteInput"
+            type="text"
+            placeholder="Search commands, files, settings…"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            role="combobox"
+            aria-expanded="true"
+            aria-controls="paletteResults"
+            aria-autocomplete="list"
+          />
+          <div class="pir-suffix">
+            <kbd class="pir-esc" id="pirEsc">Esc</kbd>
+          </div>
+        </div>
+
+        <div class="palette-scopes" id="paletteScopes">
+          <button class="scope-chip active" data-scope="all">All</button>
+          <button class="scope-chip" data-scope="navigation">Navigation</button>
+          <button class="scope-chip" data-scope="actions">Actions</button>
+          <button class="scope-chip" data-scope="settings">Settings</button>
+          <button class="scope-chip" data-scope="theme">Theme</button>
+          <button class="scope-chip" data-scope="view">View</button>
+          <button class="scope-chip" data-scope="developer">Dev</button>
+        </div>
+
+        <div
+          class="palette-results"
+          id="paletteResults"
+          role="listbox"
+          aria-label="Command results"
+        ></div>
+
+        <div class="palette-footer">
+          <div class="pf-left">
+            <span class="pf-count" id="pfCount">Loading…</span>
+          </div>
+          <div class="pf-right">
+            <span class="pf-hint"><kbd>↑↓</kbd> Navigate</span>
+            <span class="pf-hint"><kbd>↵</kbd> Execute</span>
+            <span class="pf-hint"><kbd>Tab</kbd> Preview</span>
+            <span class="pf-hint"><kbd>Esc</kbd> Close</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="preview-panel hidden" id="previewPanel">
+      <div class="pp-header">
+        <span class="pp-title" id="ppTitle">Command Preview</span>
+        <button class="pp-close" id="ppClose" aria-label="Close preview">
+          ✕
+        </button>
+      </div>
+      <div class="pp-body" id="ppBody"></div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

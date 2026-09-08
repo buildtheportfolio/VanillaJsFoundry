@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Synapse — Force-Directed Graph Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="topbar">
+        <div class="tb-left">
+          <div class="brand">
+            <svg class="brand-icon" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="3" fill="currentColor" />
+              <circle cx="4" cy="5" r="2" fill="currentColor" opacity="0.7" />
+              <circle cx="20" cy="5" r="2" fill="currentColor" opacity="0.7" />
+              <circle cx="4" cy="19" r="2" fill="currentColor" opacity="0.5" />
+              <circle cx="20" cy="19" r="2" fill="currentColor" opacity="0.5" />
+              <line x1="12" y1="12" x2="4" y2="5" stroke="currentColor" stroke-width="1.5" opacity="0.6" />
+              <line x1="12" y1="12" x2="20" y2="5" stroke="currentColor" stroke-width="1.5" opacity="0.6" />
+              <line x1="12" y1="12" x2="4" y2="19" stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+              <line x1="12" y1="12" x2="20" y2="19" stroke="currentColor" stroke-width="1.5" opacity="0.4" />
+            </svg>
+            <span class="brand-name">Synapse</span>
+            <span class="brand-sub">Graph Engine</span>
+          </div>
+          <div class="dataset-tabs" id="datasetTabs">
+            <button class="dt-btn active" data-ds="social">Social Network</button>
+            <button class="dt-btn" data-ds="tech">Tech Stack</button>
+            <button class="dt-btn" data-ds="biology">Neural Net</button>
+            <button class="dt-btn" data-ds="knowledge">Knowledge Graph</button>
+            <button class="dt-btn" data-ds="internet">Internet Topology</button>
+          </div>
+        </div>
+        <div class="tb-right">
+          <div class="search-wrap">
+            <input class="search-input" id="nodeSearch" type="text" placeholder="Search nodes…" autocomplete="off" />
+            <span class="si-icon" aria-hidden="true">⌕</span>
+          </div>
+          <div class="tb-divider"></div>
+          <button class="tb-icon-btn" id="btnLayout" title="Reset layout">↺</button>
+          <button class="tb-icon-btn" id="btnFreeze" title="Freeze simulation">❄</button>
+          <button class="tb-icon-btn" id="btnFitView" title="Fit view">⊞</button>
+          <button class="tb-icon-btn" id="btnExportSVG" title="Export SVG">⎘</button>
+          <div class="tb-divider"></div>
+          <button class="tb-icon-btn" id="btnTogglePanel" title="Toggle panel">☰</button>
+        </div>
+      </header>
+      <div class="workspace">
+        <div class="graph-area" id="graphArea">
+          <svg id="mainSvg" role="img" aria-label="Force-directed graph visualization">
+            <defs id="svgDefs"></defs>
+            <g id="zoomLayer">
+              <g id="edgesLayer"></g>
+              <g id="nodesLayer"></g>
+              <g id="labelsLayer"></g>
+            </g>
+          </svg>
+          <div class="graph-overlay">
+            <div class="go-topleft">
+              <div class="zoom-display" id="zoomDisplay">100%</div>
+            </div>
+            <div class="go-bottomleft">
+              <div class="minimap-wrap" id="minimapWrap">
+                <svg id="minimapSvg" width="140" height="100" aria-label="Graph minimap"></svg>
+                <div class="minimap-label">MINIMAP</div>
+              </div>
+            </div>
+            <div class="go-bottomright">
+              <div class="sim-badge" id="simBadge">
+                <span class="sb-dot active" id="simDot"></span>
+                <span id="simStatus">Simulating…</span>
+              </div>
+              <div class="perf-badge" id="perfBadge">
+                <span class="pb-icon">⟳</span>
+                <span id="perfFps">60 FPS</span>
+                <span class="pb-sep">·</span>
+                <span id="perfTick">0ms</span>
+              </div>
+            </div>
+          </div>
+          <div class="selection-info hidden" id="selectionInfo">
+            <div class="si-header">
+              <div class="si-icon-wrap" id="siIconWrap"></div>
+              <div class="si-text">
+                <div class="si-label" id="siLabel">Node</div>
+                <div class="si-id" id="siId"></div>
+              </div>
+              <button class="si-close" id="siClose">✕</button>
+            </div>
+            <div class="si-body" id="siBody"></div>
+          </div>
+        </div>
+        <aside class="control-panel" id="controlPanel">
+          <div class="cp-section">
+            <div class="cp-title">PHYSICS ENGINE</div>
+            <div class="cp-row">
+              <label class="cp-label">Sim Speed</label>
+              <input class="cp-range" id="simSpeed" type="range" min="0.1" max="2" value="1" step="0.1" />
+              <span class="cp-val" id="simSpeedVal">1.0</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Repulsion</label>
+              <input class="cp-range" id="repulsion" type="range" min="50" max="2000" value="400" step="10" />
+              <span class="cp-val" id="repulsionVal">400</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Link distance</label>
+              <input class="cp-range" id="linkDist" type="range" min="20" max="400" value="80" step="5" />
+              <span class="cp-val" id="linkDistVal">80</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Link strength</label>
+              <input class="cp-range" id="linkStr" type="range" min="0.01" max="1" value="0.3" step="0.01" />
+              <span class="cp-val" id="linkStrVal">0.30</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Gravity</label>
+              <input class="cp-range" id="gravity" type="range" min="0" max="0.2" value="0.05" step="0.005" />
+              <span class="cp-val" id="gravityVal">0.05</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Damping</label>
+              <input class="cp-range" id="damping" type="range" min="0.5" max="0.999" value="0.92" step="0.005" />
+              <span class="cp-val" id="dampingVal">0.920</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">θ (Barnes-Hut)</label>
+              <input class="cp-range" id="theta" type="range" min="0.1" max="2" value="0.8" step="0.05" />
+              <span class="cp-val" id="thetaVal">0.80</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Collision r.</label>
+              <input class="cp-range" id="collision" type="range" min="0" max="50" value="12" step="1" />
+              <span class="cp-val" id="collisionVal">12</span>
+            </div>
+          </div>
+          <div class="cp-section">
+            <div class="cp-title">APPEARANCE</div>
+            <div class="cp-row">
+              <label class="cp-label">Node size</label>
+              <input class="cp-range" id="nodeSize" type="range" min="3" max="30" value="8" step="0.5" />
+              <span class="cp-val" id="nodeSizeVal">8</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Edge width</label>
+              <input class="cp-range" id="edgeWidth" type="range" min="0.5" max="5" value="1.5" step="0.25" />
+              <span class="cp-val" id="edgeWidthVal">1.5</span>
+            </div>
+            <div class="cp-row">
+              <label class="cp-label">Glow strength</label>
+              <input class="cp-range" id="glowStr" type="range" min="0" max="20" value="8" step="1" />
+              <span class="cp-val" id="glowStrVal">8</span>
+            </div>
+            <div class="cp-toggles">
+              <label class="cp-toggle"><input type="checkbox" id="showLabels" checked /><span>Labels</span></label>
+              <label class="cp-toggle"><input type="checkbox" id="showWeights" /><span>Weights</span></label>
+              <label class="cp-toggle"><input type="checkbox" id="showArrows" checked /><span>Arrows</span></label>
+              <label class="cp-toggle"><input type="checkbox" id="showMinimap" checked /><span>Minimap</span></label>
+              <label class="cp-toggle"><input type="checkbox" id="degreeSize" checked /><span>Degree→Size</span></label>
+              <label class="cp-toggle"><input type="checkbox" id="curvedEdges" /><span>Curved edges</span></label>
+              <label class="cp-toggle"><input type="checkbox" id="showQuadtree" /><span>Quadtree viz</span></label>
+              <label class="cp-toggle"><input type="checkbox" id="showClusters" /><span>Clusters</span></label>
+            </div>
+          </div>
+          <div class="cp-section">
+            <div class="cp-title">COLOUR MODE</div>
+            <div class="color-mode-row" id="colorModeRow">
+              <button class="cm-btn active" data-cm="cluster">Cluster</button>
+              <button class="cm-btn" data-cm="degree">Degree</button>
+              <button class="cm-btn" data-cm="pagerank">PageRank</button>
+              <button class="cm-btn" data-cm="type">Type</button>
+            </div>
+          </div>
+          <div class="cp-section">
+            <div class="cp-title">LAYOUT PRESETS</div>
+            <div class="layout-grid" id="layoutGrid">
+              <button class="lg-btn" data-layout="random">Random</button>
+              <button class="lg-btn" data-layout="circle">Circle</button>
+              <button class="lg-btn" data-layout="grid">Grid</button>
+              <button class="lg-btn" data-layout="radial">Radial</button>
+              <button class="lg-btn" data-layout="tree">Tree</button>
+              <button class="lg-btn" data-layout="clusters">Clusters</button>
+            </div>
+          </div>
+          <div class="cp-section">
+            <div class="cp-title">GRAPH STATS</div>
+            <div class="stats-grid" id="statsGrid"></div>
+          </div>
+          <div class="cp-section">
+            <div class="cp-title">ALGORITHM DIAGNOSTICS</div>
+            <div class="diag-grid" id="diagGrid"></div>
+          </div>
+          <div class="cp-section">
+            <div class="cp-title">NODE LIST</div>
+            <div class="node-list" id="nodeList"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

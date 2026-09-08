@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A lightning-fast, trie-powered prefix-tree autocomplete engine built with pure vanilla JavaScript. Sub-16ms traversal with fuzzy matching and search history." />
+    <title>Trie Engine — Autocomplete</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:ital,wght@0,100..800;1,100..800&family=Syne:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="scanlines" aria-hidden="true"></div>
+    <div class="noise" aria-hidden="true"></div>
+
+    <!-- ARIA live region for screen-reader announcements -->
+    <div
+      id="srAnnounce"
+      role="status"
+      aria-live="polite"
+      aria-atomic="true"
+      class="sr-only"
+    ></div>
+
+    <main class="container">
+      <header class="header">
+        <div class="logo-row">
+          <span class="logo-bracket">[</span>
+          <span class="logo-text">TRIE</span>
+          <span class="logo-sub">ENGINE</span>
+          <span class="logo-bracket">]</span>
+        </div>
+        <p class="tagline">
+          Prefix-tree autocomplete — <em>sub-16ms traversal</em> · fuzzy matching · search history
+        </p>
+      </header>
+
+      <section class="search-section" aria-label="Search">
+        <div class="search-wrapper" id="searchWrapper">
+          <div class="input-row">
+            <span class="prompt-symbol" aria-hidden="true">›</span>
+            <input
+              type="text"
+              id="searchInput"
+              class="search-input"
+              placeholder="start typing…"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+              spellcheck="false"
+              aria-label="Autocomplete search"
+              aria-autocomplete="list"
+              aria-controls="suggestionsList"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            />
+            <span class="cursor-blink" aria-hidden="true"></span>
+            <button
+              class="clear-btn"
+              id="clearBtn"
+              aria-label="Clear input"
+              title="Clear (Esc)"
+            >
+              ✕
+            </button>
+          </div>
+
+          <ul
+            class="suggestions-list"
+            id="suggestionsList"
+            role="listbox"
+            aria-label="Suggestions"
+          ></ul>
+        </div>
+      </section>
+
+      <div class="stats-bar" id="statsBar" aria-label="Statistics">
+        <div class="stat" id="statWords">
+          <span class="stat-label">WORDS INDEXED</span>
+          <span class="stat-value" id="wordCount">—</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true">|</div>
+        <div class="stat" id="statNodes">
+          <span class="stat-label">TRIE NODES</span>
+          <span class="stat-value" id="nodeCount">—</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true">|</div>
+        <div class="stat">
+          <span class="stat-label">QUERY TIME</span>
+          <span class="stat-value" id="queryTime">—</span>
+        </div>
+        <div class="stat-divider" aria-hidden="true">|</div>
+        <div class="stat">
+          <span class="stat-label">RESULTS</span>
+          <span class="stat-value" id="resultCount">—</span>
+        </div>
+      </div>
+
+      <div class="kbd-hint" aria-label="Keyboard shortcuts">
+        <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+        <span><kbd>↵</kbd> select</span>
+        <span><kbd>Tab</kbd> complete</span>
+        <span><kbd>Esc</kbd> dismiss</span>
+        <span><kbd>/</kbd> focus</span>
+        <span class="kbd-sep">·</span>
+        <button
+          class="clear-history-btn"
+          id="clearHistoryBtn"
+          title="Clear search history"
+          aria-label="Clear search history"
+        >↩ clear history</button>
+      </div>
+
+      <div class="status-line" id="statusLine">
+        <span class="status-indicator" id="statusDot"></span>
+        <span id="statusText">Initializing trie…</span>
+      </div>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,270 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modal Stack Manager — Accessible by Design</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="page" id="pageRoot">
+      <header class="site-header">
+        <div class="site-header-inner">
+          <div class="header-brand">
+            <div class="brand-icon" aria-hidden="true">
+              <div class="brand-icon-stack">
+                <div class="bi-layer bi-l1"></div>
+                <div class="bi-layer bi-l2"></div>
+                <div class="bi-layer bi-l3"></div>
+              </div>
+            </div>
+            <div class="brand-text">
+              <span class="brand-name">ModalStack</span>
+              <span class="brand-version">v3.1 · ARIA Compliant</span>
+            </div>
+          </div>
+          <div class="header-badges">
+            <span class="hbadge hbadge-wcag">WCAG 2.1 AA</span>
+            <span class="hbadge hbadge-a11y">♿ A11y</span>
+            <span class="hbadge hbadge-wm">WeakMap</span>
+          </div>
+        </div>
+      </header>
+
+      <div class="page-layout">
+        <aside class="inspector-rail" id="inspectorRail">
+          <div class="rail-section">
+            <div class="rail-section-title">Stack State</div>
+            <div class="stack-viz" id="stackViz">
+              <div class="stack-empty-msg">No modals open</div>
+            </div>
+          </div>
+
+          <div class="rail-section">
+            <div class="rail-section-title">Focus History</div>
+            <div class="focus-log" id="focusLog"></div>
+          </div>
+
+          <div class="rail-section">
+            <div class="rail-section-title">ARIA Live Region</div>
+            <div class="aria-monitor" id="ariaMonitor">
+              <div
+                aria-live="polite"
+                aria-atomic="true"
+                id="ariaLiveEl"
+                class="aria-live-el"
+              ></div>
+              <div class="aria-log" id="ariaLog"></div>
+            </div>
+          </div>
+
+          <div class="rail-section">
+            <div class="rail-section-title">Engine Metrics</div>
+            <div class="metrics-grid" id="metricsGrid"></div>
+          </div>
+        </aside>
+
+        <main class="main-content" id="mainContent">
+          <section class="hero-section">
+            <div class="hero-label">Accessible Modal Stack Manager</div>
+            <h1 class="hero-title">
+              Focus trapping,<br />
+              <em>done right.</em>
+            </h1>
+            <p class="hero-sub">
+              A production-grade modal engine using <code>WeakMap</code> for
+              private state, <code>inert</code> for background lockout, proper
+              ARIA orchestration, scroll preservation, and correct focus
+              restoration across N stacked layers.
+            </p>
+          </section>
+
+          <section class="demo-section">
+            <div class="demo-section-hd">
+              <h2 class="demo-section-title">Live Demos</h2>
+              <div class="demo-section-meta">
+                Click any button — inspect the panel ←
+              </div>
+            </div>
+
+            <div class="demo-grid">
+              <div class="demo-card">
+                <div class="demo-card-icon">⬡</div>
+                <div class="demo-card-label">Single Modal</div>
+                <p class="demo-card-desc">
+                  Basic modal with focus trap, scroll lock, ARIA roles, and
+                  Escape key dismissal.
+                </p>
+                <div class="demo-card-actions">
+                  <button
+                    class="btn btn-primary"
+                    id="btnOpenBasic"
+                    data-modal-trigger="basic"
+                  >
+                    Open Modal
+                  </button>
+                </div>
+              </div>
+
+              <div class="demo-card">
+                <div class="demo-card-icon">⬡⬡</div>
+                <div class="demo-card-label">Stacked Modals</div>
+                <p class="demo-card-desc">
+                  Open modal from inside a modal — focus correctly jumps between
+                  layers on close.
+                </p>
+                <div class="demo-card-actions">
+                  <button
+                    class="btn btn-primary"
+                    id="btnOpenStacked"
+                    data-modal-trigger="level1"
+                  >
+                    Open Stack
+                  </button>
+                </div>
+              </div>
+
+              <div class="demo-card">
+                <div class="demo-card-icon">✎</div>
+                <div class="demo-card-label">Form Modal</div>
+                <p class="demo-card-desc">
+                  Modal with form, select, textarea. Tab cycles only within the
+                  modal boundary.
+                </p>
+                <div class="demo-card-actions">
+                  <button
+                    class="btn btn-primary"
+                    id="btnOpenForm"
+                    data-modal-trigger="form"
+                  >
+                    Open Form
+                  </button>
+                </div>
+              </div>
+
+              <div class="demo-card">
+                <div class="demo-card-icon">⚠</div>
+                <div class="demo-card-label">Confirm Dialog</div>
+                <p class="demo-card-desc">
+                  Destructive action dialog. <code>role="alertdialog"</code>,
+                  first focus on safe action.
+                </p>
+                <div class="demo-card-actions">
+                  <button
+                    class="btn btn-danger"
+                    id="btnOpenConfirm"
+                    data-modal-trigger="confirm"
+                  >
+                    Delete Item
+                  </button>
+                </div>
+              </div>
+
+              <div class="demo-card">
+                <div class="demo-card-icon">⟳</div>
+                <div class="demo-card-label">Detached Trigger</div>
+                <p class="demo-card-desc">
+                  Trigger button removed from DOM after click — focus still
+                  restored to nearest valid ancestor.
+                </p>
+                <div class="demo-card-actions">
+                  <button
+                    class="btn btn-outline"
+                    id="btnOpenDetached"
+                    data-modal-trigger="detached"
+                  >
+                    Open (Detached)
+                  </button>
+                </div>
+              </div>
+
+              <div class="demo-card">
+                <div class="demo-card-icon">⬡⬡⬡</div>
+                <div class="demo-card-label">Deep Stack (×4)</div>
+                <p class="demo-card-desc">
+                  Opens 4 modals programmatically. Escape collapses them one by
+                  one, restoring focus each time.
+                </p>
+                <div class="demo-card-actions">
+                  <button class="btn btn-outline" id="btnOpenDeep">
+                    Open Deep Stack
+                  </button>
+                </div>
+              </div>
+
+              <div class="demo-card demo-card-wide">
+                <div class="demo-card-label">Programmatic Control</div>
+                <p class="demo-card-desc">
+                  Call the engine API directly from the console:
+                  <code>window.modalStack</code>
+                </p>
+                <div class="api-pills">
+                  <div class="api-pill">
+                    <code>modalStack.open(id)</code
+                    ><span class="ap-desc">opens modal by id</span>
+                  </div>
+                  <div class="api-pill">
+                    <code>modalStack.close(id?)</code
+                    ><span class="ap-desc">closes top or by id</span>
+                  </div>
+                  <div class="api-pill">
+                    <code>modalStack.closeAll()</code
+                    ><span class="ap-desc">collapses entire stack</span>
+                  </div>
+                  <div class="api-pill">
+                    <code>modalStack.getStack()</code
+                    ><span class="ap-desc">returns ordered array</span>
+                  </div>
+                  <div class="api-pill">
+                    <code>modalStack.onOpen(fn)</code
+                    ><span class="ap-desc">lifecycle hook</span>
+                  </div>
+                  <div class="api-pill">
+                    <code>modalStack.onClose(fn)</code
+                    ><span class="ap-desc">lifecycle hook</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="demo-card demo-card-wide">
+                <div class="demo-card-label">Keyboard Reference</div>
+                <div class="kbd-table">
+                  <div class="ktr">
+                    <kbd>Tab</kbd
+                    ><span>Move focus forward (wraps at boundary)</span>
+                  </div>
+                  <div class="ktr">
+                    <kbd>Shift+Tab</kbd
+                    ><span>Move focus backward (wraps at boundary)</span>
+                  </div>
+                  <div class="ktr">
+                    <kbd>Esc</kbd
+                    ><span>Close topmost modal, restore prior focus</span>
+                  </div>
+                  <div class="ktr">
+                    <kbd>Enter</kbd
+                    ><span>Activate focused button / submit form</span>
+                  </div>
+                  <div class="ktr">
+                    <kbd>Space</kbd
+                    ><span>Activate buttons, toggle checkboxes</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      </div>
+    </div>
+
+    <div id="modalHost" aria-hidden="true"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

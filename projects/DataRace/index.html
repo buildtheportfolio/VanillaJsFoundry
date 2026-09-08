@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DataRace — Live Bar Chart Race</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Share+Tech+Mono&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="hud-header">
+        <div class="hud-left">
+          <div class="brand">
+            <div class="brand-glyph" aria-hidden="true">
+              <div class="bg-bar bg-b1"></div>
+              <div class="bg-bar bg-b2"></div>
+              <div class="bg-bar bg-b3"></div>
+              <div class="bg-bar bg-b4"></div>
+            </div>
+            <span class="brand-name">DataRace</span>
+          </div>
+          <div class="dataset-selector" id="datasetSelector">
+            <button class="ds-btn active" data-dataset="tech">
+              Tech Market Cap
+            </button>
+            <button class="ds-btn" data-dataset="population">
+              World Population
+            </button>
+            <button class="ds-btn" data-dataset="gdp">GDP by Nation</button>
+            <button class="ds-btn" data-dataset="crypto">Crypto Volume</button>
+            <!-- <button class="ds-btn" data-dataset="energy">
+              Energy Consumption
+            </button> -->
+            <button class="ds-btn" data-dataset="ai">AI Compute</button>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div class="speed-control">
+            <span class="sc-label">SPEED</span>
+            <input
+              class="sc-slider"
+              id="speedSlider"
+              type="range"
+              min="0.25"
+              max="4"
+              step="0.25"
+              value="1"
+              aria-label="Playback speed"
+            />
+            <span class="sc-val" id="speedVal">1×</span>
+          </div>
+          <div class="hud-divider"></div>
+          <div class="top-n-control">
+            <span class="sc-label">TOP</span>
+            <button class="tn-btn active" data-n="8">8</button>
+            <button class="tn-btn" data-n="10">10</button>
+            <button class="tn-btn" data-n="12">12</button>
+            <button class="tn-btn" data-n="15">15</button>
+          </div>
+          <div class="hud-divider"></div>
+          <button class="hud-btn" id="btnTheme" title="Toggle theme">
+            ◑ Theme
+          </button>
+          <button class="hud-btn" id="btnScreenshot" title="Export PNG">
+            ⎘ Export
+          </button>
+        </div>
+      </header>
+
+      <div class="race-layout">
+        <div class="chart-area" id="chartArea">
+          <div class="chart-header">
+            <div class="ch-title" id="chartTitle">
+              Technology Companies by Market Capitalization
+            </div>
+            <div class="ch-meta">
+              <span class="ch-unit" id="chartUnit">USD Billions</span>
+              <span class="ch-period" id="chartPeriod"></span>
+            </div>
+          </div>
+
+          <div class="chart-container">
+            <canvas
+              id="raceCanvas"
+              aria-label="Animated bar chart race"
+              role="img"
+            ></canvas>
+            <div class="chart-overlay" id="chartOverlay">
+              <div
+                class="year-display"
+                id="yearDisplay"
+                aria-live="polite"
+                aria-atomic="true"
+              ></div>
+            </div>
+          </div>
+
+          <div class="chart-footer">
+            <div class="cf-left">
+              <div class="lead-badge" id="leadBadge" aria-live="polite">
+                <span class="lb-icon" aria-hidden="true">🏆</span>
+                <span class="lb-name" id="leadName">—</span>
+                <span class="lb-val" id="leadVal"></span>
+              </div>
+            </div>
+            <div class="cf-right">
+              <span class="frame-counter" id="frameCounter">0 / 0</span>
+              <span class="fps-badge" id="fpsBadge">60 FPS</span>
+            </div>
+          </div>
+        </div>
+
+        <aside class="control-panel" id="controlPanel">
+          <div class="cp-section">
+            <div class="cp-title">PLAYBACK</div>
+            <div class="timeline-wrap">
+              <input
+                class="timeline-slider"
+                id="timelineSlider"
+                type="range"
+                min="0"
+                max="100"
+                value="0"
+                step="0.1"
+                aria-label="Timeline position"
+              />
+              <div class="timeline-markers" id="timelineMarkers"></div>
+            </div>
+            <div class="playback-btns">
+              <button
+                class="pb-btn"
+                id="btnSkipStart"
+                title="Skip to start"
+                aria-label="Skip to start"
+              >
+                ⏮
+              </button>
+              <button
+                class="pb-btn"
+                id="btnStepBack"
+                title="Step back"
+                aria-label="Step back"
+              >
+                ⏪
+              </button>
+              <button
+                class="pb-btn pb-btn-play"
+                id="btnPlay"
+                title="Play/Pause"
+                aria-label="Play"
+              >
+                ▶
+              </button>
+              <button
+                class="pb-btn"
+                id="btnStepFwd"
+                title="Step forward"
+                aria-label="Step forward"
+              >
+                ⏩
+              </button>
+              <button
+                class="pb-btn"
+                id="btnSkipEnd"
+                title="Skip to end"
+                aria-label="Skip to end"
+              >
+                ⏭
+              </button>
+              <button
+                class="pb-btn"
+                id="btnLoop"
+                title="Toggle loop"
+                aria-label="Loop"
+                data-active="true"
+              >
+                🔁
+              </button>
+            </div>
+          </div>
+
+          <div class="cp-section">
+            <div class="cp-title">INTERPOLATION</div>
+            <div class="interp-row">
+              <span class="ir-label">Easing</span>
+              <select class="ir-select" id="easingSelect">
+                <option value="linear">Linear</option>
+                <option value="easeIn">Ease In</option>
+                <option value="easeOut" selected>Ease Out</option>
+                <option value="easeInOut">Ease In Out</option>
+                <option value="spring">Spring</option>
+                <option value="bounce">Bounce</option>
+              </select>
+            </div>
+            <div class="interp-row">
+              <span class="ir-label">Bar smoothing</span>
+              <input
+                class="ir-range"
+                id="smoothingRange"
+                type="range"
+                min="1"
+                max="120"
+                value="40"
+                aria-label="Smoothing frames"
+              />
+              <span class="ir-val" id="smoothingVal">40f</span>
+            </div>
+            <div class="interp-row">
+              <span class="ir-label">Stagger delay</span>
+              <input
+                class="ir-range"
+                id="staggerRange"
+                type="range"
+                min="0"
+                max="10"
+                value="3"
+                aria-label="Stagger delay"
+              />
+              <span class="ir-val" id="staggerVal">3f</span>
+            </div>
+          </div>
+
+          <div class="cp-section">
+            <div class="cp-title">APPEARANCE</div>
+            <div class="appearance-row">
+              <label class="ar-toggle"
+                ><input type="checkbox" id="showValues" checked /><span
+                  >Show values</span
+                ></label
+              >
+              <label class="ar-toggle"
+                ><input type="checkbox" id="showRank" checked /><span
+                  >Show rank</span
+                ></label
+              >
+              <label class="ar-toggle"
+                ><input type="checkbox" id="showGrowth" /><span
+                  >Growth %</span
+                ></label
+              >
+              <label class="ar-toggle"
+                ><input type="checkbox" id="showFlags" checked /><span
+                  >Show icons</span
+                ></label
+              >
+              <label class="ar-toggle"
+                ><input type="checkbox" id="showGrid" checked /><span
+                  >Grid lines</span
+                ></label
+              >
+              <label class="ar-toggle"
+                ><input type="checkbox" id="showTrail" /><span
+                  >Value trail</span
+                ></label
+              >
+              <label class="ar-toggle"
+                ><input type="checkbox" id="gradientBars" checked /><span
+                  >Gradient bars</span
+                ></label
+              >
+              <label class="ar-toggle"
+                ><input type="checkbox" id="showParticles" /><span
+                  >Particles</span
+                ></label
+              >
+            </div>
+            <div class="interp-row">
+              <span class="ir-label">Bar height</span>
+              <input
+                class="ir-range"
+                id="barHeightRange"
+                type="range"
+                min="20"
+                max="60"
+                value="38"
+                aria-label="Bar height"
+              />
+              <span class="ir-val" id="barHeightVal">38px</span>
+            </div>
+            <div class="interp-row">
+              <span class="ir-label">Bar gap</span>
+              <input
+                class="ir-range"
+                id="barGapRange"
+                type="range"
+                min="4"
+                max="20"
+                value="8"
+                aria-label="Bar gap"
+              />
+              <span class="ir-val" id="barGapVal">8px</span>
+            </div>
+            <div class="interp-row">
+              <span class="ir-label">Corner radius</span>
+              <input
+                class="ir-range"
+                id="radiusRange"
+                type="range"
+                min="0"
+                max="20"
+                value="6"
+                aria-label="Corner radius"
+              />
+              <span class="ir-val" id="radiusVal">6px</span>
+            </div>
+            <div class="interp-row">
+              <span class="ir-label">Label width</span>
+              <input
+                class="ir-range"
+                id="labelWidthRange"
+                type="range"
+                min="60"
+                max="180"
+                value="110"
+                aria-label="Label width"
+              />
+              <span class="ir-val" id="labelWidthVal">110px</span>
+            </div>
+          </div>
+
+          <div class="cp-section">
+            <div class="cp-title">LIVE STATS</div>
+            <div class="stats-grid" id="statsGrid"></div>
+          </div>
+
+          <div class="cp-section">
+            <div class="cp-title">LEADERBOARD</div>
+            <div
+              class="leaderboard"
+              id="leaderboard"
+              aria-label="Current rankings"
+            ></div>
+          </div>
+
+          <div class="cp-section">
+            <div class="cp-title">COLOR PALETTE</div>
+            <div class="palette-row" id="paletteRow">
+              <button class="pal-btn active" data-palette="neon">Neon</button>
+              <button class="pal-btn" data-palette="pastel">Pastel</button>
+              <button class="pal-btn" data-palette="fire">Fire</button>
+              <button class="pal-btn" data-palette="ocean">Ocean</button>
+              <button class="pal-btn" data-palette="earthy">Earthy</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

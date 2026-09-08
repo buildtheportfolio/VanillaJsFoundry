@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Quill — Rich Text Editor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Epilogue:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <div class="app-chrome">
+        <header class="topbar">
+          <div class="topbar-left">
+            <div class="brand">
+              <span class="brand-q">Q</span>
+              <span class="brand-name">uill</span>
+            </div>
+            <div class="doc-title-wrap">
+              <input
+                class="doc-title-input"
+                id="docTitle"
+                type="text"
+                value="Untitled Document"
+                aria-label="Document title"
+                spellcheck="false"
+              />
+              <span
+                class="doc-saved-indicator"
+                id="savedIndicator"
+                title="All changes saved"
+                >●</span
+              >
+            </div>
+          </div>
+          <div class="topbar-center">
+            <div class="word-count-pill" id="wordCountPill">0 words</div>
+          </div>
+          <div class="topbar-right">
+            <button
+              class="btn-chrome btn-find"
+              id="btnFind"
+              title="Find & Replace (Ctrl+F)"
+            >
+              <svg
+                viewBox="0 0 16 16"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="1.5"
+                stroke-linecap="round"
+              >
+                <circle cx="6.5" cy="6.5" r="4" />
+                <path d="M10 10l3 3" />
+              </svg>
+            </button>
+            <button
+              class="btn-chrome"
+              id="btnSource"
+              title="Toggle HTML source"
+            >
+              ⟨/⟩
+            </button>
+            <div class="export-dropdown" id="exportDropdown">
+              <button class="btn-chrome btn-export" id="btnExport">
+                Export ↓
+              </button>
+              <div class="export-menu hidden" id="exportMenu">
+                <button class="em-item" id="emHTML">Copy as HTML</button>
+                <button class="em-item" id="emMarkdown">
+                  Copy as Markdown
+                </button>
+                <button class="em-item" id="emPlain">Copy as Plain Text</button>
+                <div class="em-divider"></div>
+                <button class="em-item" id="emDownload">Download .html</button>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div
+          class="toolbar"
+          id="mainToolbar"
+          role="toolbar"
+          aria-label="Formatting toolbar"
+        >
+          <div class="tool-group" role="group" aria-label="Block style">
+            <select
+              class="block-select"
+              id="blockSelect"
+              title="Block style"
+              aria-label="Block style"
+            >
+              <option value="p">Paragraph</option>
+              <option value="h1">Heading 1</option>
+              <option value="h2">Heading 2</option>
+              <option value="h3">Heading 3</option>
+              <option value="h4">Heading 4</option>
+              <option value="blockquote">Blockquote</option>
+              <option value="pre">Code Block</option>
+            </select>
+          </div>
+
+          <div class="tool-sep"></div>
+
+          <div class="tool-group" role="group" aria-label="Inline formatting">
+            <button
+              class="tool-btn"
+              data-cmd="bold"
+              title="Bold (Ctrl+B)"
+              aria-label="Bold"
+              data-tag="STRONG"
+            >
+              <span class="tb-icon tb-bold">B</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="italic"
+              title="Italic (Ctrl+I)"
+              aria-label="Italic"
+              data-tag="EM"
+            >
+              <span class="tb-icon tb-italic">I</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="underline"
+              title="Underline (Ctrl+U)"
+              aria-label="Underline"
+              data-tag="U"
+            >
+              <span class="tb-icon tb-underline">U</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="strikethrough"
+              title="Strikethrough"
+              aria-label="Strikethrough"
+              data-tag="S"
+            >
+              <span class="tb-icon tb-strike">S</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="code"
+              title="Inline Code (Ctrl+`)"
+              aria-label="Inline Code"
+              data-tag="CODE"
+            >
+              <span class="tb-icon tb-code">{"}"}</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="mark"
+              title="Highlight"
+              aria-label="Highlight"
+              data-tag="MARK"
+            >
+              <span class="tb-icon tb-mark">H</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="superscript"
+              title="Superscript"
+              aria-label="Superscript"
+              data-tag="SUP"
+            >
+              <span class="tb-icon">X²</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="subscript"
+              title="Subscript"
+              aria-label="Subscript"
+              data-tag="SUB"
+            >
+              <span class="tb-icon">X₂</span>
+            </button>
+          </div>
+
+          <div class="tool-sep"></div>
+
+          <div class="tool-group" role="group" aria-label="Text color">
+            <div class="color-picker-wrap" id="colorPickerWrap">
+              <button
+                class="tool-btn tool-btn-color"
+                id="btnTextColor"
+                title="Text Color"
+                aria-label="Text Color"
+              >
+                <span class="color-icon" id="colorIcon">A</span>
+                <span class="color-swatch" id="colorSwatch"></span>
+              </button>
+              <div class="color-dropdown hidden" id="colorDropdown">
+                <div class="color-swatches-row" id="colorSwatchRow"></div>
+                <label class="custom-color-label"
+                  >Custom
+                  <input
+                    type="color"
+                    id="customColorInput"
+                    class="custom-color-input"
+                    value="#c8a96b"
+                  />
+                </label>
+                <button class="color-remove-btn" id="btnRemoveColor">
+                  Remove color
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div class="tool-sep"></div>
+
+          <div class="tool-group" role="group" aria-label="Alignment">
+            <button
+              class="tool-btn"
+              data-cmd="alignLeft"
+              title="Align Left (Ctrl+Shift+L)"
+              aria-label="Align Left"
+            >
+              <span class="tb-icon tb-align-l">⬌</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="alignCenter"
+              title="Align Center (Ctrl+Shift+E)"
+              aria-label="Align Center"
+            >
+              <span class="tb-icon">⊜</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="alignRight"
+              title="Align Right (Ctrl+Shift+R)"
+              aria-label="Align Right"
+            >
+              <span class="tb-icon">⊡</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="alignJustify"
+              title="Justify (Ctrl+Shift+J)"
+              aria-label="Justify"
+            >
+              <span class="tb-icon">⊟</span>
+            </button>
+          </div>
+
+          <div class="tool-sep"></div>
+
+          <div class="tool-group" role="group" aria-label="Lists">
+            <button
+              class="tool-btn"
+              data-cmd="unorderedList"
+              title="Bullet List"
+              aria-label="Bullet List"
+            >
+              <span class="tb-icon tb-ul">≡</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="orderedList"
+              title="Numbered List"
+              aria-label="Numbered List"
+            >
+              <span class="tb-icon tb-ol">⑅</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="indent"
+              title="Indent (Tab)"
+              aria-label="Indent"
+            >
+              <span class="tb-icon">→⊣</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="outdent"
+              title="Outdent (Shift+Tab)"
+              aria-label="Outdent"
+            >
+              <span class="tb-icon">⊢←</span>
+            </button>
+          </div>
+
+          <div class="tool-sep"></div>
+
+          <div class="tool-group" role="group" aria-label="Insert">
+            <button
+              class="tool-btn"
+              data-cmd="link"
+              title="Insert Link (Ctrl+K)"
+              aria-label="Insert Link"
+            >
+              <span class="tb-icon">⌘</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="unlink"
+              title="Remove Link"
+              aria-label="Remove Link"
+            >
+              <span class="tb-icon tb-unlink">⌘̵</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="image"
+              title="Insert Image URL"
+              aria-label="Insert Image"
+            >
+              <span class="tb-icon">⊞</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="hr"
+              title="Horizontal Rule"
+              aria-label="Horizontal Rule"
+            >
+              <span class="tb-icon">—</span>
+            </button>
+            <button
+              class="tool-btn"
+              data-cmd="table"
+              title="Insert Table"
+              aria-label="Insert Table"
+            >
+              <span class="tb-icon">⊞</span>
+            </button>
+          </div>
+
+          <div class="tool-sep"></div>
+
+          <div class="tool-group" role="group" aria-label="History">
+            <button
+              class="tool-btn"
+              id="btnUndo"
+              data-cmd="undo"
+              title="Undo (Ctrl+Z)"
+              aria-label="Undo"
+              disabled
+            >
+              <span class="tb-icon">↩</span>
+            </button>
+            <button
+              class="tool-btn"
+              id="btnRedo"
+              data-cmd="redo"
+              title="Redo (Ctrl+Y)"
+              aria-label="Redo"
+              disabled
+            >
+              <span class="tb-icon">↪</span>
+            </button>
+          </div>
+
+          <div class="tool-sep"></div>
+
+          <div class="tool-group" role="group" aria-label="Clear">
+            <button
+              class="tool-btn"
+              data-cmd="clearFormat"
+              title="Clear Formatting"
+              aria-label="Clear Formatting"
+            >
+              <span class="tb-icon">✕</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="editor-layout">
+          <div class="editor-pane" id="editorPane">
+            <div
+              class="floating-toolbar hidden"
+              id="floatingToolbar"
+              role="toolbar"
+              aria-label="Quick formatting"
+            >
+              <button
+                class="ft-btn"
+                data-cmd="bold"
+                title="Bold"
+                aria-label="Bold"
+              >
+                <b>B</b>
+              </button>
+              <button
+                class="ft-btn"
+                data-cmd="italic"
+                title="Italic"
+                aria-label="Italic"
+              >
+                <i>I</i>
+              </button>
+              <button
+                class="ft-btn"
+                data-cmd="underline"
+                title="Underline"
+                aria-label="Underline"
+              >
+                <u>U</u>
+              </button>
+              <button
+                class="ft-btn"
+                data-cmd="code"
+                title="Code"
+                aria-label="Inline Code"
+              >
+                {"{"}
+              </button>
+              <button
+                class="ft-btn"
+                data-cmd="mark"
+                title="Highlight"
+                aria-label="Highlight"
+              >
+                H
+              </button>
+              <div class="ft-sep"></div>
+              <button
+                class="ft-btn"
+                data-cmd="link"
+                title="Link"
+                aria-label="Link"
+              >
+                ⌘
+              </button>
+              <button
+                class="ft-btn"
+                data-cmd="alignLeft"
+                title="Align Left"
+                aria-label="Align Left"
+              >
+                ⬌
+              </button>
+              <button
+                class="ft-btn"
+                data-cmd="alignCenter"
+                title="Center"
+                aria-label="Align Center"
+              >
+                ⊜
+              </button>
+              <div class="ft-sep"></div>
+              <button
+                class="ft-btn ft-btn-ai"
+                id="ftAIBtn"
+                title="AI: Improve selected text"
+                aria-label="AI Improve"
+              >
+                ✦ AI
+              </button>
+            </div>
+
+            <div class="link-tooltip hidden" id="linkTooltip">
+              <span class="lt-url" id="ltUrl"></span>
+              <a class="lt-open" id="ltOpen" target="_blank" rel="noopener"
+                >Open ↗</a
+              >
+              <button class="lt-edit" id="ltEdit">Edit</button>
+              <button class="lt-remove" id="ltRemove">Remove</button>
+            </div>
+
+            <div class="find-bar hidden" id="findBar">
+              <div class="fb-row">
+                <input
+                  class="fb-input"
+                  id="findInput"
+                  type="text"
+                  placeholder="Find…"
+                  aria-label="Find text"
+                />
+                <span class="fb-count" id="findCount"></span>
+                <button class="fb-btn" id="btnFindPrev" title="Previous match">
+                  ↑
+                </button>
+                <button class="fb-btn" id="btnFindNext" title="Next match">
+                  ↓
+                </button>
+              </div>
+              <div class="fb-row">
+                <input
+                  class="fb-input"
+                  id="replaceInput"
+                  type="text"
+                  placeholder="Replace with…"
+                  aria-label="Replace with"
+                />
+                <button class="fb-btn fb-replace" id="btnReplace">
+                  Replace
+                </button>
+                <button class="fb-btn fb-replace" id="btnReplaceAll">
+                  All
+                </button>
+              </div>
+              <button
+                class="fb-close"
+                id="btnFindClose"
+                aria-label="Close find"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div class="editor-scroll">
+              <div
+                class="editor"
+                id="editor"
+                contenteditable="true"
+                spellcheck="true"
+                autocorrect="on"
+                role="textbox"
+                aria-multiline="true"
+                aria-label="Document editor"
+                data-placeholder="Start writing…"
+              ></div>
+            </div>
+
+            <div class="source-pane hidden" id="sourcePane">
+              <textarea
+                class="source-editor"
+                id="sourceEditor"
+                spellcheck="false"
+                aria-label="HTML source"
+              ></textarea>
+            </div>
+          </div>
+
+          <aside class="stats-sidebar" id="statsSidebar">
+            <div class="ss-section">
+              <div class="ss-title">Document Stats</div>
+              <div class="ss-grid">
+                <div class="ss-stat">
+                  <div class="ss-val" id="statWords">0</div>
+                  <div class="ss-lbl">Words</div>
+                </div>
+                <div class="ss-stat">
+                  <div class="ss-val" id="statChars">0</div>
+                  <div class="ss-lbl">Chars</div>
+                </div>
+                <div class="ss-stat">
+                  <div class="ss-val" id="statSentences">0</div>
+                  <div class="ss-lbl">Sentences</div>
+                </div>
+                <div class="ss-stat">
+                  <div class="ss-val" id="statReadTime">0m</div>
+                  <div class="ss-lbl">Read time</div>
+                </div>
+              </div>
+            </div>
+            <div class="ss-section">
+              <div class="ss-title">Formatting Map</div>
+              <div class="fmt-map" id="fmtMap"></div>
+            </div>
+            <div class="ss-section">
+              <div class="ss-title">History</div>
+              <div class="ss-grid">
+                <div class="ss-stat">
+                  <div class="ss-val" id="statHistory">0</div>
+                  <div class="ss-lbl">Snapshots</div>
+                </div>
+                <div class="ss-stat">
+                  <div class="ss-val" id="statHistIdx">0</div>
+                  <div class="ss-lbl">Position</div>
+                </div>
+              </div>
+            </div>
+            <div class="ss-section">
+              <div class="ss-title">Current Block</div>
+              <div class="current-block-info" id="currentBlockInfo">—</div>
+            </div>
+            <div class="ss-section">
+              <div class="ss-title">Clipboard</div>
+              <div class="clipboard-opts">
+                <label class="clip-opt"
+                  ><input type="radio" name="paste" value="rich" checked /> Rich
+                  text</label
+                >
+                <label class="clip-opt"
+                  ><input type="radio" name="paste" value="plain" /> Plain text
+                  only</label
+                >
+                <label class="clip-opt"
+                  ><input type="radio" name="paste" value="smart" /> Smart
+                  paste</label
+                >
+              </div>
+            </div>
+            <div class="ss-section">
+              <div class="ss-title">Keyboard Shortcuts</div>
+              <div class="shortcut-list">
+                <div class="sc-row"><kbd>Ctrl+B</kbd><span>Bold</span></div>
+                <div class="sc-row"><kbd>Ctrl+I</kbd><span>Italic</span></div>
+                <div class="sc-row">
+                  <kbd>Ctrl+U</kbd><span>Underline</span>
+                </div>
+                <div class="sc-row"><kbd>Ctrl+K</kbd><span>Link</span></div>
+                <div class="sc-row">
+                  <kbd>Ctrl+`</kbd><span>Inline code</span>
+                </div>
+                <div class="sc-row"><kbd>Ctrl+Z</kbd><span>Undo</span></div>
+                <div class="sc-row"><kbd>Ctrl+Y</kbd><span>Redo</span></div>
+                <div class="sc-row"><kbd>Ctrl+F</kbd><span>Find</span></div>
+              </div>
+            </div>
+          </aside>
+        </div>
+
+        <footer class="statusbar">
+          <div class="sb-left">
+            <span class="sb-item" id="sbBlock">Paragraph</span>
+            <span class="sb-sep">·</span>
+            <span class="sb-item" id="sbPos">Ln 1, Col 1</span>
+            <span class="sb-sep">·</span>
+            <span class="sb-item" id="sbSel">No selection</span>
+          </div>
+          <div class="sb-right">
+            <span class="sb-item" id="sbFormat"></span>
+            <span class="sb-sep" id="sbSepFmt">·</span>
+            <span class="sb-item">UTF-8</span>
+            <span class="sb-sep">·</span>
+            <span class="sb-item" id="sbZoom">100%</span>
+            <button class="sb-zoom-btn" id="btnZoomIn" title="Zoom in">
+              +
+            </button>
+            <button class="sb-zoom-btn" id="btnZoomOut" title="Zoom out">
+              −
+            </button>
+          </div>
+        </footer>
+      </div>
+
+      <div class="link-modal hidden" id="linkModal">
+        <div class="lm-box">
+          <div class="lm-title">Insert Link</div>
+          <div class="lm-field">
+            <label class="lm-label" for="linkUrl">URL</label>
+            <input
+              class="lm-input"
+              id="linkUrl"
+              type="url"
+              placeholder="https://example.com"
+              autocomplete="url"
+            />
+          </div>
+          <div class="lm-field">
+            <label class="lm-label" for="linkText">Link text</label>
+            <input
+              class="lm-input"
+              id="linkText"
+              type="text"
+              placeholder="Link text (optional)"
+            />
+          </div>
+          <div class="lm-field">
+            <label class="lm-label lm-check-label"
+              ><input type="checkbox" id="linkNewTab" checked /> Open in new
+              tab</label
+            >
+          </div>
+          <div class="lm-actions">
+            <button class="lm-cancel" id="btnLinkCancel">Cancel</button>
+            <button class="lm-confirm" id="btnLinkConfirm">Insert Link</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="image-modal hidden" id="imageModal">
+        <div class="lm-box">
+          <div class="lm-title">Insert Image</div>
+          <div class="lm-field">
+            <label class="lm-label" for="imageUrl">Image URL</label>
+            <input
+              class="lm-input"
+              id="imageUrl"
+              type="url"
+              placeholder="https://example.com/image.jpg"
+            />
+          </div>
+          <div class="lm-field">
+            <label class="lm-label" for="imageAlt"
+              >Alt text (accessibility)</label
+            >
+            <input
+              class="lm-input"
+              id="imageAlt"
+              type="text"
+              placeholder="Describe the image"
+            />
+          </div>
+          <div class="lm-field">
+            <label class="lm-label" for="imageCaption"
+              >Caption (optional)</label
+            >
+            <input
+              class="lm-input"
+              id="imageCaption"
+              type="text"
+              placeholder="Image caption"
+            />
+          </div>
+          <div class="lm-actions">
+            <button class="lm-cancel" id="btnImageCancel">Cancel</button>
+            <button class="lm-confirm" id="btnImageConfirm">
+              Insert Image
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

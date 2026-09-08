@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schema Form Builder</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,600;12..96,700&family=Fira+Code:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div class="topbar-brand">
+          <span class="brand-icon">⬡</span>
+          <span class="brand-name">FormForge</span>
+          <span class="brand-tag">Schema-Driven Builder</span>
+        </div>
+        <div class="topbar-controls">
+          <label class="ctrl-label" for="presetSelect">PRESET</label>
+          <select class="ctrl-select" id="presetSelect">
+            <option value="user">User Registration</option>
+            <option value="product">Product Catalog</option>
+            <option value="api">API Configuration</option>
+            <option value="survey">Customer Survey</option>
+            <option value="payment">Payment Details</option>
+          </select>
+          <button class="btn btn-ghost" id="btnFormat">Format JSON</button>
+          <button class="btn btn-ghost" id="btnMinify">Minify</button>
+          <button class="btn btn-primary" id="btnBuild">Build Form ↳</button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <div class="panel panel-schema">
+          <div class="panel-hd">
+            <span class="panel-hd-title">JSON Schema</span>
+            <div class="panel-hd-meta">
+              <span class="meta-chip" id="schemaLines">0 lines</span>
+              <span class="meta-chip meta-chip-err hidden" id="schemaErrChip"
+                >⚠ Parse Error</span
+              >
+              <span class="meta-chip meta-chip-ok hidden" id="schemaOkChip"
+                >✓ Valid JSON</span
+              >
+            </div>
+          </div>
+          <div class="editor-wrap">
+            <div class="editor-gutter" id="editorGutter"></div>
+            <textarea
+              class="schema-editor"
+              id="schemaEditor"
+              spellcheck="false"
+              autocomplete="off"
+              autocorrect="off"
+              autocapitalize="off"
+            ></textarea>
+          </div>
+          <div class="panel-ft">
+            <span class="ft-hint"
+              >Supports: types · formats · enum · oneOf · array · nested object
+              · if/then · $defs · dependencies · x-widget</span
+            >
+          </div>
+        </div>
+
+        <div class="panel-resizer" id="panelResizer">
+          <div class="resizer-grip"></div>
+        </div>
+
+        <div class="panel panel-form">
+          <div class="panel-hd">
+            <span class="panel-hd-title" id="formTitle">Generated Form</span>
+            <div class="panel-hd-meta">
+              <div class="progress-wrap">
+                <span class="progress-label" id="progressLabel">—</span>
+                <div class="progress-bar">
+                  <div class="progress-fill" id="progressFill"></div>
+                </div>
+              </div>
+              <button class="btn btn-xs btn-ghost" id="btnReset">Reset</button>
+              <button class="btn btn-xs btn-ghost" id="btnToggleOutput">
+                Show Output
+              </button>
+            </div>
+          </div>
+
+          <div class="form-scroll" id="formScroll">
+            <div class="form-empty" id="formEmpty">
+              <div class="empty-icon">⬡</div>
+              <p>
+                Paste a JSON Schema on the left and click
+                <strong>Build Form</strong>
+              </p>
+              <p class="empty-sub">
+                or choose a preset to get started instantly
+              </p>
+            </div>
+            <form class="gen-form hidden" id="generatedForm" novalidate></form>
+          </div>
+
+          <div class="form-actions hidden" id="formActions">
+            <div class="validation-banner hidden" id="validationBanner"></div>
+            <div class="actions-row">
+              <button type="button" class="btn btn-outline" id="btnValidate">
+                Validate Only
+              </button>
+              <button
+                type="submit"
+                form="generatedForm"
+                class="btn btn-submit"
+                id="btnSubmit"
+              >
+                Submit Form
+              </button>
+            </div>
+          </div>
+
+          <div class="output-drawer hidden" id="outputDrawer">
+            <div class="output-hd">
+              <span class="output-title">Form Output (JSON)</span>
+              <div class="output-actions">
+                <button class="btn btn-xs btn-ghost" id="btnCopyOutput">
+                  Copy
+                </button>
+                <button class="btn btn-xs btn-ghost" id="btnCloseOutput">
+                  ✕
+                </button>
+              </div>
+            </div>
+            <pre class="output-pre" id="outputPre"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tooltip" id="globalTooltip"></div>
+    <script src="script.js"></script>
+  </body>
+</html>

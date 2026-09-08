@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ThemeForge — CSS-in-JS Engine</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,300&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="topbar">
+        <div class="topbar-left">
+          <div class="logo">
+            <svg class="logo-glyph" viewBox="0 0 28 28" fill="none">
+              <rect
+                x="2"
+                y="2"
+                width="10"
+                height="10"
+                rx="1.5"
+                fill="currentColor"
+              />
+              <rect
+                x="16"
+                y="2"
+                width="10"
+                height="10"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.5"
+              />
+              <rect
+                x="2"
+                y="16"
+                width="10"
+                height="10"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.3"
+              />
+              <rect
+                x="16"
+                y="16"
+                width="10"
+                height="10"
+                rx="1.5"
+                fill="currentColor"
+                opacity="0.7"
+              />
+            </svg>
+            <span class="logo-name">ThemeForge</span>
+            <span class="logo-version">v2.0</span>
+          </div>
+          <div class="topbar-sep"></div>
+          <div class="theme-switcher" id="themeSwitcher">
+            <span class="ts-label">ACTIVE</span>
+            <div class="ts-presets" id="tsPresets"></div>
+          </div>
+        </div>
+        <div class="topbar-center">
+          <div class="engine-badge">
+            <span class="eb-dot" id="engineDot"></span>
+            <span class="eb-text" id="engineText"
+              >Constructable Stylesheet · Active</span
+            >
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="token-count-pill" id="tokenCountPill"></div>
+          <button
+            class="btn-toolbar"
+            id="btnUndo"
+            title="Undo (Ctrl+Z)"
+            disabled
+          >
+            ↩
+          </button>
+          <button
+            class="btn-toolbar"
+            id="btnRedo"
+            title="Redo (Ctrl+Y)"
+            disabled
+          >
+            ↪
+          </button>
+          <div class="topbar-sep"></div>
+          <button class="btn-toolbar btn-export-trigger" id="btnExport">
+            Export ↓
+          </button>
+        </div>
+      </header>
+
+      <div class="workspace">
+        <div class="sidebar" id="sidebar">
+          <div class="sidebar-tabs" id="sidebarTabs">
+            <button class="stab active" data-tab="colors">Colors</button>
+            <button class="stab" data-tab="spacing">Spacing</button>
+            <button class="stab" data-tab="typography">Type</button>
+            <button class="stab" data-tab="effects">Effects</button>
+            <button class="stab" data-tab="advanced">Advanced</button>
+          </div>
+
+          <div class="sidebar-search">
+            <input
+              class="search-input"
+              id="tokenSearch"
+              type="text"
+              placeholder="Search tokens…"
+              autocomplete="off"
+            />
+            <span class="search-icon">⌕</span>
+            <span class="search-clear hidden" id="searchClear">✕</span>
+          </div>
+
+          <div class="token-panels" id="tokenPanels">
+            <div class="token-panel active" data-panel="colors">
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Brand Colors</span>
+                  <button class="btn-add-token" data-category="brand">
+                    + token
+                  </button>
+                </div>
+                <div class="token-list" id="listBrand"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Semantic Colors</span>
+                </div>
+                <div class="token-list" id="listSemantic"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Neutral Scale</span>
+                </div>
+                <div class="token-list" id="listNeutral"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title"
+                    >Aliases
+                    <span class="section-meta"
+                      >reference other tokens</span
+                    ></span
+                  >
+                  <button class="btn-add-token" data-category="alias">
+                    + alias
+                  </button>
+                </div>
+                <div class="token-list" id="listAliases"></div>
+              </div>
+            </div>
+
+            <div class="token-panel" data-panel="spacing">
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Spacing Scale</span>
+                  <button class="btn-add-token" data-category="spacing">
+                    + step
+                  </button>
+                </div>
+                <div class="token-list" id="listSpacing"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Border Radius</span>
+                </div>
+                <div class="token-list" id="listRadius"></div>
+              </div>
+            </div>
+
+            <div class="token-panel" data-panel="typography">
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Font Families</span>
+                </div>
+                <div class="token-list" id="listFontFamily"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Font Sizes</span>
+                </div>
+                <div class="token-list" id="listFontSize"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Font Weights</span>
+                </div>
+                <div class="token-list" id="listFontWeight"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Line Heights</span>
+                </div>
+                <div class="token-list" id="listLineHeight"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Letter Spacing</span>
+                </div>
+                <div class="token-list" id="listLetterSpacing"></div>
+              </div>
+            </div>
+
+            <div class="token-panel" data-panel="effects">
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Shadows</span>
+                </div>
+                <div class="token-list" id="listShadow"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Transitions</span>
+                </div>
+                <div class="token-list" id="listTransition"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Opacity</span>
+                </div>
+                <div class="token-list" id="listOpacity"></div>
+              </div>
+            </div>
+
+            <div class="token-panel" data-panel="advanced">
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title"
+                    >Computed Tokens
+                    <span class="section-meta">JS expressions</span></span
+                  >
+                </div>
+                <div class="token-list" id="listComputed"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Raw CSS Injection</span>
+                </div>
+                <div class="raw-css-editor">
+                  <textarea
+                    class="raw-css-input"
+                    id="rawCssInput"
+                    placeholder=":root { /* arbitrary CSS rules */ }&#10;.my-class { color: var(--color-primary); }"
+                  ></textarea>
+                  <button class="btn-apply-raw" id="btnApplyRaw">
+                    Apply Rules
+                  </button>
+                </div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Scope Adoption</span>
+                </div>
+                <div class="scope-controls" id="scopeControls"></div>
+              </div>
+              <div class="panel-section">
+                <div class="section-header">
+                  <span class="section-title">Engine Diagnostics</span>
+                </div>
+                <div class="diagnostics" id="diagnosticsPanel"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider-v" id="dividerV"></div>
+
+        <div class="preview-area" id="previewArea">
+          <div class="preview-toolbar">
+            <div class="pt-left">
+              <span class="pt-label">PREVIEW</span>
+              <div class="pt-scope-badge" id="ptScopeBadge">scope: :root</div>
+            </div>
+            <div class="pt-right">
+              <div class="pt-viewport-btns">
+                <button class="pvbtn active" data-vp="full" title="Full width">
+                  ⬜
+                </button>
+                <button class="pvbtn" data-vp="tablet" title="Tablet (768px)">
+                  ▭
+                </button>
+                <button class="pvbtn" data-vp="mobile" title="Mobile (375px)">
+                  ▯
+                </button>
+              </div>
+              <button class="btn-toolbar" id="btnToggleDiff">Diff Mode</button>
+              <button class="btn-toolbar" id="btnCopyVars">
+                Copy CSS Vars
+              </button>
+            </div>
+          </div>
+
+          <div class="preview-stage" id="previewStage">
+            <div class="preview-frame" id="previewFrame">
+              <div class="preview-doc" id="previewDoc"></div>
+            </div>
+          </div>
+
+          <div class="css-output-bar" id="cssOutputBar">
+            <div class="cob-header">
+              <span class="cob-title" id="cobTitle">Generated CSS</span>
+              <div class="cob-tabs">
+                <button class="cob-tab active" data-out="vars">
+                  Custom Properties
+                </button>
+                <button class="cob-tab" data-out="rules">All Rules</button>
+                <button class="cob-tab" data-out="diff">Diff</button>
+              </div>
+              <button class="cob-toggle" id="cobToggle">▾</button>
+            </div>
+            <div class="cob-body" id="cobBody">
+              <pre class="cob-pre" id="cobPre"></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="export-modal hidden" id="exportModal">
+        <div class="modal-backdrop" id="modalBackdrop"></div>
+        <div class="modal-box">
+          <div class="modal-header">
+            <span class="modal-title">Export Theme</span>
+            <button class="modal-close" id="modalClose">✕</button>
+          </div>
+          <div class="modal-tabs">
+            <button class="mtab active" data-fmt="css">CSS Variables</button>
+            <button class="mtab" data-fmt="json">JSON Tokens</button>
+            <button class="mtab" data-fmt="js">JS Object</button>
+            <button class="mtab" data-fmt="ts">TypeScript</button>
+            <button class="mtab" data-fmt="scss">SCSS</button>
+            <button class="mtab" data-fmt="tailwind">Tailwind</button>
+          </div>
+          <pre class="modal-pre" id="modalPre"></pre>
+          <div class="modal-footer">
+            <button class="btn-modal-copy" id="btnModalCopy">
+              Copy to Clipboard
+            </button>
+            <button class="btn-modal-download" id="btnModalDownload">
+              Download File
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="toast-stack" id="toastStack"></div>
+      <div class="picker-portal" id="pickerPortal"></div>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

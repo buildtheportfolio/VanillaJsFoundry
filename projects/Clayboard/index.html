@@ -1,0 +1,351 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Clayboard — Kanban</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Instrument+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Instrument+Serif:ital@0;1&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="app" id="app">
+      <header class="topbar">
+        <div class="tb-left">
+          <div class="brand">
+            <span class="brand-mark" aria-hidden="true">⬡</span>
+            <span class="brand-name">Clayboard</span>
+          </div>
+          <div class="board-title-wrap">
+            <span class="board-title-label">BOARD</span>
+            <input
+              class="board-title-input"
+              id="boardTitle"
+              value="Product Roadmap Q1"
+              aria-label="Board title"
+              spellcheck="false"
+            />
+          </div>
+        </div>
+        <div class="tb-center">
+          <div class="filter-row" id="filterRow">
+            <span class="filter-label">FILTER</span>
+            <div class="label-filters" id="labelFilters">
+              <button class="lf-btn active" data-filter="all">All</button>
+              <button
+                class="lf-btn"
+                data-filter="bug"
+                style="--lc: var(--terracotta)"
+              >
+                Bug
+              </button>
+              <button
+                class="lf-btn"
+                data-filter="feature"
+                style="--lc: var(--sage)"
+              >
+                Feature
+              </button>
+              <button
+                class="lf-btn"
+                data-filter="design"
+                style="--lc: var(--mauve)"
+              >
+                Design
+              </button>
+              <button
+                class="lf-btn"
+                data-filter="research"
+                style="--lc: var(--gold)"
+              >
+                Research
+              </button>
+              <button
+                class="lf-btn"
+                data-filter="devops"
+                style="--lc: var(--teal)"
+              >
+                DevOps
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="tb-right">
+          <div class="activity-stack" id="activityAvatars"></div>
+          <div
+            class="member-stack"
+            id="memberStack"
+            aria-label="Board members"
+          ></div>
+          <div class="search-wrap">
+            <input
+              class="search-input"
+              id="searchInput"
+              type="text"
+              placeholder="Search cards…"
+              aria-label="Search cards"
+              autocomplete="off"
+            />
+            <span class="search-icon" aria-hidden="true">⌕</span>
+          </div>
+          <button class="tb-btn" id="btnAddColumn" title="Add column">
+            + Column
+          </button>
+          <button
+            class="tb-btn tb-btn-icon"
+            id="btnUndo"
+            title="Undo (Ctrl+Z)"
+            disabled
+            aria-label="Undo"
+          >
+            ↩
+          </button>
+          <button
+            class="tb-btn tb-btn-icon"
+            id="btnRedo"
+            title="Redo (Ctrl+Y)"
+            disabled
+            aria-label="Redo"
+          >
+            ↪
+          </button>
+        </div>
+      </header>
+
+      <div class="board-wrap" id="boardWrap">
+        <div
+          class="board"
+          id="board"
+          role="main"
+          aria-label="Kanban board"
+        ></div>
+      </div>
+
+      <footer class="statusbar">
+        <div class="sb-left">
+          <span class="sb-item" id="sbCards">0 cards</span>
+          <span class="sb-dot"></span>
+          <span class="sb-item" id="sbCols">0 columns</span>
+          <span class="sb-dot"></span>
+          <span class="sb-item" id="sbDrag" aria-live="polite">Ready</span>
+        </div>
+        <div class="sb-right">
+          <span class="sb-item sb-save" id="sbSave">Saved</span>
+          <span class="sb-dot"></span>
+          <span class="sb-item">LocalStorage</span>
+        </div>
+      </footer>
+    </div>
+
+    <div
+      class="modal-backdrop hidden"
+      id="cardModal"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="modalTitle"
+    >
+      <div class="modal-box">
+        <div class="modal-header">
+          <div class="modal-header-left">
+            <div class="modal-column-badge" id="modalColumnBadge"></div>
+            <input
+              class="modal-title-input"
+              id="modalTitle"
+              type="text"
+              placeholder="Card title…"
+              aria-label="Card title"
+            />
+          </div>
+          <div class="modal-header-right">
+            <button class="modal-action-btn" id="modalPin" title="Pin card">
+              ☆
+            </button>
+            <button class="modal-close-btn" id="modalClose" aria-label="Close">
+              ✕
+            </button>
+          </div>
+        </div>
+
+        <div class="modal-body">
+          <div class="modal-section">
+            <div class="modal-label">DESCRIPTION</div>
+            <textarea
+              class="modal-desc"
+              id="modalDesc"
+              placeholder="Add a description…"
+              rows="4"
+              aria-label="Description"
+            ></textarea>
+          </div>
+
+          <div class="modal-row">
+            <div class="modal-section modal-section-sm">
+              <div class="modal-label">PRIORITY</div>
+              <div class="priority-selector" id="prioritySelector">
+                <button
+                  class="ps-btn"
+                  data-priority="critical"
+                  title="Critical"
+                >
+                  🔴
+                </button>
+                <button class="ps-btn" data-priority="high" title="High">
+                  🟠
+                </button>
+                <button class="ps-btn" data-priority="medium" title="Medium">
+                  🟡
+                </button>
+                <button class="ps-btn" data-priority="low" title="Low">
+                  🟢
+                </button>
+                <button class="ps-btn" data-priority="none" title="None">
+                  ⚪
+                </button>
+              </div>
+            </div>
+
+            <div class="modal-section modal-section-sm">
+              <div class="modal-label">LABEL</div>
+              <div class="label-selector" id="labelSelector">
+                <button
+                  class="ls-btn"
+                  data-label="bug"
+                  style="--lc: var(--terracotta)"
+                >
+                  Bug
+                </button>
+                <button
+                  class="ls-btn"
+                  data-label="feature"
+                  style="--lc: var(--sage)"
+                >
+                  Feature
+                </button>
+                <button
+                  class="ls-btn"
+                  data-label="design"
+                  style="--lc: var(--mauve)"
+                >
+                  Design
+                </button>
+                <button
+                  class="ls-btn"
+                  data-label="research"
+                  style="--lc: var(--gold)"
+                >
+                  Research
+                </button>
+                <button
+                  class="ls-btn"
+                  data-label="devops"
+                  style="--lc: var(--teal)"
+                >
+                  DevOps
+                </button>
+                <button class="ls-btn" data-label="none">None</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal-row">
+            <div class="modal-section modal-section-sm">
+              <div class="modal-label">ASSIGNEE</div>
+              <div class="assignee-selector" id="assigneeSelector"></div>
+            </div>
+            <div class="modal-section modal-section-sm">
+              <div class="modal-label">DUE DATE</div>
+              <input
+                class="modal-date"
+                id="modalDue"
+                type="date"
+                aria-label="Due date"
+              />
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-label">STORY POINTS</div>
+            <div class="points-selector" id="pointsSelector">
+              <button class="pts-btn" data-pts="1">1</button>
+              <button class="pts-btn" data-pts="2">2</button>
+              <button class="pts-btn" data-pts="3">3</button>
+              <button class="pts-btn" data-pts="5">5</button>
+              <button class="pts-btn" data-pts="8">8</button>
+              <button class="pts-btn" data-pts="13">13</button>
+              <button class="pts-btn" data-pts="21">21</button>
+              <button class="pts-btn active" data-pts="0">—</button>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-label">
+              CHECKLIST <span class="cl-progress" id="clProgress"></span>
+            </div>
+            <div class="checklist" id="checklist"></div>
+            <div class="cl-add-row">
+              <input
+                class="cl-add-input"
+                id="clAddInput"
+                type="text"
+                placeholder="Add checklist item…"
+              />
+              <button class="cl-add-btn" id="clAddBtn">+</button>
+            </div>
+          </div>
+
+          <div class="modal-section">
+            <div class="modal-label">
+              COMMENTS <span class="comment-count" id="commentCount"></span>
+            </div>
+            <div class="comments-list" id="commentsList"></div>
+            <div class="comment-add">
+              <div class="user-avatar-sm" id="commentAvatar"></div>
+              <input
+                class="comment-input"
+                id="commentInput"
+                type="text"
+                placeholder="Write a comment…"
+              />
+              <button class="comment-submit" id="commentSubmit">↵</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <div class="modal-footer-left">
+            <button class="modal-action-btn mf-btn" id="btnDuplicateCard">
+              ⧉ Duplicate
+            </button>
+            <button class="modal-action-btn mf-btn" id="btnArchiveCard">
+              ↓ Archive
+            </button>
+          </div>
+          <div class="modal-footer-right">
+            <button class="modal-action-btn mf-btn danger" id="btnDeleteCard">
+              ✕ Delete
+            </button>
+            <button class="modal-save-btn" id="modalSave">Save Changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="drag-ghost hidden" id="dragGhost" aria-hidden="true"></div>
+    <div
+      class="drop-indicator hidden"
+      id="dropIndicator"
+      aria-hidden="true"
+    ></div>
+    <div
+      class="toast-container"
+      id="toastContainer"
+      aria-live="assertive"
+    ></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

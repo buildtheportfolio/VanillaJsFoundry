@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SplitMaker — Resizable Layout Engine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+<div class="shell" id="shell">
+
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <div class="bi-h"></div>
+          <div class="bi-v"></div>
+        </div>
+        <span class="brand-name">SplitMaker</span>
+        <span class="brand-sub">Layout Engine</span>
+      </div>
+    </div>
+
+    <div class="topbar-center">
+      <div class="preset-row" id="presetRow" role="toolbar" aria-label="Layout presets">
+        <span class="preset-label">PRESET</span>
+        <button class="preset-btn active" data-preset="ide"       title="IDE Layout">IDE</button>
+        <button class="preset-btn"        data-preset="columns2"  title="2 Columns">2 Col</button>
+        <button class="preset-btn"        data-preset="columns3"  title="3 Columns">3 Col</button>
+        <button class="preset-btn"        data-preset="rows2"     title="2 Rows">2 Row</button>
+        <button class="preset-btn"        data-preset="quad"      title="Quad Grid">Quad</button>
+        <button class="preset-btn"        data-preset="trinity"   title="Trinity">Trinity</button>
+        <button class="preset-btn"        data-preset="dashboard" title="Dashboard">Dash</button>
+        <button class="preset-btn"        data-preset="mosaic"    title="Mosaic">Mosaic</button>
+      </div>
+    </div>
+
+    <div class="topbar-right">
+      <div class="mode-toggle" id="modeToggle">
+        <button class="mode-btn active" data-orient="horizontal" title="Horizontal splits">H</button>
+        <button class="mode-btn"        data-orient="vertical"   title="Vertical splits">V</button>
+      </div>
+      <div class="topbar-sep"></div>
+      <button class="tb-btn" id="btnEqualise" title="Equalise all panels">⊜ Equal</button>
+      <button class="tb-btn" id="btnReset"    title="Reset layout">↺ Reset</button>
+      <button class="tb-btn" id="btnSave"     title="Save layout">⬡ Save</button>
+      <div class="topbar-sep"></div>
+      <div class="snap-toggle-wrap">
+        <label class="snap-toggle" title="Snap to grid">
+          <input type="checkbox" id="snapToggle" checked/>
+          <span class="st-track"><span class="st-thumb"></span></span>
+          <span class="st-label">Snap</span>
+        </label>
+      </div>
+    </div>
+  </header>
+
+  <div class="workspace" id="workspace">
+    <div class="split-root" id="splitRoot"></div>
+  </div>
+
+  <footer class="statusbar">
+    <div class="sb-left">
+      <span class="sb-chip" id="sbLayout">Layout: IDE</span>
+      <span class="sb-dot"></span>
+      <span class="sb-chip" id="sbPanes">0 panes</span>
+      <span class="sb-dot"></span>
+      <span class="sb-chip" id="sbDividers">0 dividers</span>
+    </div>
+    <div class="sb-center">
+      <div class="drag-indicator hidden" id="dragIndicator">
+        <span class="di-label" id="diLabel">Dragging</span>
+        <span class="di-size" id="diSize"></span>
+      </div>
+    </div>
+    <div class="sb-right">
+      <span class="sb-chip" id="sbSnap">Snap: 5%</span>
+      <span class="sb-dot"></span>
+      <span class="sb-chip">PointerEvents</span>
+      <span class="sb-dot"></span>
+      <span class="sb-chip" id="sbSaved">Not saved</span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="kbd-hint" id="kbdHint">
+  <div class="kh-row"><kbd>Drag</kbd><span>Resize panels</span></div>
+  <div class="kh-row"><kbd>↑↓←→</kbd><span>Keyboard resize (focus divider)</span></div>
+  <div class="kh-row"><kbd>Dbl-click</kbd><span>Collapse/expand panel</span></div>
+  <div class="kh-row"><kbd>Ctrl+S</kbd><span>Save layout</span></div>
+  <div class="kh-row"><kbd>Ctrl+Z</kbd><span>Undo resize</span></div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

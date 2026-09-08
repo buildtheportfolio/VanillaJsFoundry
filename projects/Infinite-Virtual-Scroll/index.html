@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Infinite virtual scroll</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <div class="logo">
+          <svg class="logo-icon" viewBox="0 0 20 22" fill="none">
+            <rect x="1" y="1"  width="18" height="4" rx="1.5" fill="currentColor"/>
+            <rect x="1" y="7"  width="18" height="4" rx="1.5" fill="currentColor" opacity="0.55"/>
+            <rect x="1" y="13" width="18" height="4" rx="1.5" fill="currentColor" opacity="0.25"/>
+            <rect x="1" y="19" width="11" height="2" rx="1"   fill="currentColor" opacity="0.12"/>
+          </svg>
+          <span class="logo-name">Infinite virtual scroll</span>
+        </div>
+        <span class="chip">1,000,000 entries</span>
+      </div>
+      <div class="topbar-stats">
+        <div class="ts">
+          <span class="ts-l">DOM NODES</span>
+          <span class="ts-v" id="sRendered">—</span>
+        </div>
+        <div class="ts-sep"></div>
+        <div class="ts">
+          <span class="ts-l">ROW INDEX</span>
+          <span class="ts-v" id="sRow">—</span>
+        </div>
+        <div class="ts-sep"></div>
+        <div class="ts">
+          <span class="ts-l">SCROLL PX</span>
+          <span class="ts-v" id="sOffset">0</span>
+        </div>
+        <div class="ts-sep"></div>
+        <div class="ts">
+          <span class="ts-l">PROGRESS</span>
+          <span class="ts-v" id="sProgress">0.000%</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="prog-track"><div class="prog-fill" id="progFill"></div></div>
+
+    <div class="col-head">
+      <span class="ch ch-id">ID</span>
+      <span class="ch ch-status">STATUS</span>
+      <span class="ch ch-title">TITLE</span>
+      <span class="ch ch-cat">CATEGORY</span>
+      <span class="ch ch-user">USER</span>
+      <span class="ch ch-time">TIME</span>
+    </div>
+
+    <div class="scroll-wrap" id="scrollWrap">
+      <div class="scroll-inner" id="scrollInner">
+        <div id="spacerTop"></div>
+        <div id="rowPool"></div>
+        <div id="spacerBottom"></div>
+      </div>
+    </div>
+
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

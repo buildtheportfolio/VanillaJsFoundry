@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vanilla JS Starter | Premium Edition</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header>
+        <nav class="glass">
+          <div class="logo">VJS<span>.</span></div>
+          <div class="nav-links">
+            <a href="#home" class="active">Home</a>
+            <a href="#showcase">Showcase</a>
+            <a href="#components">Components</a>
+            <button class="btn-primary" onclick="document.getElementById('get-started').scrollIntoView()">Get Started</button>
+          </div>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero" id="home">
+          <div class="gradient-bg"></div>
+          <div class="content">
+            <h1 class="fade-in">
+              Experience the Purity of <span class="highlight">Vanilla</span>
+            </h1>
+            <p class="subtitle delay-1">
+              Lightning fast, dependency-free, and crafted with pure logic.
+              Start your next masterpiece here.
+            </p>
+            <div class="cta-group delay-2">
+              <button id="counter-btn" class="btn-glow">
+                Interactive Counter: <span>0</span>
+              </button>
+              <button class="btn-secondary" onclick="document.getElementById('showcase').scrollIntoView()">Explore Features</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="showcase">
+          <h2 class="section-title fade-in">Framework-Free Showcase</h2>
+          <div class="features-grid">
+            <div class="card glass">
+              <div class="icon">⚡</div>
+              <h3>Performance First</h3>
+              <p>
+                Zero overhead. Just the web platform as it was meant to be
+                experienced.
+              </p>
+            </div>
+            <div class="card glass">
+              <div class="icon">🎨</div>
+              <h3>Modern CSS</h3>
+              <p>
+                Leveraging CSS Variables, Grid, and Flexbox for stunning visual
+                excellence.
+              </p>
+            </div>
+            <div class="card glass">
+              <div class="icon">🛠️</div>
+              <h3>Scalable Logic</h3>
+              <p>
+                Clean patterns for state management and DOM manipulation without
+                the baggage.
+              </p>
+            </div>
+          </div>
+        </section>
+        
+        <section id="components" style="background: rgba(30, 41, 59, 0.3);">
+          <h2 class="section-title fade-in">Design Components</h2>
+          <div class="glass" style="padding: 4rem 2rem; text-align: center; max-width: 800px; margin: 0 auto;">
+            <p style="color: var(--text-dim); margin-bottom: 2.5rem; font-size: 1.1rem;">
+              Our bespoke design system includes pristine buttons, polished glass panels, and fluid typography straight out of the box.
+            </p>
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+              <button class="btn-primary">Primary Action</button>
+              <button class="btn-glow">Glowing Pulse</button>
+              <button class="btn-secondary">Secondary Link</button>
+            </div>
+          </div>
+        </section>
+
+        <section id="get-started" style="text-align: center;">
+          <h2 class="section-title fade-in">Ready to Build?</h2>
+          <div class="glass" style="padding: 4rem 2rem; max-width: 600px; margin: 0 auto;">
+            <p style="font-size: 1.2rem; color: var(--text-dim); margin-bottom: 2rem;">
+              Drop the bloated wrappers. Return to pure, unadulterated web standards for your next production masterpiece.
+            </p>
+            <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" class="btn-glow" style="display: inline-block; font-size: 1.1rem; padding: 1rem 2.5rem; text-decoration: none;">Explore MDN Documentation</a>
+          </div>
+        </section>
+
+      </main>
+
+      <footer>
+        <p>&copy; 2026 Vanilla JS Starter. Premium Design Assets Included.</p>
+      </footer>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

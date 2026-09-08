@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="A comprehensive documentation hub for the Helix design system and component library."
+    />
+    <meta
+      name="keywords"
+      content="design system, components, tokens, accessibility, typography"
+    />
+    <meta name="author" content="Helix Design Team" />
+    <title>Helix — Design System Docs</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700;800&family=Fira+Code:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body id="pageRoot">
+    <div class="page-shell">
+      <nav class="sidebar" id="sidebar" aria-label="Site navigation">
+        <div class="sidebar-logo">
+          <div class="sl-mark" aria-hidden="true">⬡</div>
+          <div class="sl-text">
+            <span class="sl-name">Helix</span>
+            <span class="sl-ver">v2.4.1</span>
+          </div>
+        </div>
+
+        <div
+          class="sidebar-search-trigger"
+          id="sidebarTrigger"
+          role="button"
+          tabindex="0"
+          aria-label="Open search (⌘K)"
+          aria-haspopup="dialog"
+        >
+          <span class="sst-icon" aria-hidden="true">⌕</span>
+          <span class="sst-text">Search docs…</span>
+          <span class="sst-kbd"><kbd>⌘</kbd><kbd>K</kbd></span>
+        </div>
+
+        <nav class="sb-nav" aria-label="Documentation sections">
+          <div class="sb-section">
+            <div class="sb-section-title">Getting Started</div>
+            <a class="sb-link active" href="#intro">Introduction</a>
+            <a class="sb-link" href="#installation">Installation</a>
+            <a class="sb-link" href="#quickstart">Quick Start</a>
+            <a class="sb-link" href="#migration">Migration Guide</a>
+          </div>
+          <div class="sb-section">
+            <div class="sb-section-title">Foundation</div>
+            <a class="sb-link" href="#tokens">Design Tokens</a>
+            <a class="sb-link" href="#typography">Typography</a>
+            <a class="sb-link" href="#colors">Color System</a>
+            <a class="sb-link" href="#spacing">Spacing & Grid</a>
+            <a class="sb-link" href="#icons">Icon Library</a>
+          </div>
+          <div class="sb-section">
+            <div class="sb-section-title">Components</div>
+            <a class="sb-link" href="#buttons">Buttons</a>
+            <a class="sb-link" href="#forms">Form Elements</a>
+            <a class="sb-link" href="#modals">Modals & Dialogs</a>
+            <a class="sb-link" href="#navigation">Navigation</a>
+            <a class="sb-link" href="#tables">Tables & Lists</a>
+            <a class="sb-link" href="#feedback">Feedback</a>
+          </div>
+          <div class="sb-section">
+            <div class="sb-section-title">Patterns</div>
+            <a class="sb-link" href="#auth">Authentication</a>
+            <a class="sb-link" href="#dashboard">Dashboards</a>
+            <a class="sb-link" href="#settings">Settings Pages</a>
+            <a class="sb-link" href="#onboarding">Onboarding</a>
+          </div>
+          <div class="sb-section">
+            <div class="sb-section-title">Resources</div>
+            <a class="sb-link" href="#figma">Figma Library</a>
+            <a class="sb-link" href="#changelog">Changelog</a>
+            <a class="sb-link" href="#contributing">Contributing</a>
+            <a class="sb-link" href="#accessibility">Accessibility Guide</a>
+            <a class="sb-link" href="#performance">Performance Tips</a>
+          </div>
+        </nav>
+      </nav>
+
+      <main class="main" id="mainContent">
+        <div class="main-topbar">
+          <div class="mt-breadcrumb" aria-label="Breadcrumb">
+            Helix / <span>Documentation</span>
+          </div>
+          <div class="mt-actions">
+            <button
+              class="mt-btn"
+              id="btnToggleDynamic"
+              title="Toggle dynamic content to test MutationObserver re-indexing"
+            >
+              ⟳ Add Dynamic Content
+            </button>
+            <button
+              class="mt-btn mt-btn-primary"
+              id="btnOpenSearch"
+              aria-label="Open spotlight search"
+            >
+              ⌕ Search
+            </button>
+          </div>
+        </div>
+
+        <article class="doc-article" id="doc-content">
+          <section id="intro" data-index-section="true">
+            <h1>Introduction to Helix</h1>
+            <p>
+              Helix is a battle-tested design system built for product teams who
+              ship fast without sacrificing quality. It provides a comprehensive
+              set of accessible, themeable components backed by a robust token
+              architecture.
+            </p>
+            <p>
+              This documentation covers everything from initial setup to
+              advanced customization patterns, including our accessibility
+              guidelines, performance best practices, and the complete component
+              API reference.
+            </p>
+            <div class="callout callout-info">
+              <strong>New in v2.4:</strong> Dark mode support, RTL layouts, and
+              the new Figma Variables integration.
+              <a href="#changelog">See the changelog →</a>
+            </div>
+          </section>
+
+          <section id="installation" data-index-section="true">
+            <h2>Installation</h2>
+            <p>
+              Install Helix via your preferred package manager. The core package
+              includes all components, tokens, and utilities.
+            </p>
+            <pre class="code-block"><code>npm install @helix/core @helix/icons
+# or
+yarn add @helix/core @helix/icons
+# or
+pnpm add @helix/core @helix/icons</code></pre>
+            <h3>Peer Dependencies</h3>
+            <p>
+              Helix requires React 18+ and TypeScript 5+. For Vue users, see the
+              <a href="#vue-adapter">Vue Adapter docs</a>.
+            </p>
+            <h3>CDN Usage</h3>
+            <p>
+              For rapid prototyping, you can load Helix directly from our CDN at
+              <a href="https://cdn.helix.design">cdn.helix.design</a>.
+            </p>
+          </section>
+
+          <section id="quickstart" data-index-section="true">
+            <h2>Quick Start</h2>
+            <p>
+              Wrap your application with the HelixProvider to enable theming and
+              global configuration.
+            </p>
+            <pre
+              class="code-block"
+            ><code>import { HelixProvider } from '@helix/core';
+
+function App() {
+  return (
+    &lt;HelixProvider theme="dark" locale="en-US"&gt;
+      &lt;YourApp /&gt;
+    &lt;/HelixProvider&gt;
+  );
+}</code></pre>
+            <h3>First Component</h3>
+            <p>
+              Import components directly from the core package. Tree-shaking is
+              supported out of the box.
+            </p>
+            <h3>TypeScript Support</h3>
+            <p>
+              Helix ships with full TypeScript definitions. No @types package is
+              needed.
+            </p>
+          </section>
+
+          <section id="tokens" data-index-section="true">
+            <h2>Design Tokens</h2>
+            <p>
+              Design tokens are the single source of truth for visual decisions
+              in Helix. They map to CSS custom properties at runtime, enabling
+              seamless theming.
+            </p>
+            <h3>Token Architecture</h3>
+            <p>
+              Tokens are organized in three tiers:
+              <strong>Primitive</strong> (raw values),
+              <strong>Semantic</strong> (contextual meanings), and
+              <strong>Component</strong> (per-component overrides).
+            </p>
+            <h3>Token Categories</h3>
+            <p>
+              Available token categories include: colors, typography, spacing,
+              border-radius, shadows, motion, and z-index scales.
+            </p>
+            <h3>Customizing Tokens</h3>
+            <p>
+              Override tokens at the HelixProvider level or via CSS custom
+              properties in your global stylesheet.
+            </p>
+            <div class="callout callout-warning">
+              <strong>Breaking change in v2.x:</strong> Token naming convention
+              changed from <code>--hx-color-*</code> to <code>--hx-*</code>. Use
+              the codemod to migrate automatically.
+            </div>
+          </section>
+
+          <section id="typography" data-index-section="true">
+            <h2>Typography</h2>
+            <p>
+              Helix uses a modular type scale built on CSS custom properties.
+              The default scale is based on the perfect fourth ratio (1.333).
+            </p>
+            <h3>Type Scale</h3>
+            <p>
+              The scale runs from <code>--hx-text-xs</code> (11px) through
+              <code>--hx-text-6xl</code> (64px) with corresponding line-height
+              and letter-spacing values for each step.
+            </p>
+            <h3>Font Stack</h3>
+            <p>
+              The default font stack uses system fonts for optimal performance:
+              <code
+                >-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                Helvetica Neue, Arial, sans-serif</code
+              >.
+            </p>
+            <h3>Responsive Typography</h3>
+            <p>
+              Use the <code>fluid()</code> utility to create fluid type scales
+              that interpolate between viewport breakpoints.
+            </p>
+          </section>
+
+          <section id="colors" data-index-section="true">
+            <h2>Color System</h2>
+            <p>
+              The Helix color system is built around perceptual uniformity using
+              the OKLCH color space, ensuring accessible contrast at every step
+              of each scale.
+            </p>
+            <h3>Color Scales</h3>
+            <p>
+              Each color family provides 12 steps: 1-3 for backgrounds, 4-6 for
+              borders, 7-9 for solid fills, 10-12 for text. This maps directly
+              to WCAG contrast requirements.
+            </p>
+            <h3>Semantic Color Tokens</h3>
+            <p>
+              Semantic tokens like <code>--hx-color-primary</code>,
+              <code>--hx-color-danger</code>, and
+              <code>--hx-color-success</code> adapt automatically between light
+              and dark modes.
+            </p>
+            <h3>Dark Mode</h3>
+            <p>
+              Enable dark mode by setting <code>data-theme="dark"</code> on the
+              root element, or let HelixProvider detect the system preference
+              automatically.
+            </p>
+            <h3>Accessible Color Pairs</h3>
+            <p>
+              Use the <code>getContrastColor()</code> utility to automatically
+              select the highest-contrast foreground for any background color in
+              the palette.
+            </p>
+          </section>
+
+          <section id="buttons" data-index-section="true">
+            <h2>Buttons</h2>
+            <p>
+              The Button component supports five variants: <code>primary</code>,
+              <code>secondary</code>, <code>ghost</code>,
+              <code>destructive</code>, and <code>link</code>. All variants are
+              keyboard-accessible and respect the system's reduced-motion
+              preference.
+            </p>
+            <h3>Button Sizes</h3>
+            <p>
+              Available sizes: <code>xs</code>, <code>sm</code>,
+              <code>md</code> (default), <code>lg</code>, <code>xl</code>. Size
+              affects padding, font-size, and min-touch-target area.
+            </p>
+            <h3>Icon Buttons</h3>
+            <p>
+              Use <code>IconButton</code> for icon-only actions. Always provide
+              an <code>aria-label</code> for accessibility.
+            </p>
+            <h3>Loading State</h3>
+            <p>
+              Pass <code>loading={true}</code> to show a spinner and disable the
+              button. The accessible name changes to "Loading…" automatically.
+            </p>
+            <h3>Button Groups</h3>
+            <p>
+              Compose buttons in <code>ButtonGroup</code> to create segmented
+              controls and action toolbars with connected borders.
+            </p>
+          </section>
+
+          <section id="forms" data-index-section="true">
+            <h2>Form Elements</h2>
+            <p>
+              Helix provides a complete set of accessible form controls:
+              <code>Input</code>, <code>Textarea</code>, <code>Select</code>,
+              <code>Checkbox</code>, <code>Radio</code>, <code>Switch</code>,
+              <code>Slider</code>, and <code>DatePicker</code>.
+            </p>
+            <h3>Form Validation</h3>
+            <p>
+              Integration with React Hook Form and Zod is built-in. Use the
+              <code>FormField</code> wrapper for automatic error state, aria
+              attributes, and label association.
+            </p>
+            <h3>Controlled vs Uncontrolled</h3>
+            <p>
+              All form components support both controlled and uncontrolled
+              modes. For most use cases, the controlled mode with React Hook
+              Form is recommended.
+            </p>
+            <h3>Accessibility in Forms</h3>
+            <p>
+              Every form element automatically generates a unique ID, links to
+              its label, and announces validation errors via
+              <code>aria-describedby</code>.
+            </p>
+          </section>
+
+          <section id="accessibility" data-index-section="true">
+            <h2>Accessibility Guide</h2>
+            <p>
+              Helix is built to WCAG 2.1 Level AA compliance. Every component
+              ships with correct ARIA roles, keyboard navigation, focus
+              management, and screen reader support.
+            </p>
+            <h3>Keyboard Navigation</h3>
+            <p>
+              All interactive components follow the ARIA Authoring Practices
+              Guide (APG). Tab order is logical, and complex widgets like menus
+              and dialogs implement roving tabindex.
+            </p>
+            <h3>Focus Management</h3>
+            <p>
+              Modals, drawers, and popovers trap focus within their boundaries
+              and restore focus to the trigger element on close.
+            </p>
+            <h3>Screen Reader Support</h3>
+            <p>
+              All interactive state changes are announced via live regions.
+              Dynamic content updates use <code>aria-live="polite"</code> for
+              non-critical and <code>aria-live="assertive"</code> for critical
+              announcements.
+            </p>
+            <h3>Reduced Motion</h3>
+            <p>
+              All animations respect <code>prefers-reduced-motion</code>.
+              Critical animations are removed; decorative animations are
+              simplified to fades.
+            </p>
+            <h3>Color Contrast</h3>
+            <p>
+              All default color combinations meet WCAG 2.1 AA (4.5:1 for normal
+              text, 3:1 for large text and UI components).
+            </p>
+          </section>
+
+          <section id="performance" data-index-section="true">
+            <h2>Performance Tips</h2>
+            <p>
+              Helix is optimized for performance with tree-shaking,
+              code-splitting, and zero runtime CSS-in-JS overhead.
+            </p>
+            <h3>Bundle Size</h3>
+            <p>
+              Import only the components you use. The full library is 42KB
+              gzipped, but a typical app uses 8–15KB.
+            </p>
+            <h3>CSS Performance</h3>
+            <p>
+              Helix uses CSS custom properties for theming instead of runtime
+              style injection, eliminating FOUC and improving paint performance.
+            </p>
+            <h3>Virtualization</h3>
+            <p>
+              For large lists and tables, use <code>VirtualTable</code> and
+              <code>VirtualList</code> which render only visible rows using the
+              intersection observer.
+            </p>
+            <h3>Server Side Rendering</h3>
+            <p>
+              All components support SSR and streaming SSR with React 18's
+              <code>renderToPipeableStream</code>. No hydration mismatches.
+            </p>
+          </section>
+
+          <section id="changelog" data-index-section="true">
+            <h2>Changelog</h2>
+            <h3>v2.4.1 — Bug Fixes</h3>
+            <p>
+              Fixed focus trap regression in nested modals. Resolved TypeScript
+              generic inference issue in DataTable. Performance improvement in
+              ComboBox virtual scroll.
+            </p>
+            <h3>v2.4.0 — Dark Mode & RTL</h3>
+            <p>
+              Added native dark mode support with automatic system preference
+              detection. RTL layout support via <code>dir="rtl"</code>. New
+              Figma Variables sync workflow.
+            </p>
+            <h3>v2.3.0 — New Components</h3>
+            <p>
+              Added Gantt chart, Kanban board, Rich text editor, Calendar date
+              picker, and advanced DataTable with sorting, filtering, and row
+              grouping.
+            </p>
+            <h3>v2.2.0 — Token Redesign</h3>
+            <p>
+              Complete token architecture overhaul. Migration to OKLCH color
+              space. New semantic token layer. Improved dark mode contrast
+              ratios. Updated Figma library.
+            </p>
+          </section>
+
+          <section id="contributing" data-index-section="true">
+            <h2>Contributing</h2>
+            <p>
+              We welcome contributions from the community. Helix follows
+              conventional commits, requires tests for all components, and uses
+              Storybook for visual development.
+            </p>
+            <h3>Development Setup</h3>
+            <p>
+              Clone the monorepo, run <code>pnpm install</code>, then
+              <code>pnpm dev</code> to start Storybook. All packages live in the
+              <code>/packages</code> directory.
+            </p>
+            <h3>Pull Request Process</h3>
+            <p>
+              PRs require passing CI, a changelog entry, and design review for
+              visual changes. Component PRs need Storybook stories and
+              accessibility audits.
+            </p>
+            <h3>Issue Reporting</h3>
+            <p>
+              Use GitHub Issues for bugs, feature requests, and accessibility
+              reports. Include a minimal reproduction for bugs using our
+              StackBlitz template.
+            </p>
+          </section>
+
+          <div class="dynamic-section" id="dynamicSection">
+            <div class="ds-label">Dynamic Content Zone</div>
+            <div
+              id="dynamicContent"
+              aria-live="polite"
+              aria-relevant="additions removals"
+            ></div>
+          </div>
+        </article>
+      </main>
+    </div>
+
+    <div
+      class="spotlight-backdrop"
+      id="spotlightBackdrop"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Spotlight search"
+      aria-hidden="true"
+    >
+      <div class="spotlight" id="spotlight" role="search">
+        <div class="sp-input-row">
+          <div class="sp-icon-wrap" id="spIconWrap" aria-hidden="true">
+            <span class="sp-mode-icon" id="spModeIcon">⌕</span>
+          </div>
+          <input
+            class="sp-input"
+            id="spInput"
+            type="text"
+            placeholder="Search headings, links, text, actions…"
+            autocomplete="off"
+            autocorrect="off"
+            autocapitalize="off"
+            spellcheck="false"
+            role="combobox"
+            aria-expanded="false"
+            aria-controls="spResults"
+            aria-autocomplete="list"
+            aria-haspopup="listbox"
+          />
+          <div class="sp-badges" id="spBadges">
+            <span class="sp-badge sp-badge-count hidden" id="spCount"></span>
+            <kbd class="sp-esc-key" id="spEscKey">Esc</kbd>
+          </div>
+        </div>
+
+        <div class="sp-mode-pills" id="spModePills">
+          <button class="sp-mode-pill active" data-mode="all">All</button>
+          <button class="sp-mode-pill" data-mode="headings">Headings</button>
+          <button class="sp-mode-pill" data-mode="links">Links</button>
+          <button class="sp-mode-pill" data-mode="text">Paragraphs</button>
+          <button class="sp-mode-pill" data-mode="actions">Actions</button>
+          <button class="sp-mode-pill" data-mode="meta">Meta</button>
+        </div>
+
+        <div class="sp-results-wrap" id="spResultsWrap">
+          <div
+            class="sp-results"
+            id="spResults"
+            role="listbox"
+            aria-label="Search results"
+          ></div>
+          <div class="sp-preview" id="spPreview" aria-live="polite"></div>
+        </div>
+
+        <div class="sp-footer" id="spFooter">
+          <div class="spf-left">
+            <span class="spf-stat" id="spIndexStat">Indexing…</span>
+            <span class="spf-dot">·</span>
+            <span class="spf-stat" id="spTimeStat"></span>
+          </div>
+          <div class="spf-right">
+            <span class="spf-hint"><kbd>↑↓</kbd> Navigate</span>
+            <span class="spf-hint"><kbd>↵</kbd> Go</span>
+            <span class="spf-hint"><kbd>⇥</kbd> Preview</span>
+            <span class="spf-hint"><kbd>⌘↵</kbd> Open new tab</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="sp-toast-stack" id="spToastStack" aria-live="assertive"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

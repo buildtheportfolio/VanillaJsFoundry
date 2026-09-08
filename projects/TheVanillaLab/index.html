@@ -1,0 +1,280 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VanillaKit — Starter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div class="noise"></div>
+    <div class="orbs">
+      <div class="orb orb-1"></div>
+      <div class="orb orb-2"></div>
+      <div class="orb orb-3"></div>
+    </div>
+
+    <nav>
+      <div class="logo">Vanilla<em>Kit</em></div>
+      <div class="nav-right">
+        <div class="pill-tabs" id="mainTabs">
+          <button class="pill-tab active" data-tab="home">Home</button>
+          <button class="pill-tab" data-tab="demos">Demos</button>
+          <button class="pill-tab" data-tab="forms">Forms</button>
+        </div>
+        <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+          ☀️
+        </button>
+      </div>
+    </nav>
+
+    <div class="wrap">
+      <section class="panel active" id="tab-home">
+        <div class="hero-text">
+          <div class="eyebrow">Starter Kit</div>
+          <h1>Build fast.<br /><span class="grad">No frameworks.</span></h1>
+          <p class="lead">
+            A modern, opinionated foundation for building rich experiences with
+            nothing but the web platform. Tabs, toasts, storage, fetch,
+            validation — all wired up.
+          </p>
+          <div class="btn-row">
+            <button class="btn btn-accent" onclick="switchTab('demos')">
+              Explore Demos ↗
+            </button>
+            <a
+              class="btn btn-ghost"
+              href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+              target="_blank"
+              >MDN Docs</a
+            >
+          </div>
+        </div>
+
+        <div class="grid-3" id="featureCards">
+          <div class="card">
+            <div class="card-icon">⚡</div>
+            <h3>Zero Dependencies</h3>
+            <p>
+              Pure DOM APIs. No build step. No node_modules. Opens in any
+              browser instantly.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🎨</div>
+            <h3>Design Tokens</h3>
+            <p>
+              CSS custom properties drive theming. Light/dark mode switching in
+              a single toggle.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">🧩</div>
+            <h3>Modular Patterns</h3>
+            <p>
+              Each feature is a self-contained init function. Extend or strip
+              parts as needed.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">💾</div>
+            <h3>LocalStorage</h3>
+            <p>
+              Data persists across sessions with a clean read/write wrapper
+              baked in.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">📡</div>
+            <h3>Fetch + Loading</h3>
+            <p>
+              Async data fetching with loading states, error handling, and
+              spinner feedback.
+            </p>
+          </div>
+          <div class="card">
+            <div class="card-icon">✅</div>
+            <h3>Form Validation</h3>
+            <p>
+              Client-side validation with real-time field feedback and submit
+              gating.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="tab-demos">
+        <div class="section-label">Interactive Demos</div>
+        <div class="section-sub">
+          Core JS patterns — all local, all vanilla.
+        </div>
+
+        <div class="demo-row">
+          <div class="counter-block">
+            <div class="counter-display" id="counterDisplay">0</div>
+            <div class="counter-controls">
+              <button class="count-btn" id="btnDec">−</button>
+              <button class="count-btn" id="btnReset" title="Reset">↺</button>
+              <button class="count-btn" id="btnInc">+</button>
+            </div>
+            <span style="font-size: 0.78rem; color: var(--text-muted)"
+              >Persisted in localStorage</span
+            >
+          </div>
+
+          <div class="storage-block">
+            <h4>📝 Quick Notes — localStorage</h4>
+            <div class="input-row">
+              <input
+                type="text"
+                class="input-field"
+                id="noteInput"
+                placeholder="Type a note…"
+                maxlength="80"
+              />
+              <button
+                class="btn btn-accent"
+                id="noteAdd"
+                style="padding: 0.65rem 1.2rem; font-size: 0.85rem"
+              >
+                Add
+              </button>
+            </div>
+            <ul class="note-list" id="noteList"></ul>
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="section-label" style="font-size: 1.2rem">
+          🔔 Toast Notifications
+        </div>
+        <div class="section-sub">
+          Trigger different toast variants. Auto-dismisses after 3s.
+        </div>
+        <div class="toast-demo-grid">
+          <button
+            class="btn btn-ghost"
+            onclick="toast('info', 'Here\'s an info message.')"
+          >
+            Info Toast
+          </button>
+          <button
+            class="btn btn-ghost"
+            onclick="toast('success', 'Action completed!')"
+          >
+            Success Toast
+          </button>
+          <button
+            class="btn btn-ghost"
+            onclick="toast('warn', 'Proceed with caution.')"
+          >
+            Warn Toast
+          </button>
+          <button
+            class="btn btn-ghost"
+            onclick="toast('error', 'Something went wrong.')"
+          >
+            Error Toast
+          </button>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="section-label" style="font-size: 1.2rem">📡 Fetch API</div>
+        <div class="section-sub">Async data from a public JSON endpoint.</div>
+        <div class="fetch-block">
+          <h4>Random User from JSONPlaceholder</h4>
+          <div class="input-row">
+            <button class="btn btn-accent" id="fetchBtn">Fetch User</button>
+            <button class="btn btn-ghost" id="fetchClear">Clear</button>
+          </div>
+          <div class="fetch-result" id="fetchResult">
+            Result will appear here…
+          </div>
+        </div>
+      </section>
+
+      <section class="panel" id="tab-forms">
+        <div class="section-label">Form Validation</div>
+        <div class="section-sub">
+          Real-time client-side validation with field-level feedback.
+        </div>
+
+        <div class="form-block">
+          <h4>Registration Form</h4>
+          <div class="form-grid" id="regForm">
+            <div class="field-group">
+              <label for="fName">First Name</label>
+              <input
+                class="input-field"
+                type="text"
+                id="fName"
+                placeholder="Ada"
+              />
+              <div class="field-error" id="fName-err"></div>
+            </div>
+            <div class="field-group">
+              <label for="fEmail">Email</label>
+              <input
+                class="input-field"
+                type="email"
+                id="fEmail"
+                placeholder="ada@example.com"
+              />
+              <div class="field-error" id="fEmail-err"></div>
+            </div>
+            <div class="field-group">
+              <label for="fPass">Password</label>
+              <input
+                class="input-field"
+                type="password"
+                id="fPass"
+                placeholder="8+ characters"
+              />
+              <div class="field-error" id="fPass-err"></div>
+            </div>
+            <div class="field-group">
+              <label for="fConfirm">Confirm Password</label>
+              <input
+                class="input-field"
+                type="password"
+                id="fConfirm"
+                placeholder="Repeat password"
+              />
+              <div class="field-error" id="fConfirm-err"></div>
+            </div>
+            <div class="field-group full">
+              <label for="fBio"
+                >Short Bio
+                <span style="color: var(--text-muted)">(optional)</span></label
+              >
+              <input
+                class="input-field"
+                type="text"
+                id="fBio"
+                placeholder="Tell us something…"
+              />
+              <div class="field-error" id="fBio-err"></div>
+            </div>
+          </div>
+          <button class="btn btn-accent" id="formSubmit">Create Account</button>
+        </div>
+      </section>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <footer>
+      <p>VanillaKit — No bundler. No framework. Just the web.</p>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

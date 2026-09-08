@@ -1,0 +1,2840 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Atlas — World Countries Explorer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=IBM+Plex+Sans:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #ffffff;
+        --surface: #f8fafc;
+        --surface2: #f1f5f9;
+        --border: #e2e8f0;
+        --gold: #b45309;
+        --gold-light: #d97706;
+        --gold-dim: rgba(180, 83, 9, 0.08);
+        --text: #0f172a;
+        --text-muted: #475569;
+        --text-dim: #64748b;
+        --accent: #2563eb;
+        --accent2: #16a34a;
+        --red: #dc2626;
+        --radius: 6px;
+        --font-display: "Playfair Display", Georgia, serif;
+        --font-body: "IBM Plex Sans", sans-serif;
+        --font-mono: "IBM Plex Mono", monospace;
+      }
+
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html {
+        scroll-behavior: smooth;
+      }
+
+      body {
+        font-family: var(--font-body);
+        background: var(--bg);
+        color: var(--text);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      ::-webkit-scrollbar {
+        width: 5px;
+      }
+      ::-webkit-scrollbar-track {
+        background: var(--bg);
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 3px;
+      }
+
+      .shell {
+        display: grid;
+        grid-template-columns: 260px 1fr;
+        grid-template-rows: 56px 1fr;
+        min-height: 100vh;
+      }
+
+      .topbar {
+        grid-column: 1 / -1;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        padding: 0 28px;
+        gap: 24px;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+
+      .logo {
+        font-family: var(--font-display);
+        font-size: 22px;
+        font-weight: 900;
+        color: var(--gold);
+        letter-spacing: 0.04em;
+        flex-shrink: 0;
+      }
+      .logo span {
+        color: var(--text-muted);
+        font-weight: 400;
+        font-style: italic;
+        font-size: 14px;
+        margin-left: 8px;
+      }
+
+      .topbar-search {
+        flex: 1;
+        max-width: 480px;
+        position: relative;
+      }
+      .topbar-search input {
+        width: 100%;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        padding: 8px 14px 8px 38px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .topbar-search input:focus {
+        border-color: var(--gold);
+      }
+      .topbar-search input::placeholder {
+        color: var(--text-dim);
+      }
+      .topbar-search .icon {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--text-dim);
+        font-size: 14px;
+        pointer-events: none;
+      }
+
+      .topbar-right {
+        margin-left: auto;
+        display: flex;
+        gap: 10px;
+        align-items: center;
+      }
+      .tag {
+        background: var(--gold-dim);
+        color: var(--gold);
+        border: 1px solid rgba(201, 168, 76, 0.3);
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: 500;
+        padding: 3px 10px;
+        font-family: var(--font-mono);
+      }
+
+      .sidebar {
+        background: var(--surface);
+        border-right: 1px solid var(--border);
+        overflow-y: auto;
+        padding: 20px 0;
+        position: sticky;
+        top: 56px;
+        height: calc(100vh - 56px);
+      }
+
+      .sidebar-section {
+        padding: 0 16px 8px;
+        margin-top: 8px;
+      }
+      .sidebar-label {
+        font-size: 9px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--text-dim);
+        font-weight: 600;
+        padding: 6px 8px;
+        font-family: var(--font-mono);
+      }
+      .nav-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 10px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        font-size: 13px;
+        color: var(--text-muted);
+        transition: all 0.15s;
+        border: none;
+        background: none;
+        width: 100%;
+        text-align: left;
+        font-family: var(--font-body);
+      }
+      .nav-item:hover {
+        background: var(--surface2);
+        color: var(--text);
+      }
+      .nav-item.active {
+        background: var(--gold-dim);
+        color: var(--gold);
+      }
+      .nav-item .ni-icon {
+        width: 20px;
+        text-align: center;
+        font-size: 14px;
+        flex-shrink: 0;
+      }
+      .nav-item .ni-badge {
+        margin-left: auto;
+        font-size: 10px;
+        font-family: var(--font-mono);
+        background: var(--border);
+        color: var(--text-dim);
+        border-radius: 10px;
+        padding: 1px 7px;
+      }
+      .nav-item.active .ni-badge {
+        background: rgba(201, 168, 76, 0.2);
+        color: var(--gold);
+      }
+
+      .sidebar-divider {
+        height: 1px;
+        background: var(--border);
+        margin: 12px 16px;
+      }
+
+      .main {
+        overflow-y: auto;
+        height: calc(100vh - 56px);
+        padding: 32px 36px;
+      }
+
+      .page-header {
+        margin-bottom: 28px;
+      }
+      .page-header h1 {
+        font-family: var(--font-display);
+        font-size: 32px;
+        font-weight: 700;
+        color: var(--text);
+        line-height: 1.2;
+      }
+      .page-header h1 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .page-header p {
+        margin-top: 8px;
+        color: var(--text-muted);
+        font-size: 14px;
+        line-height: 1.6;
+      }
+      .endpoint-pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: var(--surface2);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--accent);
+        padding: 4px 10px;
+        margin-top: 10px;
+      }
+      .method-get {
+        color: var(--accent2);
+      }
+
+      .search-panel {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 20px 24px;
+        margin-bottom: 28px;
+      }
+      .search-panel h3 {
+        font-family: var(--font-display);
+        font-size: 16px;
+        color: var(--gold);
+        margin-bottom: 14px;
+      }
+      .search-row {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .search-row input,
+      .search-row select {
+        flex: 1;
+        min-width: 160px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        padding: 9px 14px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .search-row input:focus,
+      .search-row select:focus {
+        border-color: var(--gold);
+      }
+      .search-row input::placeholder {
+        color: var(--text-dim);
+      }
+      .search-row select option {
+        background: var(--surface);
+      }
+
+      .btn {
+        padding: 9px 20px;
+        border-radius: var(--radius);
+        font-family: var(--font-body);
+        font-size: 13px;
+        font-weight: 500;
+        cursor: pointer;
+        border: none;
+        transition: all 0.15s;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+      }
+      .btn-gold {
+        background: var(--gold);
+        color: #0a0c10;
+      }
+      .btn-gold:hover {
+        background: var(--gold-light);
+      }
+      .btn-ghost {
+        background: transparent;
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+      }
+      .btn-ghost:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .btn-sm {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+      .btn-accent {
+        background: var(--accent);
+        color: #fff;
+      }
+      .btn-accent:hover {
+        opacity: 0.85;
+      }
+
+      .filter-row {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .filter-chip {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 5px 14px;
+        font-size: 12px;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.15s;
+        font-family: var(--font-body);
+      }
+      .filter-chip:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .filter-chip.active {
+        background: var(--gold-dim);
+        border-color: rgba(201, 168, 76, 0.4);
+        color: var(--gold);
+      }
+
+      .results-meta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 20px;
+        font-size: 13px;
+        color: var(--text-muted);
+      }
+      .results-count {
+        font-family: var(--font-mono);
+        color: var(--gold);
+        font-size: 15px;
+        font-weight: 500;
+      }
+      .sort-row {
+        margin-left: auto;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .sort-row select {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text-muted);
+        font-size: 12px;
+        padding: 5px 10px;
+        outline: none;
+        font-family: var(--font-body);
+      }
+
+      .view-toggle {
+        display: flex;
+        gap: 4px;
+      }
+      .view-btn {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        color: var(--text-dim);
+        width: 30px;
+        height: 30px;
+        border-radius: var(--radius);
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 14px;
+        transition: all 0.15s;
+      }
+      .view-btn.active {
+        background: var(--gold-dim);
+        border-color: rgba(201, 168, 76, 0.4);
+        color: var(--gold);
+      }
+
+      .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: 16px;
+      }
+      .cards-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .country-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        cursor: pointer;
+        transition: all 0.2s;
+        position: relative;
+      }
+      .country-card:hover {
+        border-color: rgba(201, 168, 76, 0.4);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+      .country-card:hover .card-flag {
+        transform: scale(1.04);
+      }
+
+      .card-flag-wrap {
+        height: 130px;
+        overflow: hidden;
+        position: relative;
+        background: var(--surface2);
+      }
+      .card-flag {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+      }
+      .card-region-tag {
+        position: absolute;
+        top: 8px;
+        right: 8px;
+        background: rgba(10, 12, 16, 0.75);
+        backdrop-filter: blur(6px);
+        color: var(--gold);
+        font-size: 9px;
+        font-family: var(--font-mono);
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        padding: 3px 8px;
+        border-radius: 20px;
+        border: 1px solid rgba(201, 168, 76, 0.2);
+      }
+
+      .card-body {
+        padding: 14px 16px;
+      }
+      .card-name {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+        margin-bottom: 4px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .card-official {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-bottom: 10px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        font-style: italic;
+      }
+      .card-stats {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .card-stat {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-size: 11px;
+        color: var(--text-muted);
+      }
+      .card-stat span:first-child {
+        color: var(--text-dim);
+        width: 14px;
+        text-align: center;
+      }
+
+      .list-row {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: grid;
+        grid-template-columns: 80px 1fr 1fr 1fr 1fr 80px;
+        align-items: center;
+        gap: 16px;
+        padding: 12px 16px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .list-row:hover {
+        border-color: rgba(201, 168, 76, 0.3);
+        background: var(--surface2);
+      }
+      .list-flag {
+        height: 40px;
+        border-radius: 4px;
+        object-fit: cover;
+        width: 70px;
+      }
+      .list-name {
+        font-weight: 600;
+        font-size: 14px;
+      }
+      .list-meta {
+        font-size: 12px;
+        color: var(--text-muted);
+      }
+      .list-capital {
+        font-size: 13px;
+        color: var(--text);
+      }
+      .list-pop {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--accent2);
+      }
+      .list-code {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-dim);
+        background: var(--bg);
+        padding: 2px 8px;
+        border-radius: 4px;
+        text-align: center;
+      }
+
+      .loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 80px 20px;
+        color: var(--text-dim);
+        gap: 16px;
+      }
+      .spinner {
+        width: 36px;
+        height: 36px;
+        border: 2px solid var(--border);
+        border-top-color: var(--gold);
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+      .loading p {
+        font-size: 13px;
+        font-family: var(--font-mono);
+      }
+
+      .empty-state {
+        text-align: center;
+        padding: 80px 20px;
+        color: var(--text-dim);
+      }
+      .empty-state .empty-icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+      }
+      .empty-state h3 {
+        font-family: var(--font-display);
+        font-size: 20px;
+        color: var(--text-muted);
+        margin-bottom: 8px;
+      }
+      .empty-state p {
+        font-size: 13px;
+        line-height: 1.6;
+        max-width: 320px;
+        margin: 0 auto;
+      }
+
+      .error-box {
+        background: rgba(224, 82, 82, 0.08);
+        border: 1px solid rgba(224, 82, 82, 0.3);
+        border-radius: 8px;
+        padding: 16px 20px;
+        color: var(--red);
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(4px);
+        z-index: 200;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+      }
+      .modal-overlay.open {
+        opacity: 1;
+        pointer-events: all;
+      }
+
+      .modal {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        width: 100%;
+        max-width: 820px;
+        max-height: 90vh;
+        overflow-y: auto;
+        transform: translateY(20px);
+        transition: transform 0.25s ease;
+      }
+      .modal-overlay.open .modal {
+        transform: translateY(0);
+      }
+
+      .modal-hero {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+        border-radius: 14px 14px 0 0;
+        background: var(--surface2);
+      }
+      .modal-flag {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.7);
+      }
+      .modal-hero-content {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 24px 28px;
+        background: linear-gradient(
+          to top,
+          rgba(10, 12, 16, 0.9) 0%,
+          transparent 60%
+        );
+      }
+      .modal-title {
+        font-family: var(--font-display);
+        font-size: 30px;
+        font-weight: 900;
+        color: #fff;
+        line-height: 1.1;
+      }
+      .modal-subtitle {
+        font-size: 14px;
+        color: rgba(255, 255, 255, 0.6);
+        margin-top: 4px;
+        font-style: italic;
+      }
+      .modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff;
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: background 0.15s;
+        font-family: var(--font-body);
+      }
+      .modal-close:hover {
+        background: rgba(224, 82, 82, 0.5);
+      }
+
+      .modal-body {
+        padding: 28px;
+      }
+
+      .modal-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 24px;
+        margin-bottom: 28px;
+      }
+      @media (max-width: 600px) {
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      .info-section {
+        margin-bottom: 24px;
+      }
+      .info-section h4 {
+        font-size: 10px;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        color: var(--gold);
+        font-family: var(--font-mono);
+        font-weight: 600;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+        border-bottom: 1px solid var(--border);
+      }
+      .info-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 7px 0;
+        border-bottom: 1px solid rgba(30, 39, 64, 0.5);
+        font-size: 13px;
+        gap: 12px;
+      }
+      .info-row:last-child {
+        border-bottom: none;
+      }
+      .info-label {
+        color: var(--text-dim);
+        flex-shrink: 0;
+      }
+      .info-value {
+        color: var(--text);
+        text-align: right;
+        font-weight: 500;
+      }
+      .info-value.mono {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--accent);
+      }
+
+      .tld-chip,
+      .lang-chip,
+      .border-chip {
+        display: inline-block;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--accent);
+        padding: 2px 8px;
+        margin: 2px;
+      }
+      .border-chip {
+        color: var(--gold);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .border-chip:hover {
+        background: var(--gold-dim);
+        border-color: rgba(201, 168, 76, 0.4);
+      }
+      .lang-chip {
+        color: var(--accent2);
+      }
+      .curr-chip {
+        display: inline-block;
+        background: rgba(61, 214, 140, 0.08);
+        border: 1px solid rgba(61, 214, 140, 0.2);
+        border-radius: 4px;
+        font-size: 12px;
+        color: var(--accent2);
+        padding: 3px 10px;
+        margin: 2px;
+        font-family: var(--font-mono);
+      }
+
+      .coat-of-arms {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+        padding: 16px;
+        background: var(--bg);
+        border-radius: 8px;
+        border: 1px solid var(--border);
+      }
+      .coat-of-arms img {
+        height: 90px;
+        object-fit: contain;
+      }
+      .coat-of-arms p {
+        font-size: 11px;
+        color: var(--text-dim);
+        font-family: var(--font-mono);
+      }
+
+      .map-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: var(--accent);
+        color: #fff;
+        padding: 9px 18px;
+        border-radius: var(--radius);
+        font-size: 13px;
+        font-weight: 500;
+        text-decoration: none;
+        transition: opacity 0.15s;
+        cursor: pointer;
+        border: none;
+      }
+      .map-btn:hover {
+        opacity: 0.85;
+      }
+
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+      .stat-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 18px 20px;
+      }
+      .stat-card .sv {
+        font-family: var(--font-display);
+        font-size: 28px;
+        font-weight: 900;
+        color: var(--gold);
+      }
+      .stat-card .sl {
+        font-size: 11px;
+        color: var(--text-dim);
+        margin-top: 4px;
+        font-family: var(--font-mono);
+        text-transform: uppercase;
+        letter-spacing: 0.07em;
+      }
+
+      .tab-row {
+        display: flex;
+        gap: 4px;
+        border-bottom: 1px solid var(--border);
+        margin-bottom: 24px;
+      }
+      .tab-btn {
+        background: none;
+        border: none;
+        color: var(--text-dim);
+        font-family: var(--font-body);
+        font-size: 13px;
+        padding: 10px 18px;
+        cursor: pointer;
+        border-bottom: 2px solid transparent;
+        margin-bottom: -1px;
+        transition: all 0.15s;
+      }
+      .tab-btn:hover {
+        color: var(--text);
+      }
+      .tab-btn.active {
+        color: var(--gold);
+        border-bottom-color: var(--gold);
+      }
+
+      .tab-panel {
+        display: none;
+      }
+      .tab-panel.active {
+        display: block;
+      }
+
+      .region-cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 14px;
+        margin-bottom: 28px;
+      }
+      .region-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 22px 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-align: center;
+      }
+      .region-card:hover {
+        border-color: rgba(201, 168, 76, 0.4);
+        background: var(--surface2);
+      }
+      .region-card.selected {
+        border-color: var(--gold);
+        background: var(--gold-dim);
+      }
+      .region-card .rc-emoji {
+        font-size: 32px;
+        margin-bottom: 10px;
+      }
+      .region-card .rc-name {
+        font-family: var(--font-display);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text);
+      }
+      .region-card .rc-count {
+        font-size: 11px;
+        color: var(--text-dim);
+        font-family: var(--font-mono);
+        margin-top: 4px;
+      }
+
+      .subregion-pills {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+
+      .compare-area {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 20px;
+        align-items: start;
+      }
+      .vs-divider {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: var(--font-display);
+        font-size: 20px;
+        font-weight: 900;
+        color: var(--gold);
+        padding: 40px 0;
+      }
+      .compare-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+      }
+      .compare-card-flag {
+        height: 100px;
+        object-fit: cover;
+        width: 100%;
+      }
+      .compare-card-body {
+        padding: 16px;
+      }
+      .compare-stat-row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px solid var(--border);
+        font-size: 13px;
+      }
+      .compare-stat-row:last-child {
+        border-bottom: none;
+      }
+      .compare-winner {
+        color: var(--accent2);
+        font-weight: 600;
+      }
+      .compare-loser {
+        color: var(--text-muted);
+      }
+      .compare-label {
+        color: var(--text-dim);
+        font-size: 12px;
+      }
+
+      .adv-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-bottom: 16px;
+      }
+      @media (max-width: 500px) {
+        .adv-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
+      .field-group label {
+        font-size: 11px;
+        color: var(--text-dim);
+        font-family: var(--font-mono);
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .field-group input,
+      .field-group select {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 13px;
+        padding: 9px 14px;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .field-group input:focus,
+      .field-group select:focus {
+        border-color: var(--gold);
+      }
+
+      .toast {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--surface);
+        border: 1px solid var(--gold);
+        color: var(--text);
+        padding: 12px 20px;
+        border-radius: 8px;
+        font-size: 13px;
+        z-index: 999;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.3s;
+        max-width: 300px;
+      }
+      .toast.show {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      @media (max-width: 900px) {
+        .shell {
+          grid-template-columns: 1fr;
+        }
+        .sidebar {
+          display: none;
+        }
+        .main {
+          padding: 20px;
+        }
+        .modal-grid {
+          grid-template-columns: 1fr;
+        }
+        .compare-area {
+          grid-template-columns: 1fr;
+        }
+        .vs-divider {
+          display: none;
+        }
+        .list-row {
+          grid-template-columns: 60px 1fr 1fr;
+        }
+        .list-row > *:nth-child(4),
+        .list-row > *:nth-child(5),
+        .list-row > *:nth-child(6) {
+          display: none;
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(12px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .fade-in {
+        animation: fadeInUp 0.3s ease both;
+      }
+      .stagger > * {
+        animation: fadeInUp 0.3s ease both;
+      }
+      .stagger > *:nth-child(1) {
+        animation-delay: 0ms;
+      }
+      .stagger > *:nth-child(2) {
+        animation-delay: 40ms;
+      }
+      .stagger > *:nth-child(3) {
+        animation-delay: 80ms;
+      }
+      .stagger > *:nth-child(4) {
+        animation-delay: 120ms;
+      }
+      .stagger > *:nth-child(5) {
+        animation-delay: 160ms;
+      }
+      .stagger > *:nth-child(6) {
+        animation-delay: 200ms;
+      }
+
+      .welcome-hero {
+        background: linear-gradient(
+          135deg,
+          var(--surface) 0%,
+          var(--surface2) 100%
+        );
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 40px 48px;
+        margin-bottom: 28px;
+        position: relative;
+        overflow: hidden;
+      }
+      .welcome-hero::before {
+        content: "🌍";
+        position: absolute;
+        right: 40px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 100px;
+        opacity: 0.08;
+      }
+      .welcome-hero h2 {
+        font-family: var(--font-display);
+        font-size: 36px;
+        font-weight: 900;
+        color: var(--text);
+      }
+      .welcome-hero h2 em {
+        color: var(--gold);
+        font-style: italic;
+      }
+      .welcome-hero p {
+        margin-top: 10px;
+        color: var(--text-muted);
+        font-size: 15px;
+        line-height: 1.7;
+        max-width: 500px;
+      }
+      .welcome-actions {
+        margin-top: 20px;
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+
+      .api-overview {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 12px;
+        margin-top: 24px;
+      }
+      .api-card {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .api-card:hover {
+        border-color: rgba(201, 168, 76, 0.3);
+      }
+      .api-card .ac-icon {
+        font-size: 22px;
+        margin-bottom: 8px;
+      }
+      .api-card .ac-label {
+        font-size: 12px;
+        font-weight: 600;
+        color: var(--text);
+      }
+      .api-card .ac-ep {
+        font-size: 10px;
+        font-family: var(--font-mono);
+        color: var(--text-dim);
+        margin-top: 4px;
+      }
+
+      .field-select-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 8px;
+        margin-top: 10px;
+      }
+      .field-checkbox {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--text-muted);
+        cursor: pointer;
+        padding: 6px 10px;
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        transition: all 0.15s;
+        font-family: var(--font-mono);
+      }
+      .field-checkbox:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .field-checkbox input {
+        accent-color: var(--gold);
+      }
+
+      .json-preview {
+        background: var(--bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 16px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--text-muted);
+        max-height: 300px;
+        overflow-y: auto;
+        white-space: pre-wrap;
+        word-break: break-all;
+        line-height: 1.6;
+      }
+      .json-key {
+        color: var(--accent);
+      }
+      .json-str {
+        color: var(--accent2);
+      }
+      .json-num {
+        color: var(--gold);
+      }
+      .json-bool {
+        color: #e07c52;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="shell">
+      <header class="topbar">
+        <div class="logo">ATLAS <span>World Explorer</span></div>
+        <div class="topbar-search">
+          <span class="icon">🔍</span>
+          <input
+            type="text"
+            id="globalSearch"
+            placeholder="Search any country…"
+            autocomplete="off"
+          />
+        </div>
+        <div class="topbar-right">
+          <span class="tag">v3.1 API</span>
+          <span class="tag" id="countryCountBadge">250+ countries</span>
+        </div>
+      </header>
+
+      <nav class="sidebar">
+        <div class="sidebar-section">
+          <div class="sidebar-label">Explore</div>
+          <button
+            class="nav-item active"
+            data-page="home"
+            onclick="navigate('home')"
+          >
+            <span class="ni-icon">🌍</span> Home
+          </button>
+          <button class="nav-item" data-page="all" onclick="navigate('all')">
+            <span class="ni-icon">📋</span> All Countries
+            <span class="ni-badge" id="allBadge">–</span>
+          </button>
+          <button
+            class="nav-item"
+            data-page="regions"
+            onclick="navigate('regions')"
+          >
+            <span class="ni-icon">🗺️</span> By Region
+          </button>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">Search APIs</div>
+          <button
+            class="nav-item"
+            data-page="byName"
+            onclick="navigate('byName')"
+          >
+            <span class="ni-icon">🔤</span> By Name
+          </button>
+          <button
+            class="nav-item"
+            data-page="byCode"
+            onclick="navigate('byCode')"
+          >
+            <span class="ni-icon">#️⃣</span> By Code
+          </button>
+          <button
+            class="nav-item"
+            data-page="byCurrency"
+            onclick="navigate('byCurrency')"
+          >
+            <span class="ni-icon">💱</span> By Currency
+          </button>
+          <button
+            class="nav-item"
+            data-page="byLanguage"
+            onclick="navigate('byLanguage')"
+          >
+            <span class="ni-icon">💬</span> By Language
+          </button>
+          <button
+            class="nav-item"
+            data-page="byCapital"
+            onclick="navigate('byCapital')"
+          >
+            <span class="ni-icon">🏛️</span> By Capital
+          </button>
+          <button
+            class="nav-item"
+            data-page="byDemonym"
+            onclick="navigate('byDemonym')"
+          >
+            <span class="ni-icon">👤</span> By Demonym
+          </button>
+          <button
+            class="nav-item"
+            data-page="byTranslation"
+            onclick="navigate('byTranslation')"
+          >
+            <span class="ni-icon">🌐</span> By Translation
+          </button>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+          <div class="sidebar-label">Advanced</div>
+          <button
+            class="nav-item"
+            data-page="independent"
+            onclick="navigate('independent')"
+          >
+            <span class="ni-icon">🏳️</span> Independent Status
+          </button>
+          <button
+            class="nav-item"
+            data-page="fieldFilter"
+            onclick="navigate('fieldFilter')"
+          >
+            <span class="ni-icon">⚙️</span> Field Filter
+          </button>
+          <button
+            class="nav-item"
+            data-page="compare"
+            onclick="navigate('compare')"
+          >
+            <span class="ni-icon">⚖️</span> Compare Countries
+          </button>
+          <button
+            class="nav-item"
+            data-page="multiCode"
+            onclick="navigate('multiCode')"
+          >
+            <span class="ni-icon">📦</span> Multi-Code Lookup
+          </button>
+        </div>
+      </nav>
+
+      <main class="main" id="mainContent"></main>
+    </div>
+
+    <div class="modal-overlay" id="modal">
+      <div class="modal" id="modalContent"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      const BASE = "https://restcountries.com/v3.1";
+      let currentView = "grid";
+      let allCountriesCache = null;
+      let currentPage = "home";
+
+      const fmt = (n) => (n ? Number(n).toLocaleString() : "–");
+      const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+      const el = (id) => document.getElementById(id);
+
+      function showToast(msg, duration = 2800) {
+        const t = el("toast");
+        t.textContent = msg;
+        t.classList.add("show");
+        setTimeout(() => t.classList.remove("show"), duration);
+      }
+
+      async function apiFetch(url) {
+        const r = await fetch(url);
+        if (!r.ok) throw new Error(`API error ${r.status}: ${r.statusText}`);
+        return r.json();
+      }
+
+      function loading() {
+        return `<div class="loading"><div class="spinner"></div><p>Fetching from REST Countries API…</p></div>`;
+      }
+      function emptyState(
+        msg = "No countries found",
+        sub = "Try a different search term.",
+      ) {
+        return `<div class="empty-state"><div class="empty-icon">🌏</div><h3>${msg}</h3><p>${sub}</p></div>`;
+      }
+      function errorBox(msg) {
+        return `<div class="error-box">⚠️ <span>${msg}</span></div>`;
+      }
+
+      function countryCard(c) {
+        const name = c.name?.common || "–";
+        const official = c.name?.official || "";
+        const flag = c.flags?.png || c.flags?.svg || "";
+        const cap = c.capital?.[0] || "–";
+        const pop = fmt(c.population);
+        const region = c.region || "–";
+        const code = c.cca2 || "";
+        return `
+    <div class="country-card fade-in" onclick="showCountry('${code}')">
+      <div class="card-flag-wrap">
+        <img class="card-flag" src="${flag}" alt="Flag of ${name}" loading="lazy" onerror="this.style.display='none'"/>
+        <span class="card-region-tag">${region}</span>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${name}</div>
+        <div class="card-official">${official !== name ? official : "&nbsp;"}</div>
+        <div class="card-stats">
+          <div class="card-stat"><span>🏛️</span>${cap}</div>
+          <div class="card-stat"><span>👥</span>${pop}</div>
+          <div class="card-stat"><span>🔤</span>${code}</div>
+        </div>
+      </div>
+    </div>`;
+      }
+
+      function listRow(c) {
+        const name = c.name?.common || "–";
+        const flag = c.flags?.png || c.flags?.svg || "";
+        const cap = c.capital?.[0] || "–";
+        const pop = fmt(c.population);
+        const region = c.region || "–";
+        const code = c.cca2 || "";
+        const lang = c.languages
+          ? Object.values(c.languages).slice(0, 2).join(", ")
+          : "–";
+        return `
+    <div class="list-row" onclick="showCountry('${code}')">
+      <img class="list-flag" src="${flag}" alt="${name}" loading="lazy"/>
+      <div>
+        <div class="list-name">${name}</div>
+        <div class="list-meta">${lang}</div>
+      </div>
+      <div class="list-capital">${cap}</div>
+      <div class="list-meta">${region}</div>
+      <div class="list-pop">${pop}</div>
+      <div class="list-code">${code}</div>
+    </div>`;
+      }
+
+      function renderCards(countries, container) {
+        if (!countries?.length) {
+          container.innerHTML = emptyState();
+          return;
+        }
+        const sorted = [...countries].sort((a, b) =>
+          (a.name?.common || "").localeCompare(b.name?.common || ""),
+        );
+        if (currentView === "list") {
+          container.className = "cards-list stagger";
+          container.innerHTML = sorted.map(listRow).join("");
+        } else {
+          container.className = "cards-grid stagger";
+          container.innerHTML = sorted.map(countryCard).join("");
+        }
+      }
+
+      function resultsBar(countries, onSort) {
+        return `
+    <div class="results-meta">
+      <span class="results-count">${countries.length}</span>
+      <span>countries found</span>
+      <div class="sort-row">
+        <select id="sortSelect" onchange="handleSort()">
+          <option value="name">Sort by Name</option>
+          <option value="pop-desc">Population ↓</option>
+          <option value="pop-asc">Population ↑</option>
+          <option value="area-desc">Area ↓</option>
+        </select>
+        <div class="view-toggle">
+          <button class="view-btn ${currentView === "grid" ? "active" : ""}" onclick="setView('grid')">⊞</button>
+          <button class="view-btn ${currentView === "list" ? "active" : ""}" onclick="setView('list')">☰</button>
+        </div>
+      </div>
+    </div>`;
+      }
+
+      window.handleSort = function () {
+        const v = el("sortSelect")?.value;
+        const container = el("cardsContainer");
+        if (!container) return;
+        const cards = [...container.children];
+      };
+
+      window.setView = function (v) {
+        currentView = v;
+        document
+          .querySelectorAll(".view-btn")
+          .forEach((b) =>
+            b.classList.toggle(
+              "active",
+              b.textContent.trim() === (v === "grid" ? "⊞" : "☰"),
+            ),
+          );
+        const container = el("cardsContainer");
+        if (container && container._data)
+          renderCards(container._data, container);
+      };
+
+      function navigate(page) {
+        currentPage = page;
+        document
+          .querySelectorAll(".nav-item")
+          .forEach((b) =>
+            b.classList.toggle("active", b.dataset.page === page),
+          );
+        const pages = {
+          home,
+          all,
+          regions,
+          byName,
+          byCode,
+          byCurrency,
+          byLanguage,
+          byCapital,
+          byDemonym,
+          byTranslation,
+          independent,
+          fieldFilter,
+          compare,
+          multiCode,
+        };
+        if (pages[page]) pages[page]();
+      }
+
+      function home() {
+        el("mainContent").innerHTML = `
+    <div class="welcome-hero fade-in">
+      <h2>Explore the <em>World</em></h2>
+      <p>A comprehensive explorer built on the REST Countries v3.1 API — covering every endpoint, every field, 250+ countries.</p>
+      <div class="welcome-actions">
+        <button class="btn btn-gold" onclick="navigate('all')">🌍 Browse All Countries</button>
+        <button class="btn btn-ghost" onclick="navigate('regions')">🗺️ Explore by Region</button>
+        <button class="btn btn-ghost" onclick="navigate('compare')">⚖️ Compare Countries</button>
+      </div>
+    </div>
+    <div class="stats-grid" id="homeStats">
+      <div class="stat-card"><div class="sv">–</div><div class="sl">Total Countries</div></div>
+      <div class="stat-card"><div class="sv">–</div><div class="sl">Regions</div></div>
+      <div class="stat-card"><div class="sv">–</div><div class="sl">Languages</div></div>
+      <div class="stat-card"><div class="sv">–</div><div class="sl">Currencies</div></div>
+      <div class="stat-card"><div class="sv">–</div><div class="sl">Capital Cities</div></div>
+      <div class="stat-card"><div class="sv">–</div><div class="sl">Timezones</div></div>
+    </div>
+    <div class="page-header"><h1>API <em>Endpoints</em></h1><p>Jump to any feature below.</p></div>
+    <div class="api-overview">
+      ${[
+        ["📋", "All Countries", "/all?fields=…", "all"],
+        ["🔤", "By Name", "/name/{name}", "byName"],
+        ["#️⃣", "By Code", "/alpha/{code}", "byCode"],
+        ["📦", "Multiple Codes", "/alpha?codes=…", "multiCode"],
+        ["💱", "By Currency", "/currency/{cur}", "byCurrency"],
+        ["💬", "By Language", "/lang/{lang}", "byLanguage"],
+        ["🏛️", "By Capital", "/capital/{city}", "byCapital"],
+        ["🗺️", "By Region", "/region/{region}", "regions"],
+        ["🧭", "By Subregion", "/subregion/{sub}", "regions"],
+        ["👤", "By Demonym", "/demonym/{dem}", "byDemonym"],
+        ["🌐", "By Translation", "/translation/{t}", "byTranslation"],
+        ["🏳️", "Independent", "/independent?status=…", "independent"],
+        ["⚙️", "Field Filter", "?fields=a,b,c", "fieldFilter"],
+        ["⚖️", "Compare", "multi-fetch", "compare"],
+      ]
+        .map(
+          ([icon, label, ep, page]) => `
+        <div class="api-card" onclick="navigate('${page}')">
+          <div class="ac-icon">${icon}</div>
+          <div class="ac-label">${label}</div>
+          <div class="ac-ep">${ep}</div>
+        </div>`,
+        )
+        .join("")}
+    </div>`;
+        loadHomeStats();
+      }
+
+      async function loadHomeStats() {
+        try {
+          const data = await apiFetch(
+            `${BASE}/all?fields=name,region,languages,currencies,capital,timezones`,
+          );
+          allCountriesCache = data;
+          const regions = new Set(data.map((c) => c.region).filter(Boolean));
+          const langs = new Set(
+            data.flatMap((c) => Object.keys(c.languages || {})),
+          );
+          const currs = new Set(
+            data.flatMap((c) => Object.keys(c.currencies || {})),
+          );
+          const caps = new Set(
+            data.flatMap((c) => c.capital || []).filter(Boolean),
+          );
+          const tzs = new Set(
+            data.flatMap((c) => c.timezones || []).filter(Boolean),
+          );
+          const stats = el("homeStats");
+          if (stats) {
+            stats.innerHTML = `
+        <div class="stat-card"><div class="sv">${data.length}</div><div class="sl">Total Countries</div></div>
+        <div class="stat-card"><div class="sv">${regions.size}</div><div class="sl">Regions</div></div>
+        <div class="stat-card"><div class="sv">${langs.size}</div><div class="sl">Languages</div></div>
+        <div class="stat-card"><div class="sv">${currs.size}</div><div class="sl">Currencies</div></div>
+        <div class="stat-card"><div class="sv">${caps.size}</div><div class="sl">Capital Cities</div></div>
+        <div class="stat-card"><div class="sv">${tzs.size}</div><div class="sl">Timezones</div></div>`;
+          }
+          el("allBadge").textContent = data.length;
+          el("countryCountBadge").textContent = `${data.length} countries`;
+        } catch (e) {
+          console.warn("Stats load failed", e);
+        }
+      }
+
+      async function all() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>All <em>Countries</em></h1>
+      <p>All countries from the REST Countries API with field filtering.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/all?fields=name,capital,flags,population,region,cca2,languages,currencies</div>
+    </div>
+    <div class="search-panel">
+      <h3>🔎 Filter</h3>
+      <div class="search-row">
+        <input type="text" id="allFilter" placeholder="Filter by name…" oninput="filterAll()"/>
+        <select id="regionFilter" onchange="filterAll()">
+          <option value="">All Regions</option>
+          <option>Africa</option><option>Americas</option><option>Asia</option>
+          <option>Europe</option><option>Oceania</option><option>Antarctic</option>
+        </select>
+      </div>
+    </div>
+    <div id="allMeta"></div>
+    <div id="cardsContainer" class="cards-grid">${loading()}</div>`;
+
+        try {
+          const data = await apiFetch(
+            `${BASE}/all?fields=name,capital,flags,population,region,cca2,languages,currencies,area`,
+          );
+          const container = el("cardsContainer");
+          container._data = data;
+          window._allData = data;
+          filterAll();
+        } catch (e) {
+          el("cardsContainer").innerHTML = errorBox(e.message);
+        }
+      }
+
+      window.filterAll = function () {
+        const filter = el("allFilter")?.value.toLowerCase() || "";
+        const region = el("regionFilter")?.value || "";
+        let data = window._allData || [];
+        if (filter)
+          data = data.filter(
+            (c) =>
+              (c.name?.common || "").toLowerCase().includes(filter) ||
+              (c.name?.official || "").toLowerCase().includes(filter),
+          );
+        if (region) data = data.filter((c) => c.region === region);
+        const sortVal = el("sortSelect")?.value || "name";
+        data = [...data].sort((a, b) => {
+          if (sortVal === "pop-desc")
+            return (b.population || 0) - (a.population || 0);
+          if (sortVal === "pop-asc")
+            return (a.population || 0) - (b.population || 0);
+          if (sortVal === "area-desc") return (b.area || 0) - (a.area || 0);
+          return (a.name?.common || "").localeCompare(b.name?.common || "");
+        });
+        const meta = el("allMeta");
+        if (meta) meta.innerHTML = resultsBar(data);
+        const container = el("cardsContainer");
+        if (container) {
+          container._data = data;
+          renderCards(data, container);
+        }
+      };
+
+      const REGIONS = [
+        {
+          name: "Africa",
+          emoji: "🌍",
+          sub: [
+            "Northern Africa",
+            "Eastern Africa",
+            "Western Africa",
+            "Middle Africa",
+            "Southern Africa",
+          ],
+        },
+        {
+          name: "Americas",
+          emoji: "🌎",
+          sub: [
+            "Northern America",
+            "Central America",
+            "Caribbean",
+            "South America",
+          ],
+        },
+        {
+          name: "Asia",
+          emoji: "🌏",
+          sub: [
+            "Eastern Asia",
+            "South-Eastern Asia",
+            "Southern Asia",
+            "Central Asia",
+            "Western Asia",
+          ],
+        },
+        {
+          name: "Europe",
+          emoji: "🇪🇺",
+          sub: [
+            "Northern Europe",
+            "Western Europe",
+            "Southern Europe",
+            "Eastern Europe",
+          ],
+        },
+        {
+          name: "Oceania",
+          emoji: "🏝️",
+          sub: [
+            "Australia and New Zealand",
+            "Melanesia",
+            "Micronesia",
+            "Polynesia",
+          ],
+        },
+        { name: "Antarctic", emoji: "🧊", sub: [] },
+      ];
+
+      let selectedRegion = null;
+      let selectedSub = null;
+
+      function regions() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Browse by <em>Region</em></h1>
+      <p>Filter countries by region or subregion.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/region/{region} &nbsp;|&nbsp; /v3.1/subregion/{subregion}</div>
+    </div>
+    <div class="region-cards">
+      ${REGIONS.map(
+        (r) => `
+        <div class="region-card ${selectedRegion === r.name ? "selected" : ""}" onclick="selectRegion('${r.name}')">
+          <div class="rc-emoji">${r.emoji}</div>
+          <div class="rc-name">${r.name}</div>
+          <div class="rc-count" id="rc-${r.name}">click to explore</div>
+        </div>`,
+      ).join("")}
+    </div>
+    <div id="subregionArea"></div>
+    <div id="regionResultsMeta"></div>
+    <div id="regionCards" class="cards-grid"></div>`;
+        if (selectedRegion) selectRegion(selectedRegion);
+      }
+
+      window.selectRegion = async function (name) {
+        selectedRegion = name;
+        document.querySelectorAll(".region-card").forEach((c) => {
+          c.classList.toggle(
+            "selected",
+            c.querySelector(".rc-name").textContent === name,
+          );
+        });
+        const reg = REGIONS.find((r) => r.name === name);
+        const subArea = el("subregionArea");
+        subArea.innerHTML = "";
+        if (reg?.sub?.length) {
+          subArea.innerHTML = `
+      <div class="page-header" style="margin-bottom:14px"><h1 style="font-size:20px">${reg.emoji} ${name} <em>Subregions</em></h1></div>
+      <div class="subregion-pills">
+        <span class="filter-chip ${!selectedSub ? "active" : ""}" onclick="loadRegion('${name}',null)">All ${name}</span>
+        ${reg.sub.map((s) => `<span class="filter-chip ${selectedSub === s ? "active" : ""}" onclick="loadRegion('${name}','${s}')">${s}</span>`).join("")}
+      </div>`;
+        }
+        loadRegion(name, null);
+      };
+
+      async function loadRegion(region, sub) {
+        selectedSub = sub;
+        document
+          .querySelectorAll(".subregion-pills .filter-chip")
+          .forEach((c) => {
+            const t = c.textContent;
+            c.classList.toggle("active", sub ? t === sub : t.startsWith("All"));
+          });
+        const container = el("regionCards");
+        const meta = el("regionResultsMeta");
+        container.innerHTML = loading();
+        try {
+          const url = sub
+            ? `${BASE}/subregion/${encodeURIComponent(sub)}?fields=name,capital,flags,population,region,cca2,subregion`
+            : `${BASE}/region/${encodeURIComponent(region)}?fields=name,capital,flags,population,region,cca2,subregion`;
+          const data = await apiFetch(url);
+          const rcEl = document.getElementById(`rc-${region}`);
+          if (rcEl) rcEl.textContent = `${data.length} countries`;
+          meta.innerHTML = resultsBar(data);
+          container._data = data;
+          renderCards(data, container);
+        } catch (e) {
+          container.innerHTML = errorBox(e.message);
+        }
+      }
+
+      function byName() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Search by <em>Name</em></h1>
+      <p>Search countries by their common or official name. Toggle full-text mode for exact matching.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/name/{name} &nbsp;|&nbsp; ?fullText=true</div>
+    </div>
+    <div class="search-panel">
+      <h3>🔤 Name Search</h3>
+      <div class="search-row">
+        <input type="text" id="nameInput" placeholder="e.g. Germany, España, Perú…" onkeydown="if(event.key==='Enter')searchByName()"/>
+        <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:var(--text-muted);cursor:pointer;flex-shrink:0">
+          <input type="checkbox" id="fullText" style="accent-color:var(--gold)"/> Full text match
+        </label>
+        <button class="btn btn-gold" onclick="searchByName()">Search</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${[
+          "Germany",
+          "Japan",
+          "Brazil",
+          "India",
+          "Australia",
+          "Egypt",
+          "Canada",
+        ]
+          .map(
+            (n) => `
+          <button class="filter-chip" onclick="el('nameInput').value='${n}';searchByName()">${n}</button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div id="nameResults"></div>`;
+      }
+
+      window.searchByName = async function () {
+        const q = el("nameInput")?.value?.trim();
+        if (!q) return showToast("Please enter a country name");
+        const full = el("fullText")?.checked;
+        const res = el("nameResults");
+        res.innerHTML = loading();
+        try {
+          const url = `${BASE}/name/${encodeURIComponent(q)}${full ? "?fullText=true" : ""}`;
+          const data = await apiFetch(url);
+          res.innerHTML = resultsBar(data);
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(data, container);
+        } catch (e) {
+          res.innerHTML = errorBox(
+            e.message + " – try a different spelling or toggle full text",
+          );
+        }
+      };
+
+      function byCode() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Search by <em>Code</em></h1>
+      <p>Look up a country by its ISO 3166-1 alpha-2, alpha-3, numeric, or IOC code.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/alpha/{code}</div>
+    </div>
+    <div class="search-panel">
+      <h3>#️⃣ Code Lookup</h3>
+      <div class="search-row">
+        <input type="text" id="codeInput" placeholder="e.g. US, DEU, 276, COL…" onkeydown="if(event.key==='Enter')searchByCode()"/>
+        <button class="btn btn-gold" onclick="searchByCode()">Look up</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${["US", "GBR", "276", "JP", "BRA", "IND", "AU"]
+          .map(
+            (c) => `
+          <button class="filter-chip" onclick="el('codeInput').value='${c}';searchByCode()">${c}</button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div id="codeResults"></div>`;
+      }
+
+      window.searchByCode = async function () {
+        const q = el("codeInput")?.value?.trim();
+        if (!q) return showToast("Enter a country code");
+        const res = el("codeResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(`${BASE}/alpha/${encodeURIComponent(q)}`);
+          const arr = Array.isArray(data) ? data : [data];
+          res.innerHTML = resultsBar(arr);
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(arr, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      function multiCode() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Multi-Code <em>Lookup</em></h1>
+      <p>Search multiple countries by their codes in a single request.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/alpha?codes={code},{code},{code}</div>
+    </div>
+    <div class="search-panel">
+      <h3>📦 Multiple Codes</h3>
+      <div class="search-row">
+        <input type="text" id="multiInput" placeholder="e.g. US,DEU,JP,BRA,IND" onkeydown="if(event.key==='Enter')searchMultiCode()"/>
+        <button class="btn btn-gold" onclick="searchMultiCode()">Fetch All</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="filter-chip" onclick="el('multiInput').value='US,GBR,DEU,FRA,JPN';searchMultiCode()">G5 Nations</button>
+        <button class="filter-chip" onclick="el('multiInput').value='CN,US,DE,JP,IN,GB,FR,BR,IT,CA';searchMultiCode()">G10 Economies</button>
+        <button class="filter-chip" onclick="el('multiInput').value='BR,RU,IN,CN,ZA';searchMultiCode()">BRICS</button>
+        <button class="filter-chip" onclick="el('multiInput').value='AU,CA,NZ,GB,US';searchMultiCode()">Five Eyes</button>
+      </div>
+    </div>
+    <div id="multiResults"></div>`;
+      }
+
+      window.searchMultiCode = async function () {
+        const q = el("multiInput")?.value?.trim();
+        if (!q) return showToast("Enter comma-separated codes");
+        const res = el("multiResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(
+            `${BASE}/alpha?codes=${encodeURIComponent(q)}`,
+          );
+          res.innerHTML = resultsBar(data);
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(data, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      function byCurrency() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Search by <em>Currency</em></h1>
+      <p>Find all countries that use a specific currency code or name.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/currency/{currency}</div>
+    </div>
+    <div class="search-panel">
+      <h3>💱 Currency Search</h3>
+      <div class="search-row">
+        <input type="text" id="curInput" placeholder="e.g. USD, EUR, dollar, yen…" onkeydown="if(event.key==='Enter')searchByCurrency()"/>
+        <button class="btn btn-gold" onclick="searchByCurrency()">Search</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${[
+          ["USD", "US Dollar"],
+          ["EUR", "Euro"],
+          ["GBP", "Pound"],
+          ["JPY", "Yen"],
+          ["INR", "Rupee"],
+          ["XOF", "CFA Franc"],
+        ]
+          .map(
+            ([c, l]) => `
+          <button class="filter-chip" onclick="el('curInput').value='${c}';searchByCurrency()">${c} – ${l}</button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div id="curResults"></div>`;
+      }
+
+      window.searchByCurrency = async function () {
+        const q = el("curInput")?.value?.trim();
+        if (!q) return showToast("Enter a currency code or name");
+        const res = el("curResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(
+            `${BASE}/currency/${encodeURIComponent(q)}`,
+          );
+          res.innerHTML = `<div class="results-meta"><span class="results-count">${data.length}</span> countries use this currency</div>`;
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(data, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      function byLanguage() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Search by <em>Language</em></h1>
+      <p>Find all countries where a specific language is spoken.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/lang/{language}</div>
+    </div>
+    <div class="search-panel">
+      <h3>💬 Language Search</h3>
+      <div class="search-row">
+        <input type="text" id="langInput" placeholder="e.g. spanish, arabic, french, swahili…" onkeydown="if(event.key==='Enter')searchByLang()"/>
+        <button class="btn btn-gold" onclick="searchByLang()">Search</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${[
+          "Spanish",
+          "French",
+          "Arabic",
+          "Portuguese",
+          "Chinese",
+          "English",
+          "German",
+          "Swahili",
+          "Hindi",
+          "Russian",
+        ]
+          .map(
+            (l) => `
+          <button class="filter-chip" onclick="el('langInput').value='${l}';searchByLang()">${l}</button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div id="langResults"></div>`;
+      }
+
+      window.searchByLang = async function () {
+        const q = el("langInput")?.value?.trim();
+        if (!q) return showToast("Enter a language");
+        const res = el("langResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(`${BASE}/lang/${encodeURIComponent(q)}`);
+          res.innerHTML = `<div class="results-meta"><span class="results-count">${data.length}</span> countries speak this language</div>`;
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(data, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      function byCapital() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Search by <em>Capital City</em></h1>
+      <p>Find a country by its capital city.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/capital/{capital}</div>
+    </div>
+    <div class="search-panel">
+      <h3>🏛️ Capital Search</h3>
+      <div class="search-row">
+        <input type="text" id="capInput" placeholder="e.g. Paris, Tokyo, Nairobi, Canberra…" onkeydown="if(event.key==='Enter')searchByCapital()"/>
+        <button class="btn btn-gold" onclick="searchByCapital()">Find</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${[
+          "Paris",
+          "Tokyo",
+          "Berlin",
+          "Canberra",
+          "Cairo",
+          "Brasília",
+          "Nairobi",
+          "Wellington",
+        ]
+          .map(
+            (c) => `
+          <button class="filter-chip" onclick="el('capInput').value='${c}';searchByCapital()">${c}</button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div id="capResults"></div>`;
+      }
+
+      window.searchByCapital = async function () {
+        const q = el("capInput")?.value?.trim();
+        if (!q) return showToast("Enter a capital city");
+        const res = el("capResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(
+            `${BASE}/capital/${encodeURIComponent(q)}`,
+          );
+          const arr = Array.isArray(data) ? data : [data];
+          res.innerHTML = resultsBar(arr);
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(arr, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      function byDemonym() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Search by <em>Demonym</em></h1>
+      <p>Find countries by how their citizens are called.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/demonym/{demonym}</div>
+    </div>
+    <div class="search-panel">
+      <h3>👤 Demonym Search</h3>
+      <div class="search-row">
+        <input type="text" id="demInput" placeholder="e.g. Peruvian, German, Japanese…" onkeydown="if(event.key==='Enter')searchByDemonym()"/>
+        <button class="btn btn-gold" onclick="searchByDemonym()">Find</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${[
+          "Peruvian",
+          "German",
+          "Japanese",
+          "Brazilian",
+          "Australian",
+          "Egyptian",
+          "French",
+          "Indian",
+        ]
+          .map(
+            (d) => `
+          <button class="filter-chip" onclick="el('demInput').value='${d}';searchByDemonym()">${d}</button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div id="demResults"></div>`;
+      }
+
+      window.searchByDemonym = async function () {
+        const q = el("demInput")?.value?.trim();
+        if (!q) return showToast("Enter a demonym");
+        const res = el("demResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(
+            `${BASE}/demonym/${encodeURIComponent(q)}`,
+          );
+          const arr = Array.isArray(data) ? data : [data];
+          res.innerHTML = resultsBar(arr);
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(arr, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      function byTranslation() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Search by <em>Translation</em></h1>
+      <p>Search countries using their native-language name translations.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/translation/{translation}</div>
+    </div>
+    <div class="search-panel">
+      <h3>🌐 Translation Search</h3>
+      <div class="search-row">
+        <input type="text" id="transInput" placeholder="e.g. Alemania, Deutschland, Allemagne…" onkeydown="if(event.key==='Enter')searchByTrans()"/>
+        <button class="btn btn-gold" onclick="searchByTrans()">Search</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        ${[
+          ["Alemania", "(Germany in Spanish)"],
+          ["Deutschland", "(Germany in German)"],
+          ["Allemagne", "(Germany in French)"],
+          ["Nippon", "(Japan in Japanese)"],
+          ["Rossiya", "(Russia in Russian)"],
+        ]
+          .map(
+            ([t, hint]) => `
+          <button class="filter-chip" onclick="el('transInput').value='${t}';searchByTrans()" title="${hint}">${t}</button>`,
+          )
+          .join("")}
+      </div>
+    </div>
+    <div id="transResults"></div>`;
+      }
+
+      window.searchByTrans = async function () {
+        const q = el("transInput")?.value?.trim();
+        if (!q) return showToast("Enter a translation");
+        const res = el("transResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(
+            `${BASE}/translation/${encodeURIComponent(q)}`,
+          );
+          const arr = Array.isArray(data) ? data : [data];
+          res.innerHTML = resultsBar(arr);
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(arr, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      function independent() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1><em>Independence</em> Status</h1>
+      <p>Filter countries by their independence status and combine with field filters.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/independent?status=true&fields=name,capital,flags</div>
+    </div>
+    <div class="search-panel">
+      <h3>🏳️ Independence Filter</h3>
+      <div class="search-row">
+        <select id="indepStatus">
+          <option value="true">Independent Countries</option>
+          <option value="false">Non-Independent Territories</option>
+        </select>
+        <button class="btn btn-gold" onclick="searchIndependent()">Filter</button>
+      </div>
+    </div>
+    <div id="indepResults"></div>`;
+        searchIndependent();
+      }
+
+      window.searchIndependent = async function () {
+        const status = el("indepStatus")?.value;
+        const res = el("indepResults");
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(
+            `${BASE}/independent?status=${status}&fields=name,capital,flags,population,region,cca2,independent`,
+          );
+          res.innerHTML = `<div class="results-meta">
+      <span class="results-count">${data.length}</span>
+      <span>${status === "true" ? "independent" : "non-independent"} countries/territories</span>
+    </div>`;
+          const container = document.createElement("div");
+          container.id = "cardsContainer";
+          res.appendChild(container);
+          renderCards(data, container);
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      const AVAILABLE_FIELDS = [
+        "name",
+        "cca2",
+        "cca3",
+        "ccn3",
+        "cioc",
+        "independent",
+        "status",
+        "unMember",
+        "currencies",
+        "idd",
+        "capital",
+        "altSpellings",
+        "region",
+        "subregion",
+        "languages",
+        "translations",
+        "latlng",
+        "landlocked",
+        "borders",
+        "area",
+        "demonyms",
+        "flag",
+        "maps",
+        "population",
+        "gini",
+        "fifa",
+        "car",
+        "timezones",
+        "continents",
+        "flags",
+        "coatOfArms",
+        "startOfWeek",
+        "capitalInfo",
+        "postalCode",
+      ];
+
+      function fieldFilter() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Field <em>Filter</em></h1>
+      <p>Specify exactly which fields to include in the API response. Reduces payload size.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/all?fields={field},{field},{field}</div>
+    </div>
+    <div class="search-panel">
+      <h3>⚙️ Choose Fields (max 10)</h3>
+      <div class="field-select-grid">
+        ${AVAILABLE_FIELDS.map(
+          (f) => `
+          <label class="field-checkbox">
+            <input type="checkbox" name="fieldChk" value="${f}" ${["name", "flags", "capital", "population", "region", "cca2"].includes(f) ? "checked" : ""}/>
+            ${f}
+          </label>`,
+        ).join("")}
+      </div>
+      <div style="margin-top:16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="runFieldFilter()">Fetch with Selected Fields</button>
+        <button class="btn btn-ghost btn-sm" onclick="document.querySelectorAll('[name=fieldChk]').forEach(c=>c.checked=false)">Clear All</button>
+        <span id="fieldCount" style="font-size:12px;color:var(--text-dim);font-family:var(--font-mono)"></span>
+      </div>
+    </div>
+    <div id="fieldPreview" style="margin-bottom:16px"></div>
+    <div id="fieldResults"></div>`;
+
+        document
+          .querySelectorAll("[name=fieldChk]")
+          .forEach((c) => c.addEventListener("change", updateFieldCount));
+        updateFieldCount();
+      }
+
+      function updateFieldCount() {
+        const checked = [
+          ...document.querySelectorAll("[name=fieldChk]:checked"),
+        ].length;
+        const cnt = el("fieldCount");
+        if (cnt) cnt.textContent = `${checked} / 10 fields selected`;
+      }
+
+      window.runFieldFilter = async function () {
+        const selected = [
+          ...document.querySelectorAll("[name=fieldChk]:checked"),
+        ].map((c) => c.value);
+        if (!selected.length) return showToast("Select at least one field");
+        if (selected.length > 10) return showToast("Maximum 10 fields allowed");
+        const url = `${BASE}/all?fields=${selected.join(",")}`;
+        const res = el("fieldResults");
+        const preview = el("fieldPreview");
+        preview.innerHTML = `<div class="endpoint-pill" style="margin-bottom:12px"><span class="method-get">GET</span> ${url}</div>`;
+        res.innerHTML = loading();
+        try {
+          const data = await apiFetch(url);
+          showToast(
+            `✓ Fetched ${selected.length} fields for ${data.length} countries`,
+          );
+
+          const raw = JSON.stringify(data[0], null, 2);
+          const colored = raw
+            .replace(/"([^"]+)":/g, '<span class="json-key">"$1":</span>')
+            .replace(/: "([^"]+)"/g, ': <span class="json-str">"$1"</span>')
+            .replace(/: (\d+\.?\d*)/g, ': <span class="json-num">$1</span>')
+            .replace(/: (true|false)/g, ': <span class="json-bool">$1</span>');
+          preview.innerHTML += `
+      <div style="margin-bottom:16px">
+        <div style="font-size:11px;color:var(--text-dim);font-family:var(--font-mono);margin-bottom:8px;text-transform:uppercase;letter-spacing:.08em">
+          Sample response (first country)
+        </div>
+        <div class="json-preview">${colored}</div>
+      </div>`;
+
+          if (selected.includes("name") && selected.includes("flags")) {
+            res.innerHTML = resultsBar(data);
+            const container = document.createElement("div");
+            container.id = "cardsContainer";
+            res.appendChild(container);
+            renderCards(data, container);
+          } else {
+            res.innerHTML = `<div style="color:var(--text-muted);font-size:13px;padding:20px 0">
+        Select <code style="color:var(--accent)">name</code> and <code style="color:var(--accent)">flags</code> fields to show cards. Raw JSON preview shown above.
+      </div>`;
+          }
+        } catch (e) {
+          res.innerHTML = errorBox(e.message);
+        }
+      };
+
+      let compareA = null,
+        compareB = null;
+
+      function compare() {
+        el("mainContent").innerHTML = `
+    <div class="page-header">
+      <h1>Compare <em>Countries</em></h1>
+      <p>Side-by-side country comparison using multi-fetch from the API.</p>
+      <div class="endpoint-pill"><span class="method-get">GET</span> /v3.1/alpha/{code} (×2)</div>
+    </div>
+    <div class="search-panel">
+      <h3>⚖️ Pick Two Countries</h3>
+      <div class="search-row">
+        <input type="text" id="compareA" placeholder="Country A (name or code)…" value="${compareA?.name?.common || ""}"/>
+        <span style="color:var(--gold);font-family:var(--font-display);font-size:18px;font-weight:900;align-self:center;flex-shrink:0">VS</span>
+        <input type="text" id="compareB" placeholder="Country B (name or code)…" value="${compareB?.name?.common || ""}"/>
+        <button class="btn btn-gold" onclick="runCompare()">Compare</button>
+      </div>
+      <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+        <button class="filter-chip" onclick="el('compareA').value='US';el('compareB').value='CN';runCompare()">🇺🇸 US vs 🇨🇳 China</button>
+        <button class="filter-chip" onclick="el('compareA').value='IND';el('compareB').value='BRA';runCompare()">🇮🇳 India vs 🇧🇷 Brazil</button>
+        <button class="filter-chip" onclick="el('compareA').value='DEU';el('compareB').value='FRA';runCompare()">🇩🇪 Germany vs 🇫🇷 France</button>
+        <button class="filter-chip" onclick="el('compareA').value='AUS';el('compareB').value='CAN';runCompare()">🇦🇺 Australia vs 🇨🇦 Canada</button>
+      </div>
+    </div>
+    <div id="compareResults"></div>`;
+      }
+
+      window.runCompare = async function () {
+        const a = el("compareA")?.value?.trim();
+        const b = el("compareB")?.value?.trim();
+        if (!a || !b) return showToast("Enter both countries");
+        const res = el("compareResults");
+        res.innerHTML = loading();
+        try {
+          const [da, db] = await Promise.all([
+            apiFetch(`${BASE}/name/${encodeURIComponent(a)}`)
+              .then((d) => (Array.isArray(d) ? d[0] : d))
+              .catch(() =>
+                apiFetch(`${BASE}/alpha/${encodeURIComponent(a)}`).then((d) =>
+                  Array.isArray(d) ? d[0] : d,
+                ),
+              ),
+            apiFetch(`${BASE}/name/${encodeURIComponent(b)}`)
+              .then((d) => (Array.isArray(d) ? d[0] : d))
+              .catch(() =>
+                apiFetch(`${BASE}/alpha/${encodeURIComponent(b)}`).then((d) =>
+                  Array.isArray(d) ? d[0] : d,
+                ),
+              ),
+          ]);
+
+          const metrics = [
+            {
+              label: "Population",
+              va: da.population || 0,
+              vb: db.population || 0,
+              fmt: (n) => fmt(n),
+              bigger: true,
+            },
+            {
+              label: "Area (km²)",
+              va: da.area || 0,
+              vb: db.area || 0,
+              fmt: (n) => fmt(n) + " km²",
+              bigger: true,
+            },
+            {
+              label: "Languages",
+              va: Object.keys(da.languages || {}).length,
+              vb: Object.keys(db.languages || {}).length,
+              fmt: (n) => n + " languages",
+              bigger: true,
+            },
+            {
+              label: "Currencies",
+              va: Object.keys(da.currencies || {}).length,
+              vb: Object.keys(db.currencies || {}).length,
+              fmt: (n) => n + " currencies",
+              bigger: true,
+            },
+            {
+              label: "Timezones",
+              va: (da.timezones || []).length,
+              vb: (db.timezones || []).length,
+              fmt: (n) => n + " timezones",
+              bigger: true,
+            },
+            {
+              label: "Borders",
+              va: (da.borders || []).length,
+              vb: (db.borders || []).length,
+              fmt: (n) => n + " neighbours",
+              bigger: true,
+            },
+          ];
+
+          res.innerHTML = `
+      <div class="compare-area">
+        <div class="compare-card">
+          <img class="compare-card-flag" src="${da.flags?.png || da.flags?.svg || ""}" alt="${da.name?.common}"/>
+          <div class="compare-card-body">
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">${da.name?.common}</div>
+            <div style="font-size:12px;color:var(--text-dim);margin-bottom:16px;font-style:italic">${da.name?.official}</div>
+            ${metrics
+              .map(
+                (m) => `
+              <div class="compare-stat-row">
+                <span class="compare-label">${m.label}</span>
+                <span class="${(m.bigger ? m.va >= m.vb : m.va <= m.vb) ? "compare-winner" : "compare-loser"}">${m.fmt(m.va)}</span>
+              </div>`,
+              )
+              .join("")}
+            <div class="compare-stat-row"><span class="compare-label">Capital</span><span>${(da.capital || ["–"])[0]}</span></div>
+            <div class="compare-stat-row"><span class="compare-label">Region</span><span>${da.region || "–"}</span></div>
+            <div class="compare-stat-row"><span class="compare-label">UN Member</span><span>${da.unMember ? "✅ Yes" : "❌ No"}</span></div>
+            <button class="btn btn-gold btn-sm" style="margin-top:14px;width:100%" onclick="showCountry('${da.cca2}')">View Full Profile</button>
+          </div>
+        </div>
+        <div class="vs-divider">VS</div>
+        <div class="compare-card">
+          <img class="compare-card-flag" src="${db.flags?.png || db.flags?.svg || ""}" alt="${db.name?.common}"/>
+          <div class="compare-card-body">
+            <div style="font-family:var(--font-display);font-size:20px;font-weight:700;margin-bottom:4px">${db.name?.common}</div>
+            <div style="font-size:12px;color:var(--text-dim);margin-bottom:16px;font-style:italic">${db.name?.official}</div>
+            ${metrics
+              .map(
+                (m) => `
+              <div class="compare-stat-row">
+                <span class="compare-label">${m.label}</span>
+                <span class="${(m.bigger ? m.vb >= m.va : m.vb <= m.va) ? "compare-winner" : "compare-loser"}">${m.fmt(m.vb)}</span>
+              </div>`,
+              )
+              .join("")}
+            <div class="compare-stat-row"><span class="compare-label">Capital</span><span>${(db.capital || ["–"])[0]}</span></div>
+            <div class="compare-stat-row"><span class="compare-label">Region</span><span>${db.region || "–"}</span></div>
+            <div class="compare-stat-row"><span class="compare-label">UN Member</span><span>${db.unMember ? "✅ Yes" : "❌ No"}</span></div>
+            <button class="btn btn-gold btn-sm" style="margin-top:14px;width:100%" onclick="showCountry('${db.cca2}')">View Full Profile</button>
+          </div>
+        </div>
+      </div>`;
+        } catch (e) {
+          res.innerHTML = errorBox(
+            "Could not load one or both countries: " + e.message,
+          );
+        }
+      };
+
+      window.showCountry = async function (code) {
+        if (!code || code === "undefined") return;
+        const overlay = el("modal");
+        const content = el("modalContent");
+        content.innerHTML = `<div class="loading" style="padding:60px"><div class="spinner"></div></div>`;
+        overlay.classList.add("open");
+
+        try {
+          const data = await apiFetch(
+            `${BASE}/alpha/${encodeURIComponent(code)}`,
+          );
+          const c = Array.isArray(data) ? data[0] : data;
+          const name = c.name?.common || "–";
+          const official = c.name?.official || "";
+          const flag = c.flags?.png || c.flags?.svg || "";
+          const flagAlt = c.flags?.alt || "";
+          const coat = c.coatOfArms?.png || c.coatOfArms?.svg || "";
+          const cap = (c.capital || []).join(", ") || "–";
+          const pop = fmt(c.population);
+          const area = fmt(c.area);
+          const region = c.region || "–";
+          const sub = c.subregion || "–";
+          const langs = c.languages ? Object.values(c.languages) : [];
+          const currencies = c.currencies || {};
+          const tlds = c.tld || [];
+          const borders = c.borders || [];
+          const timezones = (c.timezones || []).join(", ");
+          const continents = (c.continents || []).join(", ");
+          const gini = c.gini
+            ? Object.entries(c.gini)
+                .map(([y, v]) => `${v} (${y})`)
+                .join(", ")
+            : "–";
+          const idd = c.idd?.root
+            ? c.idd.root + (c.idd.suffixes?.[0] || "")
+            : "–";
+          const demonyms = c.demonyms?.eng
+            ? `${c.demonyms.eng.m} / ${c.demonyms.eng.f}`
+            : "–";
+          const maps = c.maps?.googleMaps || c.maps?.openStreetMaps || "#";
+          const driveSide = c.car?.side || "–";
+          const fifa = c.fifa || "–";
+          const latlng = c.latlng
+            ? `${c.latlng[0].toFixed(2)}°, ${c.latlng[1].toFixed(2)}°`
+            : "–";
+          const landlocked = c.landlocked ? "Yes" : "No";
+          const unMember = c.unMember ? "✅ Yes" : "❌ No";
+          const independent = c.independent ? "✅ Yes" : "❌ No / Territory";
+          const startOfWeek = c.startOfWeek || "–";
+          const postal = c.postalCode?.format || "–";
+          const altSpellings =
+            (c.altSpellings || []).slice(0, 4).join(", ") || "–";
+
+          const translations = c.translations || {};
+          const transArr = Object.entries(translations)
+            .slice(0, 8)
+            .map(
+              ([lang, t]) =>
+                `<span class="tld-chip">${lang}: ${t.common}</span>`,
+            )
+            .join("");
+
+          content.innerHTML = `
+      <div class="modal-hero">
+        <img class="modal-flag" src="${flag}" alt="${flagAlt || "Flag of " + name}"/>
+        <div class="modal-hero-content">
+          <div class="modal-title">${name}</div>
+          ${official !== name ? `<div class="modal-subtitle">${official}</div>` : ""}
+        </div>
+        <button class="modal-close" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+
+        <div class="modal-grid">
+          <div>
+            <div class="info-section">
+              <h4>🌍 Geography</h4>
+              <div class="info-row"><span class="info-label">Capital</span><span class="info-value">${cap}</span></div>
+              <div class="info-row"><span class="info-label">Region</span><span class="info-value">${region}</span></div>
+              <div class="info-row"><span class="info-label">Subregion</span><span class="info-value">${sub}</span></div>
+              <div class="info-row"><span class="info-label">Continents</span><span class="info-value">${continents}</span></div>
+              <div class="info-row"><span class="info-label">Coordinates</span><span class="info-value mono">${latlng}</span></div>
+              <div class="info-row"><span class="info-label">Landlocked</span><span class="info-value">${landlocked}</span></div>
+              <div class="info-row"><span class="info-label">Area</span><span class="info-value">${area} km²</span></div>
+            </div>
+
+            <div class="info-section">
+              <h4>📊 Demographics</h4>
+              <div class="info-row"><span class="info-label">Population</span><span class="info-value">${pop}</span></div>
+              <div class="info-row"><span class="info-label">Demonym</span><span class="info-value">${demonyms}</span></div>
+              <div class="info-row"><span class="info-label">GINI Index</span><span class="info-value">${gini}</span></div>
+            </div>
+
+            <div class="info-section">
+              <h4>💬 Languages</h4>
+              <div>${langs.map((l) => `<span class="lang-chip">${l}</span>`).join("") || "–"}</div>
+            </div>
+
+            <div class="info-section">
+              <h4>💱 Currencies</h4>
+              <div>${
+                Object.entries(currencies)
+                  .map(
+                    ([code, cur]) =>
+                      `<span class="curr-chip">${cur.symbol || ""} ${cur.name} (${code})</span>`,
+                  )
+                  .join("") || "–"
+              }</div>
+            </div>
+          </div>
+
+          <div>
+            <div class="info-section">
+              <h4>🔢 Codes & Identifiers</h4>
+              <div class="info-row"><span class="info-label">ISO 3166-1 α2</span><span class="info-value mono">${c.cca2 || "–"}</span></div>
+              <div class="info-row"><span class="info-label">ISO 3166-1 α3</span><span class="info-value mono">${c.cca3 || "–"}</span></div>
+              <div class="info-row"><span class="info-label">Numeric</span><span class="info-value mono">${c.ccn3 || "–"}</span></div>
+              <div class="info-row"><span class="info-label">IOC (Olympic)</span><span class="info-value mono">${c.cioc || "–"}</span></div>
+              <div class="info-row"><span class="info-label">FIFA</span><span class="info-value mono">${fifa}</span></div>
+              <div class="info-row"><span class="info-label">Calling Code</span><span class="info-value mono">${idd}</span></div>
+              <div class="info-row"><span class="info-label">TLD</span><span class="info-value">${tlds.map((t) => `<span class="tld-chip">${t}</span>`).join("") || "–"}</span></div>
+            </div>
+
+            <div class="info-section">
+              <h4>🏛️ Status</h4>
+              <div class="info-row"><span class="info-label">UN Member</span><span class="info-value">${unMember}</span></div>
+              <div class="info-row"><span class="info-label">Independent</span><span class="info-value">${independent}</span></div>
+              <div class="info-row"><span class="info-label">Status</span><span class="info-value">${c.status || "–"}</span></div>
+            </div>
+
+            <div class="info-section">
+              <h4>⏰ Time & Transport</h4>
+              <div class="info-row"><span class="info-label">Timezones</span><span class="info-value" style="font-size:11px">${timezones}</span></div>
+              <div class="info-row"><span class="info-label">Drives on</span><span class="info-value">${driveSide} side</span></div>
+              <div class="info-row"><span class="info-label">Week starts</span><span class="info-value">${startOfWeek}</span></div>
+              <div class="info-row"><span class="info-label">Postal code</span><span class="info-value mono">${postal}</span></div>
+            </div>
+
+            ${
+              coat
+                ? `
+            <div class="info-section">
+              <h4>🛡️ Coat of Arms</h4>
+              <div class="coat-of-arms">
+                <img src="${coat}" alt="Coat of arms of ${name}" onerror="this.parentElement.style.display='none'"/>
+                <p>Official coat of arms</p>
+              </div>
+            </div>`
+                : ""
+            }
+          </div>
+        </div>
+
+        ${
+          borders.length
+            ? `
+        <div class="info-section">
+          <h4>🗺️ Bordering Countries (${borders.length})</h4>
+          <div>${borders.map((b) => `<span class="border-chip" onclick="closeModal();showCountry('${b}')">${b}</span>`).join("")}</div>
+        </div>`
+            : ""
+        }
+
+        ${
+          altSpellings !== "–"
+            ? `
+        <div class="info-section">
+          <h4>🔤 Alternative Names</h4>
+          <div style="font-size:13px;color:var(--text-muted)">${altSpellings}</div>
+        </div>`
+            : ""
+        }
+
+        ${
+          transArr
+            ? `
+        <div class="info-section">
+          <h4>🌐 Translations</h4>
+          <div>${transArr}</div>
+        </div>`
+            : ""
+        }
+
+        ${
+          flagAlt
+            ? `
+        <div class="info-section">
+          <h4>🚩 Flag Description</h4>
+          <div style="font-size:13px;color:var(--text-muted);line-height:1.7;font-style:italic">${flagAlt}</div>
+        </div>`
+            : ""
+        }
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:4px">
+          <a href="${maps}" target="_blank" rel="noopener" class="map-btn">🗺️ View on Google Maps</a>
+          ${c.maps?.openStreetMaps ? `<a href="${c.maps.openStreetMaps}" target="_blank" rel="noopener" class="btn btn-ghost">OpenStreetMap</a>` : ""}
+        </div>
+      </div>`;
+        } catch (e) {
+          content.innerHTML = `
+      <button class="modal-close" style="position:absolute;top:16px;right:16px" onclick="closeModal()">✕</button>
+      <div style="padding:60px 40px">${errorBox("Could not load country data: " + e.message)}</div>`;
+        }
+      };
+
+      window.closeModal = function () {
+        el("modal").classList.remove("open");
+      };
+
+      el("modal").addEventListener("click", (e) => {
+        if (e.target === el("modal")) closeModal();
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") closeModal();
+      });
+
+      let searchDebounce;
+      el("globalSearch").addEventListener("input", function () {
+        clearTimeout(searchDebounce);
+        const q = this.value.trim();
+        if (!q) return;
+        searchDebounce = setTimeout(async () => {
+          try {
+            const data = await apiFetch(
+              `${BASE}/name/${encodeURIComponent(q)}`,
+            );
+            if (data?.length === 1) {
+              showCountry(data[0].cca2);
+            } else if (data?.length > 1) {
+              navigate("byName");
+              el("nameInput").value = q;
+              searchByName();
+            }
+          } catch {}
+        }, 500);
+      });
+
+      home();
+    </script>
+  </body>
+</html>
