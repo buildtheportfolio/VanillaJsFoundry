@@ -26,20 +26,61 @@ VanillaJsFoundry/
 └── README.md
 ```
 
-The hub automatically discovers project folders under `projects/`. No central registry is required.
+`projects/` is the application registry by convention. The hub discovers directories directly from GitHub and only exposes directories containing all three required project files.
 
 ## Add a project
 
 1. Copy `projects/_template/` to a new folder such as `projects/calculator/`.
-2. Add your `index.html`, `style.css`, and `script.js`.
+2. Build the project using only `index.html`, `style.css`, and `script.js` inside that folder.
 3. Push the folder to GitHub.
-4. The project automatically appears on the hub and is available at `/projects/<project-name>/`.
+4. The hub discovers the new folder automatically.
+5. The project is available at `/projects/<project-name>/` without editing the hub application or a route registry.
 
-## Project rules
+The directory name is the route name. Use URL-safe folder names such as `calculator`, `wordle-clone`, or `csv-chart`.
 
-- One project = one folder.
-- Each project contains `index.html`, `style.css`, and `script.js`.
-- Keep projects self-contained and dependency-free.
+## Project contract
+
+A directory is discoverable only when it contains:
+
+- `index.html`
+- `style.css`
+- `script.js`
+
+Incomplete directories are ignored. `_template` is reserved for creating new projects and is never listed.
+
+## How routing works
+
+VanillaJsFoundry uses convention-based static routing instead of a frontend router or central manifest.
+
+```text
+projects/
+├── calculator/
+│   ├── index.html
+│   ├── style.css
+│   └── script.js
+└── wordle-clone/
+    ├── index.html
+    ├── style.css
+    └── script.js
+```
+
+These folders naturally map to:
+
+```text
+/projects/calculator/
+/projects/wordle-clone/
+```
+
+Because each route is a real directory containing `index.html`, the same structure works with static hosting and simple local web servers.
+
+## Design rules
+
+- One project = one directory.
+- One project = `index.html` + `style.css` + `script.js`.
+- Keep project assets self-contained inside the project directory.
+- Do not edit a central project registry when adding a project.
+- Keep projects independent so one project cannot break another.
+- Keep projects dependency-free where practical.
 - Browser and platform APIs are encouraged.
 - TensorFlow.js is permitted only for AI/ML projects.
 
@@ -218,33 +259,3 @@ Bundle analysis, DOM inspection, CSS specificity, performance profiling, JSON sc
 
 ### Accessibility
 Focus/ARIA testing, contrast auditing, keyboard navigation, screen-reader simulation, dyslexia-friendly reading, and dwell-click interfaces.
-
-### Mobile/Touch
-Swipe navigation, pull-to-refresh, pinch zoom, haptic drum pads, touch drawing, and bottom-sheet interactions.
-
-### AI/ML
-Browser-based pose estimation, handwriting classification, object detection, toxicity/sentiment analysis, and face-mesh AR using TensorFlow.js only.
-
-## Top 10 Most Impressive for a Portfolio
-
-| Rank | Project | Why It Impresses |
-|---|---|---|
-| 1 | **Rich Text Editor (from scratch)** (#7) | Deep Selection/Range API and browser editing knowledge. |
-| 2 | **SVG Force-Directed Graph** (#27) | Algorithms, graphics, simulation, and performance without D3. |
-| 3 | **Encrypted Journal (Web Crypto)** (#56) | Browser cryptography with PBKDF2 and AES-GCM. |
-| 4 | **Reaction-Diffusion System** (#88) | High-performance Canvas pixel processing and simulation. |
-| 5 | **Multi-Track Audio Mixer** (#80) | Precise Web Audio scheduling and timing. |
-| 6 | **2D Platformer with Physics** (#17) | Collision detection, game loops, tilemaps, and physics. |
-| 7 | **OAuth PKCE Flow from Scratch** (#39) | Authentication, Web Crypto, redirects, and security fundamentals. |
-| 8 | **Time-Travel Debugger** (#58) | State snapshots, replay architecture, and memory management. |
-| 9 | **Dungeon Crawler Roguelite** (#19) | Procedural generation, FOV, and advanced game architecture. |
-| 10 | **Face Mesh AR Filter** (#125) | Browser ML, webcam processing, and real-time geometry. |
-
-## Catalog Stats
-
-- **125 projects** across **15 categories**
-- **7 [CLASSIC]** projects
-- **38 [RARE]** projects
-- **18 Beginner** · **71 Intermediate** · **36 Advanced**
-
-This catalog is the living backlog for the Foundry. Pick an idea, create `projects/<project-name>/`, implement the three-file contract, and let the hub discover it automatically.
