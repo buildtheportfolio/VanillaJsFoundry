@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sankey Diagram – Animated Flows</title>
+<meta name="description" content="An SVG Sankey diagram with automatic layering, vertical relaxation, animated flow stripes, path highlighting, draggable nodes, editable JSON and SVG export.">
+<meta name="foundry:category" content="Data Viz">
+<meta name="foundry:difficulty" content="Advanced">
+<meta name="foundry:tags" content="sankey,svg,flow,graph-layout,bezier">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header>
+    <h1>Sankey Diagram</h1>
+    <p class="sub">Link width is proportional to flow value &middot; hover to trace a path &middot; drag nodes up or down</p>
+  </header>
+
+  <section class="toolbar" aria-label="Diagram controls">
+    <label>Sample
+      <select id="sampleSel"></select>
+    </label>
+    <label class="chk"><input type="checkbox" id="animToggle" checked> Animate flow</label>
+    <button type="button" id="relayoutBtn">Re-layout</button>
+    <button type="button" id="exportBtn">Export SVG</button>
+  </section>
+
+  <div class="stage" id="stage">
+    <svg id="chart" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Sankey diagram"></svg>
+    <div class="tip" id="tip" hidden></div>
+  </div>
+  <p class="hint">Focus a node and use Up / Down arrows to move it &middot; Tab to move between nodes</p>
+  <p class="sr" id="status" role="status" aria-live="polite"></p>
+
+  <section class="editor">
+    <h2>Dataset (JSON)</h2>
+    <p class="hint">Shape: <code>{"nodes":[{"id":"a","name":"A"}],"links":[{"source":"a","target":"b","value":5}]}</code>. Nodes may be omitted; they are created from link ids. Cycles are rejected.</p>
+    <label for="jsonText" class="sr">Sankey JSON</label>
+    <textarea id="jsonText" rows="12" spellcheck="false"></textarea>
+    <div class="row"><button type="button" id="applyBtn">Apply</button></div>
+    <ul id="errors" class="errors" role="alert"></ul>
+  </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>

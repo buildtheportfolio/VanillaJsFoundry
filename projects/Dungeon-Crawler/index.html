@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Dungeon Crawler: Seeded Roguelite</title>
+  <meta name="description" content="Turn-based roguelite with seeded procedural dungeons, shadowcasting fog of war, loot, monsters and permadeath.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Advanced">
+  <meta name="foundry:tags" content="roguelike,procedural-generation,shadowcasting,canvas,seeded-rng">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Dungeon Crawler</h1>
+      <p class="sub">Descend as far as you can. Death is permanent, but the seed is shareable.</p>
+    </header>
+
+    <section class="hud" aria-label="Hero status">
+      <div class="stat hp"><span class="lbl">HP</span><strong id="hp">0/0</strong><span class="bar"><i id="hpBar"></i></span></div>
+      <div class="stat"><span class="lbl">Floor</span><strong id="floor">1</strong></div>
+      <div class="stat"><span class="lbl">Level</span><strong id="lvl">1</strong></div>
+      <div class="stat"><span class="lbl">Atk / Def</span><strong id="ad">0/0</strong></div>
+      <div class="stat"><span class="lbl">Gold</span><strong id="gold">0</strong></div>
+      <div class="stat"><span class="lbl">Best</span><strong id="best">0</strong></div>
+    </section>
+
+    <div class="layout">
+      <div class="stage">
+        <canvas id="view" width="672" height="480" tabindex="0" aria-label="Dungeon view. Move with arrow keys or WASD; walk into monsters to attack."></canvas>
+        <div id="summary" class="overlay" hidden role="dialog" aria-labelledby="sumTitle">
+          <h2 id="sumTitle">You died</h2>
+          <dl id="sumList"></dl>
+          <div class="row">
+            <button type="button" id="retryBtn" class="primary">Retry this seed</button>
+            <button type="button" id="newBtn">New random seed</button>
+          </div>
+        </div>
+      </div>
+
+      <aside class="panel">
+        <div class="seedrow">
+          <label for="seed">Seed</label>
+          <input id="seed" type="text" maxlength="40" autocomplete="off" spellcheck="false">
+          <button type="button" id="goBtn">Start</button>
+          <button type="button" id="shareBtn">Copy link</button>
+        </div>
+        <p id="shareMsg" class="muted small" aria-live="polite"></p>
+
+        <h2 class="ph">Equipment</h2>
+        <p id="equip" class="small"></p>
+        <h2 class="ph">Pack <span class="muted" id="packCount"></span></h2>
+        <ol id="pack" class="pack"></ol>
+
+        <div class="dpad" role="group" aria-label="On-screen controls">
+          <button type="button" data-dx="0" data-dy="-1" aria-label="Move up" class="u">&#8593;</button>
+          <button type="button" data-dx="-1" data-dy="0" aria-label="Move left" class="l">&#8592;</button>
+          <button type="button" id="waitBtn" aria-label="Wait one turn" class="c">Wait</button>
+          <button type="button" data-dx="1" data-dy="0" aria-label="Move right" class="r">&#8594;</button>
+          <button type="button" data-dx="0" data-dy="1" aria-label="Move down" class="d">&#8595;</button>
+          <button type="button" id="stairBtn" class="s">Descend &gt;</button>
+        </div>
+      </aside>
+    </div>
+
+    <h2 class="ph logh">Message log</h2>
+    <ul id="log" class="log" role="log" aria-live="polite"></ul>
+    <p class="help">Keys: arrows / WASD / HJKL move and attack, <kbd>.</kbd> or <kbd>Space</kbd> wait, <kbd>1</kbd>-<kbd>8</kbd> use item, <kbd>&gt;</kbd> or <kbd>Enter</kbd> descend when standing on stairs.</p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

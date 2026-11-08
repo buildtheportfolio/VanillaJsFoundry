@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Typing Speed Trainer – WPM Graph</title>
+  <meta name="description" content="A typing test with live WPM and accuracy, character-by-character error highlighting, a WPM-over-time graph, timed and passage modes and a saved results history.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Beginner">
+  <meta name="foundry:tags" content="typing,wpm,canvas,input-events,localstorage">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <h1>Typing Speed Trainer</h1>
+    <div class="modes" role="group" aria-label="Test mode">
+      <button type="button" class="mode" data-mode="15" aria-pressed="false">15 s</button>
+      <button type="button" class="mode" data-mode="30" aria-pressed="true">30 s</button>
+      <button type="button" class="mode" data-mode="60" aria-pressed="false">60 s</button>
+      <button type="button" class="mode" data-mode="passage" aria-pressed="false">Passage</button>
+    </div>
+    <div class="stats">
+      <div><span class="lbl">WPM</span><strong id="wpm">0</strong></div>
+      <div><span class="lbl">Accuracy</span><strong id="acc">100%</strong></div>
+      <div><span class="lbl" id="timeLbl">Time left</span><strong id="time">30</strong></div>
+    </div>
+    <div id="stage" class="stage">
+      <div id="text" class="text" aria-label="Text to type"></div>
+      <textarea id="input" class="capture" aria-label="Typing input. Type the text shown above." autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" rows="1"></textarea>
+      <p id="focusHint" class="focus-hint">Click here or just start typing</p>
+    </div>
+    <canvas id="live" class="live" width="600" height="60" aria-label="Live WPM sparkline"></canvas>
+    <div class="actions">
+      <button id="restart" type="button">Restart (Esc)</button>
+      <button id="next" type="button">New text</button>
+    </div>
+    <p id="status" class="sr" role="status" aria-live="polite"></p>
+    <section id="results" class="results" hidden aria-labelledby="resH" tabindex="-1">
+      <h2 id="resH">Results</h2>
+      <dl class="res-grid">
+        <div><dt>WPM</dt><dd id="rWpm"></dd></div>
+        <div><dt>Accuracy</dt><dd id="rAcc"></dd></div>
+        <div><dt>Characters</dt><dd id="rChars"></dd></div>
+        <div><dt>Errors</dt><dd id="rErr"></dd></div>
+      </dl>
+      <p id="rBest" class="best-msg"></p>
+      <canvas id="graph" width="640" height="240" aria-label="WPM over time graph"></canvas>
+      <p class="hint">Press Enter or Esc to go again.</p>
+    </section>
+    <section class="history" aria-labelledby="histH">
+      <div class="hist-head"><h2 id="histH">History</h2><button id="clearHist" type="button">Clear</button></div>
+      <p id="histEmpty" class="hint">No results yet. Finish a test and it shows up here.</p>
+      <div class="table-wrap"><table id="histTable" hidden>
+        <thead><tr><th scope="col">When</th><th scope="col">Mode</th><th scope="col">WPM</th><th scope="col">Acc</th></tr></thead>
+        <tbody id="histBody"></tbody>
+      </table></div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

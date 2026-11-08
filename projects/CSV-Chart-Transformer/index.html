@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>CSV Chart Transformer - Paste, Drop, Plot</title>
+  <meta name="description" content="Paste, drop or upload a CSV and watch it become a live bar, line, scatter or pie chart, with type detection, error reporting and PNG/SVG export.">
+  <meta name="foundry:category" content="Data Viz">
+  <meta name="foundry:difficulty" content="Intermediate">
+  <meta name="foundry:tags" content="csv,parser,svg,charts,file-api">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>CSV Chart Transformer</h1>
+      <p class="sub">Paste, drop or upload CSV text. Everything runs in your browser and the chart updates as you type.</p>
+    </header>
+
+    <div class="layout">
+      <section class="panel input-panel" aria-labelledby="in-h">
+        <h2 id="in-h">1. Your data</h2>
+        <div class="row">
+          <label class="fld">Sample
+            <select id="sample"></select>
+          </label>
+          <label class="fld">Delimiter
+            <select id="delim">
+              <option value="auto">Auto-detect</option>
+              <option value=",">Comma ,</option>
+              <option value=";">Semicolon ;</option>
+              <option value="&#9;">Tab</option>
+              <option value="|">Pipe |</option>
+            </select>
+          </label>
+          <label class="fld">Header row
+            <select id="header">
+              <option value="auto">Auto</option>
+              <option value="yes">First row is header</option>
+              <option value="no">No header</option>
+            </select>
+          </label>
+        </div>
+        <div class="row">
+          <label class="btn file-btn">Upload file
+            <input type="file" id="file" accept=".csv,.tsv,.txt,text/csv,text/plain">
+          </label>
+          <button type="button" id="clear" class="btn">Clear</button>
+        </div>
+        <div id="dropzone" class="dropzone">
+          <label for="csv" class="vh">CSV text</label>
+          <textarea id="csv" spellcheck="false" wrap="off" placeholder="Paste CSV here, or drop a file anywhere on this box..."></textarea>
+          <div class="drop-hint" aria-hidden="true">Drop CSV file to load</div>
+        </div>
+        <p id="status" class="status" role="status" aria-live="polite"></p>
+        <div id="errors-wrap" hidden>
+          <h3>Problems found</h3>
+          <ul id="errors" class="errors"></ul>
+        </div>
+      </section>
+
+      <section class="panel chart-panel" aria-labelledby="ch-h">
+        <h2 id="ch-h">2. Chart</h2>
+        <div class="row">
+          <div class="fld">
+            <span id="type-l">Chart type</span>
+            <div class="seg" role="radiogroup" aria-labelledby="type-l" id="types"></div>
+          </div>
+          <label class="fld">X column
+            <select id="xcol"></select>
+          </label>
+          <label class="fld" id="agg-wrap">Aggregate X
+            <select id="agg">
+              <option value="none">None (one per row)</option>
+              <option value="sum">Sum</option>
+              <option value="mean">Mean</option>
+              <option value="count">Count</option>
+            </select>
+          </label>
+        </div>
+        <fieldset class="ys">
+          <legend>Y columns (numeric)</legend>
+          <div id="ycols" class="chips"></div>
+        </fieldset>
+        <div class="chart-box">
+          <div id="chart" class="chart" aria-live="off"></div>
+          <div id="tip" class="tip" role="presentation" hidden></div>
+        </div>
+        <div id="legend" class="legend"></div>
+        <p id="chart-note" class="note"></p>
+        <div class="row">
+          <button type="button" id="dl-svg" class="btn">Download SVG</button>
+          <button type="button" id="dl-png" class="btn">Download PNG</button>
+        </div>
+      </section>
+    </div>
+
+    <section class="panel preview" aria-labelledby="pv-h">
+      <h2 id="pv-h">3. Preview <span id="pv-meta" class="meta"></span></h2>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Data preview table, scrollable">
+        <table id="preview"><caption class="vh">First rows of the parsed data with detected column types</caption></table>
+      </div>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

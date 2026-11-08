@@ -1,0 +1,43 @@
+:root{--bg:#f4f3ef;--card:#fff;--ink:#1c1b19;--muted:#6b675f;--line:#d9d5cb;--accent:#2f6fdb;--accent-ink:#fff;--bad:#c0392b;
+--g1:#e9efd9;--g2:#e1e9cd;--path:rgba(47,111,219,.16);--tower-base:#4a4742;--hp-bg:#00000033}
+@media (prefers-color-scheme:dark){:root{--bg:#141517;--card:#1f2125;--ink:#ecebe7;--muted:#a09c93;--line:#35373c;--accent:#6aa2ff;--accent-ink:#0b1220;--bad:#ff7a6b;
+--g1:#26301f;--g2:#2b3624;--path:rgba(106,162,255,.18);--tower-base:#b9b5ab}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.4}
+.app{width:min(1200px,100% - 24px);margin:0 auto;padding:14px 0 72px}
+h1{margin:0;font-size:clamp(22px,4vw,32px)}
+.sub{margin:2px 0 10px;color:var(--muted);font-size:14px}
+.hud{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:6px 10px;display:flex;flex-direction:column}
+.lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.stat strong{font-size:clamp(16px,3vw,22px);font-variant-numeric:tabular-nums}
+.layout{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:12px;align-items:start}
+.stage{position:relative;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+canvas{display:block;width:100%;height:auto;aspect-ratio:8/5;touch-action:manipulation;cursor:crosshair}
+.overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:rgba(0,0,0,.62);color:#fff;text-align:center;padding:16px}
+.overlay[hidden]{display:none}
+.overlay h2{margin:0;font-size:28px}.overlay p{margin:0;max-width:34ch}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px}
+.ph{font-size:12px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin:14px 0 6px}
+.controls{display:flex;flex-wrap:wrap;gap:6px}
+button{font:inherit;font-size:14px;padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);cursor:pointer;min-height:40px}
+button:hover:not(:disabled){border-color:var(--accent)}
+button:disabled{opacity:.45;cursor:not-allowed}
+button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+.speeds{display:flex;gap:4px}
+.speeds button{padding:8px 10px}
+kbd{font:11px ui-monospace,Consolas,monospace;border:1px solid currentColor;border-radius:4px;padding:0 4px;opacity:.7}
+.shop{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.shop button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;text-align:left;padding:7px 9px}
+.shop .nm{font-weight:600;display:flex;align-items:center;gap:6px}
+.shop .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.shop .cost{font-size:12px;opacity:.8}
+.sel p{margin:4px 0;font-size:13px}
+.sel .row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.sel select{font:inherit;font-size:14px;padding:6px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);min-height:36px}
+.muted{color:var(--muted)}
+.help{font-size:12px;color:var(--muted);margin:12px 0 0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+@media (max-width:900px){.layout{grid-template-columns:1fr}.hud{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:420px){.hud{gap:6px}.shop{grid-template-columns:1fr}}

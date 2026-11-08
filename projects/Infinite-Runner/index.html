@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Infinite Runner - Seeded Procedural Terrain</title>
+  <meta name="description" content="A side-scrolling endless runner with seeded noise terrain, guaranteed-passable gaps, double jump, duck, parallax layers and shareable run seeds.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Advanced">
+  <meta name="foundry:tags" content="canvas,procedural-generation,seeded-random,parallax,touch">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <h1>Infinite Runner</h1>
+      <div class="hud" aria-label="Run status">
+        <span>Score <strong id="hudScore">0</strong></span>
+        <span>Coins <strong id="hudCoins">0</strong></span>
+        <span>Speed <strong id="hudSpeed">1.0x</strong></span>
+        <span>High <strong id="hudHigh">0</strong></span>
+      </div>
+    </header>
+
+    <div class="screen" id="screen">
+      <canvas id="game" width="720" height="320" tabindex="0" aria-label="Endless runner game. Space, W or Up jumps, press again in the air to double jump, S or Down ducks, P pauses."></canvas>
+      <div class="overlay" id="overlay" role="dialog" aria-modal="false" aria-labelledby="ovTitle">
+        <h2 id="ovTitle">Infinite Runner</h2>
+        <p id="ovText"></p>
+        <button type="button" class="btn primary" id="ovBtn">Run</button>
+      </div>
+    </div>
+
+    <div class="touch" aria-label="Touch controls">
+      <button type="button" class="tbtn" id="tDuck" aria-label="Duck">Duck</button>
+      <button type="button" class="tbtn" id="tPause" aria-label="Pause or resume">Pause</button>
+      <button type="button" class="tbtn jump" id="tJump" aria-label="Jump (press again in the air to double jump)">Jump</button>
+    </div>
+
+    <section class="seedbox" aria-label="Run seed">
+      <label for="seedIn">Seed</label>
+      <input type="text" id="seedIn" maxlength="40" spellcheck="false" autocomplete="off">
+      <button type="button" class="btn" id="seedApply">Use seed</button>
+      <button type="button" class="btn" id="seedRand">Random</button>
+      <button type="button" class="btn" id="seedCopy">Copy link</button>
+      <output id="seedMsg" class="msg" role="status"></output>
+    </section>
+    <p class="hint">Jump: Space / W / Up / tap. Double jump: press again in the air. Duck: S / Down / swipe down (hold in the air to fall faster). P pause, R restart, N new seed. The same seed always builds the same course.</p>
+    <p id="live" class="sr-only" aria-live="polite"></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

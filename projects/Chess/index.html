@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Chess with Legal Move Validation</title>
+  <meta name="description" content="A complete chess game with legal move validation, special moves, SAN move list, FEN import/export and an alpha-beta computer opponent.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Advanced">
+  <meta name="foundry:tags" content="chess,move-generation,minimax,pointer-events,fen">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header class="top">
+      <h1>Chess</h1>
+      <p class="sub">Full legal-move validation, castling, en passant, promotion and draw rules.</p>
+    </header>
+
+    <div class="game">
+      <section class="board-col" aria-label="Chess board area">
+        <div class="cap-row" id="capTop" aria-label="Captured pieces"></div>
+        <div class="stage" id="stage">
+          <div class="board" id="board" role="grid" aria-label="Chess board" aria-describedby="hint"></div>
+          <div class="promo" id="promo" role="dialog" aria-modal="true" aria-label="Choose promotion piece" hidden></div>
+        </div>
+        <div class="cap-row" id="capBottom" aria-label="Captured pieces"></div>
+        <p class="hint" id="hint">Click or drag a piece, or use the arrow keys and Enter.</p>
+      </section>
+
+      <aside class="panel">
+        <div class="status" id="status" aria-hidden="true"></div>
+        <div class="sr-only" id="live" role="status" aria-live="polite" aria-atomic="true"></div>
+
+        <div class="row buttons">
+          <button type="button" id="newBtn">New game</button>
+          <button type="button" id="undoBtn">Undo</button>
+          <button type="button" id="flipBtn">Flip board</button>
+        </div>
+
+        <div class="row opts">
+          <label>Mode
+            <select id="modeSel">
+              <option value="ai">vs Computer</option>
+              <option value="two">2 players</option>
+            </select>
+          </label>
+          <label>Play as
+            <select id="sideSel">
+              <option value="w">White</option>
+              <option value="b">Black</option>
+            </select>
+          </label>
+          <label>Level
+            <select id="levelSel">
+              <option value="1">1 - Easy</option>
+              <option value="2">2 - Medium</option>
+              <option value="3">3 - Hard</option>
+            </select>
+          </label>
+        </div>
+
+        <h2>Moves</h2>
+        <div class="row nav" role="group" aria-label="Move navigation">
+          <button type="button" id="firstBtn" aria-label="Go to start">&#9198;</button>
+          <button type="button" id="prevBtn" aria-label="Previous move">&#9664;</button>
+          <button type="button" id="nextBtn" aria-label="Next move">&#9654;</button>
+          <button type="button" id="lastBtn" aria-label="Go to latest move">&#9197;</button>
+        </div>
+        <div class="moves" id="moves" aria-label="Move list"></div>
+
+        <h2>Position (FEN)</h2>
+        <input type="text" id="fen" spellcheck="false" autocomplete="off" aria-label="FEN string">
+        <div class="row buttons">
+          <button type="button" id="loadFen">Load FEN</button>
+          <button type="button" id="copyFen">Copy FEN</button>
+        </div>
+        <p class="fenmsg" id="fenMsg" role="alert"></p>
+      </aside>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

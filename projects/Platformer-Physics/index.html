@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Platformer Physics - Tile Collision Demo</title>
+  <meta name="description" content="A canvas platformer with fixed-timestep physics, coyote time, jump buffering, per-axis AABB tile collision, moving platforms and three handcrafted levels.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Advanced">
+  <meta name="foundry:tags" content="canvas,physics,aabb-collision,game-loop,touch">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <h1>Platformer Physics</h1>
+      <nav class="levels" aria-label="Level select" id="levelNav"></nav>
+    </header>
+
+    <div class="hud" aria-label="Status">
+      <span>Level <strong id="hudLevel">1</strong></span>
+      <span>Coins <strong id="hudCoins">0/0</strong></span>
+      <span>Time <strong id="hudTime">0.00</strong></span>
+      <span>Best <strong id="hudBest">--</strong></span>
+    </div>
+
+    <div class="screen" id="screen">
+      <canvas id="game" width="480" height="272" aria-label="Platformer game view. Arrow keys or A and D move, Space or W or Up jumps, R restarts, P pauses."></canvas>
+      <div class="overlay" id="overlay" role="dialog" aria-modal="false" aria-labelledby="ovTitle">
+        <h2 id="ovTitle">Platformer Physics</h2>
+        <p id="ovText"></p>
+        <div class="ov-actions">
+          <button type="button" class="btn primary" id="ovBtn">Start</button>
+          <button type="button" class="btn" id="ovBtn2" hidden>Replay</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="touch" aria-label="Touch controls">
+      <div class="dpad">
+        <button type="button" class="tbtn" id="tLeft" aria-label="Move left">&#9664;</button>
+        <button type="button" class="tbtn" id="tRight" aria-label="Move right">&#9654;</button>
+      </div>
+      <button type="button" class="tbtn jump" id="tJump" aria-label="Jump">Jump</button>
+    </div>
+
+    <p class="hint">Move: arrows / A D. Jump: Space, W or Up (hold for higher). R restart, P pause, N next level when complete.</p>
+    <p id="live" class="sr-only" aria-live="polite"></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

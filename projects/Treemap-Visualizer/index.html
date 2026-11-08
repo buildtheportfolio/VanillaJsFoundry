@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Treemap Visualizer – Squarified Layout</title>
+<meta name="description" content="Explore hierarchical data as an SVG squarified treemap with drill-down, breadcrumbs, tooltips, colour modes and your own pasted JSON.">
+<meta name="foundry:category" content="Data Viz">
+<meta name="foundry:difficulty" content="Intermediate">
+<meta name="foundry:tags" content="treemap,svg,squarified,hierarchy,json">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header>
+    <h1>Treemap Visualizer</h1>
+    <p class="sub">Squarified treemap &middot; click a block with a <span class="dot" aria-hidden="true"></span> to drill down</p>
+  </header>
+
+  <section class="toolbar" aria-label="Treemap controls">
+    <label>Dataset
+      <select id="datasetSel"></select>
+    </label>
+    <label>Colour by
+      <select id="colorSel">
+        <option value="depth">Category / depth</option>
+        <option value="value">Value</option>
+      </select>
+    </label>
+    <button type="button" id="upBtn">Up one level</button>
+    <button type="button" id="jsonBtn" aria-expanded="false" aria-controls="jsonPanel">Edit JSON</button>
+  </section>
+
+  <nav aria-label="Breadcrumb" class="crumbs"><ol id="crumbs"></ol></nav>
+
+  <div class="stage" id="stage">
+    <svg id="map" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Treemap"></svg>
+    <div class="tip" id="tip" hidden></div>
+  </div>
+  <p class="hint">Enter / Space opens a focused block &middot; Backspace or Escape goes up &middot; Tab moves between blocks</p>
+  <p class="sr" id="status" role="status" aria-live="polite"></p>
+
+  <section class="json" id="jsonPanel" hidden>
+    <h2>Custom JSON</h2>
+    <p class="hint">Format: <code>{"name":"Root","children":[{"name":"A","value":10},{"name":"B","children":[{"name":"C","value":5}]}]}</code>. Leaves need a positive number <code>value</code>; optional <code>"unit"</code> on the root (bytes, USD, people, or any text).</p>
+    <label for="jsonText" class="sr">JSON data</label>
+    <textarea id="jsonText" rows="10" spellcheck="false"></textarea>
+    <div class="row">
+      <button type="button" id="applyBtn">Apply JSON</button>
+      <button type="button" id="fillBtn">Copy current into editor</button>
+    </div>
+    <ul id="errors" class="errors" role="alert"></ul>
+  </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>

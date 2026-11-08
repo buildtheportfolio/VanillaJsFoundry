@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Minesweeper – Safe First Click</title>
+  <meta name="description" content="Minesweeper with mines placed after your first click, flood-fill reveals, flag chording, difficulty presets, a custom board and saved best times.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Intermediate">
+  <meta name="foundry:tags" content="minesweeper,flood-fill,grid,touch,localstorage">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <h1>Minesweeper</h1>
+    <div class="bar">
+      <div class="seg" title="Mines remaining"><span class="lbl">Mines</span><strong id="mines">10</strong></div>
+      <button id="newBtn" type="button" class="face">New game</button>
+      <div class="seg" title="Elapsed time"><span class="lbl">Time</span><strong id="time">0</strong></div>
+    </div>
+    <div class="settings">
+      <label>Difficulty
+        <select id="preset">
+          <option value="beginner">Beginner 9×9, 10</option>
+          <option value="intermediate">Intermediate 16×16, 40</option>
+          <option value="expert">Expert 30×16, 99</option>
+          <option value="custom">Custom…</option>
+        </select>
+      </label>
+      <button id="flagMode" type="button" aria-pressed="false">Flag mode: off</button>
+    </div>
+    <form id="customForm" class="custom" hidden>
+      <label>Width <input id="cw" type="number" min="5" max="40" value="12" inputmode="numeric"></label>
+      <label>Height <input id="ch" type="number" min="5" max="30" value="12" inputmode="numeric"></label>
+      <label>Mines <input id="cm" type="number" min="1" value="20" inputmode="numeric"></label>
+      <button type="submit">Apply</button>
+      <p id="customErr" class="err" role="alert"></p>
+    </form>
+    <div id="boardWrap" class="board-wrap">
+      <div id="board" class="board" role="grid" aria-label="Minesweeper board"></div>
+    </div>
+    <p id="status" class="status" role="status" aria-live="polite">Click any square to start. Your first click is always safe.</p>
+    <p class="hint">Click reveals. Right-click, F or long-press flags. Click or press Space on a number with enough flags to chord. Arrow keys move.</p>
+    <section class="best" aria-labelledby="bestH">
+      <h2 id="bestH">Best times</h2>
+      <ul id="bestList"></ul>
+    </section>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

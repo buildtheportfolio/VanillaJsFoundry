@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Nonogram — Picture Logic Puzzles</title>
+  <meta name="description" content="Paint-by-numbers logic puzzles from 5x5 to 15x15, every one provably solvable by pure deduction, with drag painting, undo/redo, a timer and saved progress.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Intermediate">
+  <meta name="foundry:tags" content="puzzle,logic,drag,undo-redo,localStorage">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <header>
+      <h1>Nonogram</h1>
+      <p class="sub">Numbers tell you the lengths of the filled runs in each row and column. Fill the grid to reveal a hidden picture.</p>
+    </header>
+
+    <section class="picker" aria-label="Choose a puzzle">
+      <div class="pick-list" id="pickList"></div>
+    </section>
+
+    <section class="bar" aria-label="Puzzle status">
+      <div class="stat"><span class="k">Puzzle</span><span class="v" id="pName">&ndash;</span></div>
+      <div class="stat"><span class="k">Time</span><span class="v" id="timer">0:00</span></div>
+      <div class="stat"><span class="k">Filled</span><span class="v" id="count">0/0</span></div>
+    </section>
+
+    <div class="modes" role="radiogroup" aria-label="Paint mode">
+      <button type="button" role="radio" class="mode" data-mode="fill" aria-checked="true" title="Fill (F)">Fill</button>
+      <button type="button" role="radio" class="mode" data-mode="cross" aria-checked="false" title="Cross out (X)">Cross</button>
+      <button type="button" role="radio" class="mode" data-mode="clear" aria-checked="false" title="Clear (C)">Clear</button>
+    </div>
+
+    <div class="stage" id="stage">
+      <div class="scroller" id="scroller">
+        <div class="puzzle" id="puzzle">
+          <div class="corner" id="corner"></div>
+          <div class="colclues" id="colClues"></div>
+          <div class="rowclues" id="rowClues"></div>
+          <div class="cells" id="cells" tabindex="0" role="application" aria-label="Nonogram grid. Arrow keys move, space paints with the current mode."></div>
+        </div>
+      </div>
+    </div>
+
+    <p class="status" id="status" role="status" aria-live="polite"></p>
+
+    <div class="actions">
+      <button type="button" id="undo" title="Undo (Z)">Undo</button>
+      <button type="button" id="redo" title="Redo (Y)">Redo</button>
+      <button type="button" id="check" title="Highlight mistakes">Check mistakes</button>
+      <button type="button" id="reset" title="Clear the whole grid">Reset</button>
+    </div>
+
+    <p class="help">Drag to paint several cells. Keys: F fill, X cross, C clear, arrows + space to paint, Z undo, Y redo. Right-click or hold Shift to cross.</p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

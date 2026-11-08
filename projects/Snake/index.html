@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Snake – Classic Grid Game</title>
+  <meta name="description" content="Classic Snake with a wrap-around or walled arena, five speed levels, swipe and keyboard controls, pause and a saved high score.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Beginner">
+  <meta name="foundry:tags" content="snake,canvas,game,keyboard,touch">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="app">
+    <h1>Snake</h1>
+    <div class="stats" aria-label="Scores">
+      <div><span class="lbl">Score</span><strong id="score">0</strong></div>
+      <div><span class="lbl">High score</span><strong id="best">0</strong></div>
+      <div><span class="lbl">Length</span><strong id="length">3</strong></div>
+    </div>
+    <div class="board-wrap">
+      <canvas id="board" width="400" height="400" aria-label="Snake game board"></canvas>
+      <div id="overlay" class="overlay" role="dialog" aria-labelledby="ovTitle">
+        <h2 id="ovTitle">Snake</h2>
+        <p id="ovMsg">Arrow keys or WASD to steer. Swipe on touch screens.</p>
+        <button id="startBtn" type="button">Start game</button>
+      </div>
+    </div>
+    <div class="controls">
+      <label>Speed
+        <select id="speed">
+          <option value="1">1 – Slow</option>
+          <option value="2" selected>2 – Normal</option>
+          <option value="3">3 – Fast</option>
+          <option value="4">4 – Faster</option>
+          <option value="5">5 – Insane</option>
+        </select>
+      </label>
+      <label>Edges
+        <select id="mode">
+          <option value="wrap">Wrap around</option>
+          <option value="walls">Deadly walls</option>
+        </select>
+      </label>
+      <button id="pauseBtn" type="button">Pause</button>
+    </div>
+    <p class="hint">Space / P pauses. High scores are kept separately for each edge mode and speed.</p>
+    <p id="live" class="sr" aria-live="polite"></p>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

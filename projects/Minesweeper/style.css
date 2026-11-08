@@ -1,0 +1,41 @@
+:root{--bg:#eef1f5;--panel:#fff;--text:#1d2630;--muted:#5d6b7a;--accent:#2563eb;--accent-text:#fff;--border:#c5cfda;--hidden:#c9d3de;--hidden-hi:#dbe3ec;--open:#f8fafc;--bad:#dc2626;--good:#16a34a;--n1:#1d4ed8;--n2:#15803d;--n3:#dc2626;--n4:#6d28d9;--n5:#b45309;--n6:#0e7490;--n7:#111827;--n8:#6b7280}
+@media (prefers-color-scheme:dark){:root{--bg:#10151b;--panel:#1a222b;--text:#e6edf3;--muted:#93a1b0;--accent:#60a5fa;--accent-text:#06142b;--border:#33414f;--hidden:#3a4857;--hidden-hi:#4a5a6b;--open:#141b22;--bad:#f87171;--good:#4ade80;--n1:#60a5fa;--n2:#4ade80;--n3:#f87171;--n4:#c4b5fd;--n5:#fbbf24;--n6:#22d3ee;--n7:#e5e7eb;--n8:#9ca3af}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center;padding:16px 12px 64px}
+.app{width:100%;max-width:960px;display:flex;flex-direction:column;gap:12px;align-items:center;min-width:0}
+h1{margin:0;font-size:1.7rem}
+h2{margin:0 0 6px;font-size:1rem}
+.bar{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap}
+.seg{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:4px 14px;text-align:center;min-width:76px}
+.lbl{display:block;font-size:.65rem;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.seg strong{font-size:1.4rem;font-variant-numeric:tabular-nums;font-family:ui-monospace,Consolas,monospace}
+.settings,.custom{display:flex;gap:10px;flex-wrap:wrap;align-items:end;justify-content:center}
+.custom[hidden]{display:none}
+label{display:flex;flex-direction:column;gap:2px;font-size:.75rem;color:var(--muted)}
+input,select,button{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 10px;min-height:40px}
+input[type=number]{width:80px}
+button{cursor:pointer;font-weight:600}
+.face,button[type=submit]{background:var(--accent);color:var(--accent-text);border-color:transparent}
+#flagMode[aria-pressed=true]{background:var(--accent);color:var(--accent-text)}
+:is(button,select,input):focus-visible{outline:3px solid var(--text);outline-offset:2px}
+.err{margin:0;color:var(--bad);font-size:.8rem;flex-basis:100%;text-align:center}
+.err:empty{display:none}
+.board-wrap{max-width:100%;overflow:auto;padding:6px;background:var(--panel);border:1px solid var(--border);border-radius:10px}
+.board{--cs:32px;display:grid;gap:2px;width:max-content;margin:0 auto;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
+.cell{width:var(--cs);height:var(--cs);padding:0;min-height:0;border-radius:4px;border:0;background:var(--hidden);color:var(--text);font-weight:800;font-size:calc(var(--cs)*.55);line-height:1;display:flex;align-items:center;justify-content:center;font-family:ui-monospace,Consolas,monospace;touch-action:manipulation}
+.cell:hover{background:var(--hidden-hi)}
+.cell.open{background:var(--open);cursor:default}
+.cell.open[data-n="0"]{cursor:default}
+.cell.flag{color:var(--bad)}
+.cell.mine{background:var(--hidden);color:var(--text)}
+.cell.boom{background:var(--bad);color:#fff}
+.cell.wrong{background:var(--hidden);color:var(--muted);text-decoration:line-through}
+.cell.won{color:var(--good)}
+.cell:focus-visible{outline:3px solid var(--accent);outline-offset:-1px;z-index:1}
+.cell[data-n="1"]{color:var(--n1)}.cell[data-n="2"]{color:var(--n2)}.cell[data-n="3"]{color:var(--n3)}.cell[data-n="4"]{color:var(--n4)}.cell[data-n="5"]{color:var(--n5)}.cell[data-n="6"]{color:var(--n6)}.cell[data-n="7"]{color:var(--n7)}.cell[data-n="8"]{color:var(--n8)}
+.status{margin:0;min-height:1.4em;font-weight:600;text-align:center}
+.status.win{color:var(--good)}.status.lose{color:var(--bad)}
+.hint{margin:0;font-size:.8rem;color:var(--muted);text-align:center;max-width:560px}
+.best{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:10px 16px;min-width:240px}
+.best ul{list-style:none;margin:0;padding:0;font-size:.9rem}
+.best li{display:flex;justify-content:space-between;gap:16px;padding:2px 0}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Live Candlestick Chart – Simulated OHLC Feed</title>
+<meta name="description" content="A canvas candlestick chart with volume bars fed by a seeded random-walk market simulator, with timeframe aggregation, crosshair, zoom, pan and moving averages.">
+<meta name="foundry:category" content="Data Viz">
+<meta name="foundry:difficulty" content="Advanced">
+<meta name="foundry:tags" content="canvas,candlestick,real-time,pan-zoom,finance">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main class="app">
+  <header class="top">
+    <div>
+      <h1>Live Candlestick Chart</h1>
+      <p class="sub">Simulated feed &middot; <span id="symbol">SIM/USD</span> &middot; seed <span id="seedLabel">42</span></p>
+    </div>
+    <div class="quote" aria-label="Latest quote">
+      <span class="price" id="lastPrice">&ndash;</span>
+      <span class="chg" id="chg">&ndash;</span>
+    </div>
+  </header>
+
+  <section class="toolbar" aria-label="Chart controls">
+    <div class="group" role="radiogroup" aria-label="Timeframe" id="tfGroup">
+      <button type="button" role="radio" data-tf="1" aria-checked="false">1s</button>
+      <button type="button" role="radio" data-tf="5" aria-checked="false">5s</button>
+      <button type="button" role="radio" data-tf="15" aria-checked="false">15s</button>
+      <button type="button" role="radio" data-tf="60" aria-checked="false">1m</button>
+    </div>
+    <label class="chk"><input type="checkbox" id="smaToggle"> <span class="sw sma"></span>SMA 20</label>
+    <label class="chk"><input type="checkbox" id="emaToggle"> <span class="sw ema"></span>EMA 20</label>
+    <button type="button" id="pauseBtn" aria-pressed="false">Pause</button>
+    <button type="button" id="latestBtn">Latest</button>
+    <label class="seed">Seed <input type="number" id="seedInput" min="1" max="999999" value="42"></label>
+    <button type="button" id="restartBtn">Restart</button>
+  </section>
+
+  <div class="chartwrap" id="chartWrap">
+    <canvas id="chart" tabindex="0" role="img" aria-label="Candlestick chart. Arrow keys pan, plus and minus zoom, space pauses, Home jumps to latest."></canvas>
+    <div class="tip" id="tip" hidden></div>
+    <div class="empty" id="empty" hidden>Canvas is not supported in this browser.</div>
+  </div>
+  <p class="hint">Wheel or pinch to zoom &middot; drag to pan &middot; arrows / +/- / Space / Home from keyboard</p>
+  <p class="sr" id="status" role="status" aria-live="polite"></p>
+
+  <section class="log" aria-label="Recent ticks">
+    <h2>Last ticks</h2>
+    <ol id="tickLog"></ol>
+  </section>
+</main>
+<script src="script.js"></script>
+</body>
+</html>

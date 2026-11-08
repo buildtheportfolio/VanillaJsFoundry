@@ -1,0 +1,25 @@
+:root{--bg:#f4f6f8;--panel:#fff;--text:#1d2630;--muted:#5d6b7a;--accent:#16a34a;--accent-text:#fff;--grid:#e6ebf0;--snake:#16a34a;--head:#0f7a37;--food:#e11d48;--border:#cfd8e0}
+@media (prefers-color-scheme:dark){:root{--bg:#10151b;--panel:#1a222b;--text:#e6edf3;--muted:#93a1b0;--accent:#22c55e;--accent-text:#04210f;--grid:#212b36;--snake:#22c55e;--head:#86efac;--food:#fb7185;--border:#33414f}}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;justify-content:center;padding:16px 12px 64px}
+.app{width:100%;max-width:440px;display:flex;flex-direction:column;gap:12px}
+h1{margin:0;font-size:1.7rem;text-align:center}
+.stats{display:flex;gap:8px}
+.stats div{flex:1;background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:6px 8px;text-align:center}
+.lbl{display:block;font-size:.7rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+.stats strong{font-size:1.3rem;font-variant-numeric:tabular-nums}
+.board-wrap{position:relative;width:100%;aspect-ratio:1;border:2px solid var(--border);border-radius:10px;overflow:hidden;background:var(--panel);touch-action:none}
+canvas{display:block;width:100%;height:100%;touch-action:none}
+.overlay{position:absolute;inset:0;background:color-mix(in srgb,var(--bg) 82%,transparent);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;text-align:center;padding:16px}
+.overlay[hidden]{display:none}
+.overlay h2{margin:0;font-size:1.5rem}
+.overlay p{margin:0;color:var(--muted)}
+button,select{font:inherit;color:var(--text);background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 12px;min-height:40px}
+button{cursor:pointer;background:var(--accent);color:var(--accent-text);border-color:transparent;font-weight:600}
+#pauseBtn{background:var(--panel);color:var(--text);border-color:var(--border)}
+button:disabled{opacity:.5;cursor:not-allowed}
+:is(button,select):focus-visible{outline:3px solid var(--text);outline-offset:2px}
+.controls{display:flex;flex-wrap:wrap;gap:8px;align-items:end}
+.controls label{display:flex;flex-direction:column;gap:2px;font-size:.75rem;color:var(--muted);flex:1;min-width:100px}
+.hint{margin:0;font-size:.8rem;color:var(--muted);text-align:center}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

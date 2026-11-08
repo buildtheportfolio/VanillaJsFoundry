@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cellular Automaton Explorer - Life Rules Lab</title>
+  <meta name="description" content="Explore Conway Life, B/S rule strings like HighLife and Seeds, and 1D elementary rules 0-255 on a pannable, zoomable canvas with a pattern library.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Intermediate">
+  <meta name="foundry:tags" content="canvas,cellular-automata,typed-arrays,pan-zoom,simulation">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="top">
+      <h1>Cellular Automaton Explorer</h1>
+      <p class="sub">Life-like B/S rules and 1D elementary rules on a flat <code>Uint8Array</code> grid.</p>
+    </header>
+
+    <main class="layout">
+      <section class="stage" aria-label="Simulation">
+        <div class="toolbar" role="toolbar" aria-label="Simulation controls">
+          <button type="button" class="btn primary" id="playBtn" aria-pressed="false">Play</button>
+          <button type="button" class="btn" id="stepBtn">Step</button>
+          <button type="button" class="btn" id="randBtn">Random</button>
+          <button type="button" class="btn" id="clearBtn">Clear</button>
+          <label class="check"><input type="checkbox" id="wrapChk" checked> Wrap edges</label>
+          <label class="speed">Speed <input type="range" id="speed" min="1" max="120" value="20" aria-describedby="speedVal"> <output id="speedVal">20 gen/s</output></label>
+        </div>
+        <div class="canvas-wrap" id="wrap">
+          <canvas id="board" tabindex="0" aria-label="Cellular automaton grid. Space plays or pauses, S steps, arrow keys pan, plus and minus zoom."></canvas>
+        </div>
+        <div class="stats" aria-label="Statistics">
+          <span>Generation <strong id="genOut">0</strong></span>
+          <span>Population <strong id="popOut">0</strong></span>
+          <span>Grid <strong id="sizeOut">128x128</strong></span>
+          <span>Zoom <strong id="zoomOut">1x</strong></span>
+        </div>
+        <p class="hint">Draw: drag (right-drag erases). Pan: Shift-drag, middle button, or Pan tool. Zoom: wheel, pinch, + / -. Keys: Space play, S step, R random, C clear, F fit, T rotate pattern.</p>
+      </section>
+
+      <aside class="panel" aria-label="Settings">
+        <div class="group">
+          <h2>Mode</h2>
+          <div class="seg" role="group" aria-label="Mode">
+            <button type="button" class="btn" id="modeLife" aria-pressed="true">2D Life-like</button>
+            <button type="button" class="btn" id="modeElem" aria-pressed="false">1D Elementary</button>
+          </div>
+        </div>
+
+        <div class="group" id="lifePanel">
+          <h2>Rule (B/S)</h2>
+          <label for="presetSel" class="lbl">Preset</label>
+          <select id="presetSel"></select>
+          <label for="ruleInput" class="lbl">Rule string</label>
+          <input type="text" id="ruleInput" value="B3/S23" spellcheck="false" autocomplete="off" aria-describedby="ruleMsg">
+          <p id="ruleMsg" class="msg" role="status">Birth on neighbour counts after B, survive on counts after S.</p>
+        </div>
+
+        <div class="group" id="elemPanel" hidden>
+          <h2>Elementary rule</h2>
+          <label for="elemInput" class="lbl">Rule number (0-255)</label>
+          <input type="number" id="elemInput" min="0" max="255" step="1" value="30" aria-describedby="elemMsg">
+          <label for="elemPreset" class="lbl">Famous rules</label>
+          <select id="elemPreset"></select>
+          <div class="bits" id="bits" role="group" aria-label="Rule table: click to toggle outcome"></div>
+          <p id="elemMsg" class="msg">Each button is a left-centre-right neighbourhood and the next cell it produces. Each generation becomes a new row.</p>
+        </div>
+
+        <div class="group">
+          <h2>Tools</h2>
+          <div class="seg" role="group" aria-label="Pointer tool" id="tools">
+            <button type="button" class="btn" data-tool="draw" aria-pressed="true">Draw</button>
+            <button type="button" class="btn" data-tool="erase" aria-pressed="false">Erase</button>
+            <button type="button" class="btn" data-tool="stamp" aria-pressed="false" id="stampTool">Stamp</button>
+            <button type="button" class="btn" data-tool="pan" aria-pressed="false">Pan</button>
+          </div>
+          <div class="seg">
+            <button type="button" class="btn small" id="zoomOutBtn" aria-label="Zoom out">-</button>
+            <button type="button" class="btn small" id="zoomInBtn" aria-label="Zoom in">+</button>
+            <button type="button" class="btn small" id="fitBtn">Fit</button>
+          </div>
+          <label for="sizeSel" class="lbl">Grid size</label>
+          <select id="sizeSel">
+            <option value="64">64 x 64</option>
+            <option value="128" selected>128 x 128</option>
+            <option value="256">256 x 256</option>
+          </select>
+        </div>
+
+        <div class="group" id="patPanel">
+          <h2>Patterns</h2>
+          <p class="msg">Pick one, then click the grid with the Stamp tool.</p>
+          <div class="pats" id="pats" role="group" aria-label="Pattern library"></div>
+          <button type="button" class="btn small" id="rotBtn">Rotate pattern</button>
+        </div>
+      </aside>
+    </main>
+    <p id="live" class="sr-only" aria-live="polite"></p>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
