@@ -352,7 +352,7 @@ function buildCalendar() {
       r.setAttribute("data-level", level);
       r.setAttribute("class", "hm-cell");
       r.setAttribute("aria-label", `${key}: ${val} ${MODES[state.mode].unit}`);
-      r.setAttribute("role", "gridcell");
+      r.setAttribute("role", "img");
       r.setAttribute("tabindex", "0");
 
       if (key === todayKey) {
@@ -1248,19 +1248,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   try {
     const [userRes, eventsRes] = await Promise.all([
-      fetch(`https://api.github.com/users/${username}`),
-      fetch(`https://api.github.com/users/${username}/events?per_page=100`),
+      fetch(`https://api.github.com/users/${encodeURIComponent(username)}`),
+      fetch(`https://api.github.com/users/${encodeURIComponent(username)}/events?per_page=100`),
     ]);
 
-    if (!userRes.ok) throw new Error("User not found");
+    if (!userRes.ok) throw new Error(userRes.status === 404 ? "User not found" : "GitHub API unavailable (rate limit?)");
+    if (!eventsRes.ok) throw new Error("Could not load events (rate limit?)");
     const userData = await userRes.json();
     const events = await eventsRes.json();
+    if (!Array.isArray(events)) throw new Error("Unexpected GitHub response");
 
     nameEl.textContent = userData.name || userData.login;
     handle.textContent = `@${userData.login} · ${userData.bio || "GitHub User"}`;
-    if (userData.avatar_url) {
+    if (typeof userData.avatar_url === "string" && /^https:\/\//.test(userData.avatar_url)) {
       const av = document.getElementById("avatarEl");
-      av.style.backgroundImage = `url(${userData.avatar_url})`;
+      av.style.backgroundImage = `url(${JSON.stringify(userData.avatar_url)})`;
       av.style.backgroundSize = "cover";
       av.textContent = "";
     }
@@ -1272,7 +1274,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (date.getFullYear() !== state.year) return;
       const key = dateKey(date);
       let weight = 1;
-      if (ev.type === "PushEvent") weight = ev.payload.size || 1;
+      if (ev.type === "PushEvent") {
+        const n = Number(ev.payload && ev.payload.size);
+        weight = Number.isFinite(n) && n > 0 ? Math.min(Math.floor(n), 1000) : 1;
+      }
       if (ev.type === "PullRequestEvent") weight = 5;
       if (ev.type === "IssuesEvent") weight = 3;
       newData[key] = (newData[key] || 0) + weight;
@@ -1286,7 +1291,7 @@ document.addEventListener("DOMContentLoaded", () => {
   } catch (err) {
     console.error(err);
     handle.textContent = "Error: " + err.message;
-    btn.textContent = "!";
+    btn.textContent = "Sync";
   } finally {
     btn.disabled = false;
   }

@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Clayboard — Kanban</title>
+    <title>Clayboard — Drag-to-Reorder Kanban Board</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237c3aed'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3EC%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="A drag-to-reorder Kanban board with columns, cards, checklists and WIP limits, saved in your browser." />
+    <meta name="foundry:category" content="DOM & UI" />
+    <meta name="foundry:difficulty" content="Advanced" />
+    <meta name="foundry:tags" content="kanban,drag-and-drop,localstorage,dom,productivity" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +18,10 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
     <div class="app" id="app">
+      <h1 class="sr-only">Clayboard — Drag-to-Reorder Kanban Board</h1>
       <header class="topbar">
         <div class="tb-left">
           <div class="brand">

@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Time-Travel Debugger: Redux-style State Snapshots</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23d97706'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3ET%3C/text%3E%3C/svg%3E">
+  <meta name="description" content="A from-scratch Redux-like store that records every action as an immutable snapshot, with a debugger to scrub, replay, branch, diff and export state history.">
+  <meta name="foundry:category" content="Storage & State">
+  <meta name="foundry:difficulty" content="Advanced">
+  <meta name="foundry:tags" content="redux,state,undo,debugger,snapshots">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+  <header class="top">
+    <h1>Time-Travel Debugger</h1>
+    <p class="sub">A tiny Redux-style store records every action as an immutable snapshot. Use the task board, then scrub, replay, branch and diff its history.</p>
+  </header>
+  <div id="notices" class="notice" role="status" aria-live="polite"></div>
+
+  <main class="layout">
+    <section class="panel app" aria-labelledby="appTitle">
+      <h2 id="appTitle">Demo app: task board</h2>
+      <form id="addForm" class="addform" novalidate>
+        <label for="newTitle" class="sr">New task title</label>
+        <input id="newTitle" type="text" maxlength="80" placeholder="New task title" autocomplete="off">
+        <button type="submit" class="btn primary">Add task</button>
+        <button type="button" id="btnDemo" class="btn">Add 3 demo tasks</button>
+      </form>
+      <p id="addHint" class="hint" role="alert"></p>
+      <div class="toolbar">
+        <span class="lbl">Show</span>
+        <button type="button" class="btn small" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="btn small" data-filter="starred" aria-pressed="false">Starred</button>
+        <button type="button" id="btnClearDone" class="btn small">Clear done</button>
+      </div>
+      <p id="appEmpty" class="empty"></p>
+      <div id="board" class="board"></div>
+      <p id="mwStats" class="hint"></p>
+    </section>
+
+    <aside class="dock" aria-label="Debugger">
+      <section class="panel transport" aria-labelledby="tTitle">
+        <h2 id="tTitle">Timeline controls</h2>
+        <div class="tbtns">
+          <button type="button" id="btnFirst" class="btn icon" aria-label="First snapshot">|&lt;</button>
+          <button type="button" id="btnPrev" class="btn icon" aria-label="Step back">&lt;</button>
+          <button type="button" id="btnPlay" class="btn primary" aria-pressed="false">Play</button>
+          <button type="button" id="btnNext" class="btn icon" aria-label="Step forward">&gt;</button>
+          <button type="button" id="btnLast" class="btn icon" aria-label="Latest snapshot">&gt;|</button>
+          <label class="speed">Speed
+            <select id="speed">
+              <option value="0.5">0.5x</option>
+              <option value="1" selected>1x</option>
+              <option value="2">2x</option>
+              <option value="4">4x</option>
+            </select>
+          </label>
+        </div>
+        <label for="slider" class="sr">Timeline position</label>
+        <input id="slider" type="range" min="0" max="0" value="0" step="1">
+        <p id="pos" class="pos"></p>
+        <p id="travelBanner" class="travel" hidden></p>
+        <p class="keys" aria-label="Keyboard shortcuts">
+          <kbd>&larr;</kbd><kbd>&rarr;</kbd> step
+          <kbd>Home</kbd><kbd>End</kbd> first/last
+          <kbd>Space</kbd> play/pause
+          <kbd>Ctrl/Cmd+Z</kbd> back
+          <kbd>Shift+Ctrl/Cmd+Z</kbd> forward
+        </p>
+      </section>
+
+      <details class="panel" open>
+        <summary><h2>Action log</h2></summary>
+        <ol id="timeline" class="timeline"></ol>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>Branches</h2> <span id="branchCount" class="badge"></span></summary>
+        <p class="hint">Dispatching while time-travelling forks history. Click a node or branch to switch.</p>
+        <div id="graph" class="graph"></div>
+        <ul id="branches" class="chips"></ul>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>State diff</h2> <span id="diffSummary" class="badge"></span></summary>
+        <div class="diffsel">
+          <label>From <select id="diffFromSel"></select></label>
+          <label>To <select id="diffToSel"></select></label>
+          <button type="button" id="diffReset" class="btn small">Compare with previous</button>
+        </div>
+        <ul id="diffOut" class="diff"></ul>
+      </details>
+
+      <details class="panel">
+        <summary><h2>State inspector</h2></summary>
+        <div class="tbar">
+          <button type="button" id="btnExpand" class="btn small">Expand all</button>
+          <button type="button" id="btnCollapse" class="btn small">Collapse all</button>
+        </div>
+        <div id="inspector" class="inspector"></div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>Session</h2></summary>
+        <p id="sessionInfo" class="hint"></p>
+        <p id="trimNotice" class="trim" role="status" hidden></p>
+        <p id="saveInfo" class="hint"></p>
+        <p id="restoreInfo" class="hint" hidden></p>
+        <div class="tbar">
+          <button type="button" id="btnExport" class="btn small">Export JSON</button>
+          <button type="button" id="btnImport" class="btn small">Import JSON</button>
+          <button type="button" id="btnClear" class="btn small danger">Clear history</button>
+          <input id="fileIn" type="file" accept="application/json,.json" hidden>
+        </div>
+        <div id="importErrors" class="errbox" role="alert" hidden></div>
+      </details>
+
+      <details class="panel">
+        <summary><h2>Self-test</h2> <span id="testSummary"></span></summary>
+        <ul id="testList" class="tests"></ul>
+        <button type="button" id="btnRerun" class="btn small">Re-run</button>
+      </details>
+    </aside>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

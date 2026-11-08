@@ -45,7 +45,7 @@ let findMatches = [],
 let lastSavedContent = "";
 let pasteMode = "smart";
 
-const INITIAL_HTML = `<h1>Welcome to Quill</h1><p>This editor is built entirely on the <strong>Selection &amp; Range API</strong> — no <code>execCommand</code>, ever. Every formatting operation directly manipulates the DOM.</p><h2>What makes it special</h2><p>Inline formatting works by programmatically <em>wrapping selected text nodes</em> in elements like <code>&lt;strong&gt;</code>, splitting text nodes at selection boundaries and handling partial overlaps, nested formats, and toggle-off correctly.</p><blockquote>Try selecting any text above and using the floating toolbar, or the main toolbar at the top.</blockquote><h3>Try these features</h3><ul><li>Select text → floating toolbar appears</li><li>Bold, italic, underline, code, highlight, links</li><li>Undo / Redo with full history (Ctrl+Z / Ctrl+Y)</li><li>Find &amp; Replace (Ctrl+F)</li><li>Clean HTML export — no inline styles mess</li></ul><p>The paste handler strips dangerous HTML while preserving meaningful formatting. Try pasting content from any web page.</p>`;
+const INITIAL_HTML = `<h2>Welcome to Quill</h2><p>This editor is built entirely on the <strong>Selection &amp; Range API</strong> — no <code>execCommand</code>, ever. Every formatting operation directly manipulates the DOM.</p><h2>What makes it special</h2><p>Inline formatting works by programmatically <em>wrapping selected text nodes</em> in elements like <code>&lt;strong&gt;</code>, splitting text nodes at selection boundaries and handling partial overlaps, nested formats, and toggle-off correctly.</p><blockquote>Try selecting any text above and using the floating toolbar, or the main toolbar at the top.</blockquote><h3>Try these features</h3><ul><li>Select text → floating toolbar appears</li><li>Bold, italic, underline, code, highlight, links</li><li>Undo / Redo with full history (Ctrl+Z / Ctrl+Y)</li><li>Find &amp; Replace (Ctrl+F)</li><li>Clean HTML export — no inline styles mess</li></ul><p>The paste handler strips dangerous HTML while preserving meaningful formatting. Try pasting content from any web page.</p>`;
 
 function getEl(id) {
   return document.getElementById(id);
@@ -68,19 +68,19 @@ function el(tag, attrs = {}, ...children) {
   return e;
 }
 
-function getSelection() {
+function getSel() {
   return window.getSelection();
 }
 
 function getRange() {
-  const sel = getSelection();
+  const sel = getSel();
   if (!sel || !sel.rangeCount) return null;
   return sel.getRangeAt(0);
 }
 
 function restoreRange(range) {
   if (!range) return;
-  const sel = getSelection();
+  const sel = getSel();
   sel.removeAllRanges();
   sel.addRange(range);
 }
@@ -148,7 +148,7 @@ function getInlineAncestor(node, tagName) {
 function isFormatActive(tagName) {
   const range = getRange();
   if (!range || range.collapsed) {
-    const sel = getSelection();
+    const sel = getSel();
     const anchor = sel?.anchorNode;
     if (!anchor) return false;
     return !!getInlineAncestor(anchor, tagName);
@@ -496,9 +496,8 @@ function applyList(type) {
 
   if (block && block.parentNode && LIST_TAGS.has(block.parentNode.tagName)) {
     if (block.parentNode.tagName === listTag) {
-      const textContent = block.innerHTML;
       const p = document.createElement("p");
-      p.innerHTML = textContent;
+      while (block.firstChild) p.appendChild(block.firstChild);
       block.parentNode.parentNode.insertBefore(p, block.parentNode.nextSibling);
       if (!block.parentNode.firstChild)
         block.parentNode.parentNode.removeChild(block.parentNode);
@@ -517,7 +516,7 @@ function applyList(type) {
     if (existingList) {
       const newList = document.createElement(listTag.toLowerCase());
       const li = document.createElement("li");
-      li.innerHTML = block.innerHTML;
+      while (block.firstChild) li.appendChild(block.firstChild);
       newList.appendChild(li);
       existingList.parentNode.insertBefore(newList, existingList.nextSibling);
       existingList.parentNode.removeChild(existingList);
@@ -525,7 +524,7 @@ function applyList(type) {
     } else {
       const list = document.createElement(listTag.toLowerCase());
       const li = document.createElement("li");
-      li.innerHTML = block.innerHTML;
+      while (block.firstChild) li.appendChild(block.firstChild);
       list.appendChild(li);
       block.parentNode.replaceChild(list, block);
       placeCaretIn(li);
@@ -581,6 +580,7 @@ function insertLink(url, text, newTab) {
   saveHistory();
   restoreRange(range);
 
+  if (!isSafeUrl(url)) return;
   const a = document.createElement("a");
   a.href = url;
   if (newTab) {
@@ -645,7 +645,7 @@ function removeLink() {
 }
 
 function insertImage(url, alt, caption) {
-  if (!url) return;
+  if (!url || !isSafeUrl(url, false)) return;
   const range = savedSelection || getRange();
   if (!range) return;
   saveHistory();
@@ -684,7 +684,7 @@ function insertHR() {
     getBlockAncestor(range.startContainer) || editorEl.lastElementChild;
   const hr = document.createElement("hr");
   const p = document.createElement("p");
-  p.innerHTML = "<br/>";
+  p.appendChild(document.createElement("br"));
   if (block && block.parentNode) {
     block.parentNode.insertBefore(hr, block.nextSibling);
     block.parentNode.insertBefore(p, hr.nextSibling);
@@ -718,7 +718,7 @@ function insertTable(rows = 3, cols = 3) {
     for (let c = 0; c < cols; c++) {
       const td = document.createElement("td");
       td.setAttribute("contenteditable", "true");
-      td.innerHTML = "<br/>";
+      td.appendChild(document.createElement("br"));
       tr.appendChild(td);
     }
     tbody.appendChild(tr);
@@ -776,7 +776,7 @@ function placeCaretAtEnd(el) {
   const range = document.createRange();
   range.selectNodeContents(el);
   range.collapse(false);
-  const sel = getSelection();
+  const sel = getSel();
   sel.removeAllRanges();
   sel.addRange(range);
 }
@@ -1019,7 +1019,7 @@ function getAbsoluteOffset(node, offset) {
 function updateFloatingToolbar() {
   const ft = getEl("floatingToolbar");
   if (!ft) return;
-  const sel = getSelection();
+  const sel = getSel();
   if (
     !sel ||
     sel.isCollapsed ||
@@ -1106,7 +1106,7 @@ function showLinkModal(existingAnchor) {
 
   const confirm = () => {
     const url = urlInput.value.trim();
-    if (!url) return;
+    if (!url || !isSafeUrl(url)) return;
     if (existingAnchor) {
       existingAnchor.href = url;
       existingAnchor.textContent = txtInput.value || url;
@@ -1174,41 +1174,46 @@ function showImageModal() {
   }
 }
 
-function cleanPastedHTML(html) {
-  const div = document.createElement("div");
-  div.innerHTML = html;
+function escapeHtml(str) {
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function isSafeUrl(url, allowMailto = true) {
+  const v = String(url).replace(/[\u0000-\u0020\u007f-\u009f]/g, "");
+  if (/^https?:/i.test(v)) return true;
+  if (allowMailto && /^(mailto|tel):/i.test(v)) return true;
+  return !/^[a-z][a-z0-9+.-]*:/i.test(v);
+}
+
+function htmlToFragment(html) {
+  const doc = new DOMParser().parseFromString(String(html), "text/html");
+  const frag = document.createDocumentFragment();
+  while (doc.body.firstChild)
+    frag.appendChild(document.importNode(doc.body.firstChild, true));
+  return frag;
+}
+
+// Whitelist sanitiser. Parses into an inert document (no script/handler
+// execution), keeps only safe tags/attributes and returns an HTML string.
+// restore=true is used for stored/loaded editor content and keeps editor
+// structure (classes, DIV/SUP/SUB, contenteditable cells).
+function cleanPastedHTML(html, restore = false) {
+  const root = new DOMParser().parseFromString(String(html), "text/html").body;
   const allowedTags = new Set([
-    "P",
-    "H1",
-    "H2",
-    "H3",
-    "H4",
-    "BLOCKQUOTE",
-    "PRE",
-    "CODE",
-    "STRONG",
-    "B",
-    "EM",
-    "I",
-    "U",
-    "S",
-    "UL",
-    "OL",
-    "LI",
-    "A",
-    "BR",
-    "HR",
-    "IMG",
-    "FIGURE",
-    "FIGCAPTION",
-    "TABLE",
-    "THEAD",
-    "TBODY",
-    "TR",
-    "TH",
-    "TD",
-    "MARK",
-    "SPAN",
+    "P","H1","H2","H3","H4","BLOCKQUOTE","PRE","CODE","STRONG","B","EM","I","U","S",
+    "UL","OL","LI","A","BR","HR","IMG","FIGURE","FIGCAPTION","TABLE","THEAD",
+    "TBODY","TR","TH","TD","MARK","SPAN",
+  ]);
+  if (restore) ["DIV", "SUP", "SUB"].forEach((t) => allowedTags.add(t));
+  const dropTags = new Set([
+    "SCRIPT","STYLE","IFRAME","OBJECT","EMBED","TEMPLATE","NOSCRIPT","TEXTAREA",
+    "SELECT","BUTTON","INPUT","FORM","LINK","META","BASE","SVG","MATH","TITLE",
+    "FRAME","FRAMESET","APPLET",
   ]);
   const allowedAttrs = {
     A: ["href", "target", "rel"],
@@ -1229,6 +1234,7 @@ function cleanPastedHTML(html) {
     "font-weight",
     "font-style",
   ];
+  const camel = (p) => p.replace(/-([a-z])/g, (_, c) => c.toUpperCase());
 
   const sanitize = (node) => {
     [...node.childNodes].forEach((child) => {
@@ -1238,9 +1244,13 @@ function cleanPastedHTML(html) {
       }
       if (child.nodeType === Node.ELEMENT_NODE) {
         const tag = child.tagName;
+        if (dropTags.has(tag.toUpperCase())) {
+          child.remove();
+          return;
+        }
         if (!allowedTags.has(tag)) {
           if (tag === "DIV" || tag === "SECTION" || tag === "ARTICLE") {
-            const p = document.createElement("p");
+            const p = child.ownerDocument.createElement("p");
             while (child.firstChild) p.appendChild(child.firstChild);
             child.parentNode.replaceChild(p, child);
             sanitize(p);
@@ -1248,23 +1258,41 @@ function cleanPastedHTML(html) {
             while (child.firstChild)
               child.parentNode.insertBefore(child.firstChild, child);
             child.remove();
+            sanitize(node);
           }
           return;
         }
-        const allowed = allowedAttrs[tag] || [];
+        const allowed = [...(allowedAttrs[tag] || [])];
+        if (restore) {
+          allowed.push("class", "style");
+          if (tag === "TD" || tag === "TH") allowed.push("contenteditable");
+        }
         [...child.attributes].forEach((attr) => {
           if (!allowed.includes(attr.name)) child.removeAttribute(attr.name);
         });
-        if (child.style) {
-          const allowedStyles = allowedStyleProps.filter(
-            (p) =>
-              child.style[p.replace(/-([a-z])/g, (_, c) => c.toUpperCase())],
-          );
-          const styleStr = allowedStyles
-            .map(
-              (p) =>
-                `${p}: ${child.style[p.replace(/-([a-z])/g, (_, c) => c.toUpperCase())]}`,
-            )
+        if (tag === "A") {
+          const href = child.getAttribute("href");
+          if (href !== null && !isSafeUrl(href)) child.removeAttribute("href");
+          if (child.getAttribute("target") !== "_blank")
+            child.removeAttribute("target");
+          if (child.getAttribute("target") === "_blank")
+            child.setAttribute("rel", "noopener noreferrer");
+          else child.removeAttribute("rel");
+        }
+        if (tag === "IMG") {
+          const src = child.getAttribute("src");
+          if (src === null || !isSafeUrl(src, false)) {
+            child.remove();
+            return;
+          }
+        }
+        if (child.getAttribute("contenteditable") !== null &&
+            child.getAttribute("contenteditable") !== "true")
+          child.removeAttribute("contenteditable");
+        if (child.hasAttribute("style")) {
+          const styleStr = allowedStyleProps
+            .filter((p) => child.style[camel(p)])
+            .map((p) => `${p}: ${child.style[camel(p)]}`)
             .join("; ");
           if (styleStr) child.setAttribute("style", styleStr);
           else child.removeAttribute("style");
@@ -1273,8 +1301,8 @@ function cleanPastedHTML(html) {
       }
     });
   };
-  sanitize(div);
-  return div.innerHTML;
+  sanitize(root);
+  return root.innerHTML;
 }
 
 function smartPaste(html, text) {
@@ -1348,7 +1376,7 @@ function toCleanHTML() {
   clone.querySelectorAll("[style]").forEach((el) => {
     if (el.style.textAlign) el.setAttribute("align", el.style.textAlign);
   });
-  return `<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8"/><title>${getEl("docTitle")?.value || "Document"}</title></head>\n<body>\n${clone.innerHTML}\n</body>\n</html>`;
+  return `<!DOCTYPE html>\n<html lang="en">\n<head><meta charset="UTF-8"/><title>${escapeHtml(getEl("docTitle")?.value || "Document")}</title></head>\n<body>\n${clone.innerHTML}\n</body>\n</html>`;
 }
 
 function initFindBar() {
@@ -1428,10 +1456,14 @@ function initFindBar() {
     saveHistory();
     clearHighlights();
     if (all) {
-      editorEl.innerHTML = editorEl.innerHTML.replace(
-        new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi"),
-        rep,
-      );
+      const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+      const walker = document.createTreeWalker(editorEl, NodeFilter.SHOW_TEXT);
+      const textNodes = [];
+      while (walker.nextNode()) textNodes.push(walker.currentNode);
+      textNodes.forEach((tn) => {
+        const next = tn.nodeValue.replace(re, () => rep);
+        if (next !== tn.nodeValue) tn.nodeValue = next;
+      });
     } else {
       const first = highlights[findIndex];
       if (first) {
@@ -1502,7 +1534,7 @@ function initSourceView() {
         srcEditor.focus();
       } else if (!isSourceMode && srcEditor) {
         saveHistory();
-        editorEl.innerHTML = srcEditor.value;
+        editorEl.innerHTML = cleanPastedHTML(srcEditor.value, true);
         editorEl.focus();
         scheduleUpdate();
       }
@@ -1693,10 +1725,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       });
     } else {
-      const div = document.createElement("div");
-      div.innerHTML = content;
-      const frag = document.createDocumentFragment();
-      while (div.firstChild) frag.appendChild(div.firstChild);
+      const frag = htmlToFragment(cleanPastedHTML(content));
       range.insertNode(frag);
       range.collapse(false);
     }
@@ -1902,7 +1931,7 @@ document.addEventListener("DOMContentLoaded", () => {
   })();
   if (saved?.content && saved.content !== INITIAL_HTML) {
     if (confirm("Restore your previous session?")) {
-      editorEl.innerHTML = saved.content;
+      editorEl.innerHTML = cleanPastedHTML(String(saved.content), true);
       if (saved.title && getEl("docTitle"))
         getEl("docTitle").value = saved.title;
       saveHistory();

@@ -373,7 +373,7 @@ function toast(msg, icon = "◆", type = "default") {
   if (!container) return;
   const t = document.createElement("div");
   t.className = "toast";
-  t.innerHTML = `<span class="toast-icon" aria-hidden="true">${icon}</span>${escHtml(msg)}`;
+  t.innerHTML = `<span class="toast-icon" aria-hidden="true">${escHtml(icon)}</span>${escHtml(msg)}`;
   container.prepend(t);
   setTimeout(() => {
     t.classList.add("out");
@@ -386,7 +386,8 @@ function escHtml(str) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function getDaysUntil(dateStr) {
@@ -420,7 +421,7 @@ function buildCardEl(card) {
   let html = `<div class="card-accent-strip" style="background:${priorityColor}20; border-top:3px solid ${priorityColor}"></div>`;
 
   html += `<div class="card-top-row">
-    <div class="card-priority-dot" style="background:${priorityColor}" title="${card.priority || "no priority"}"></div>
+    <div class="card-priority-dot" style="background:${priorityColor}" title="${escHtml(card.priority || "no priority")}"></div>
     <div class="card-title">${escHtml(card.title || "Untitled")}</div>
     ${card.pinned ? `<div class="card-pin-icon" title="Pinned">📌</div>` : ""}
   </div>`;
@@ -438,7 +439,7 @@ function buildCardEl(card) {
     const cls = days < 0 ? "overdue" : days <= 2 ? "due-soon" : "";
     const emoji = days < 0 ? "⚠ " : "📅 ";
     metaItems.push(
-      `<span class="card-meta-item ${cls}" title="${card.due}">${emoji}${escHtml(formatDue(card.due))}</span>`,
+      `<span class="card-meta-item ${cls}" title="${escHtml(card.due)}">${emoji}${escHtml(formatDue(card.due))}</span>`,
     );
   }
   if (card.checklist && card.checklist.length) {
@@ -480,9 +481,9 @@ function buildCardEl(card) {
   }
 
   html += `<div class="card-actions-row">
-    <button class="card-action-btn" data-action="edit"      data-card-id="${card.id}">✎ Edit</button>
-    <button class="card-action-btn" data-action="duplicate" data-card-id="${card.id}">⧉ Dup</button>
-    <button class="card-action-btn danger" data-action="delete" data-card-id="${card.id}">✕</button>
+    <button class="card-action-btn" data-action="edit"      data-card-id="${escHtml(card.id)}">✎ Edit</button>
+    <button class="card-action-btn" data-action="duplicate" data-card-id="${escHtml(card.id)}">⧉ Dup</button>
+    <button class="card-action-btn danger" data-action="delete" data-card-id="${escHtml(card.id)}">✕</button>
   </div>`;
 
   el.innerHTML = html;
@@ -540,7 +541,7 @@ function buildColumnEl(col) {
 
   let html = `<div class="col-header">
     <div class="col-header-row">
-      <div class="col-color-strip" style="background:${col.color}" data-col-color title="Change color"></div>
+      <div class="col-color-strip" style="background:${escHtml(col.color)}" data-col-color title="Change color"></div>
       <input class="col-title-input" value="${escHtml(col.title)}" aria-label="Column title" data-col-title/>
       <div class="col-count-badge">${col.cards.length}${col.wip ? "/" + col.wip : ""}</div>
       <div class="col-header-actions">
@@ -552,7 +553,7 @@ function buildColumnEl(col) {
 
   if (col.wip) {
     html += `<div class="col-progress-wrap">
-      <div class="col-progress-fill" style="width:${progressPct}%;background:${progressColor}"></div>
+      <div class="col-progress-fill" style="width:${progressPct}%;background:${escHtml(progressColor)}"></div>
     </div>
     <div class="col-wip-label${wipOver ? " over" : ""}">WIP ${col.cards.length}/${col.wip}${wipOver ? " — OVER LIMIT" : ""}</div>`;
   }
@@ -565,10 +566,10 @@ function buildColumnEl(col) {
     <div class="cst-item">👥 <span class="cst-val">${new Set(col.cards.flatMap((c) => c.assignees || [])).size}</span>mem</div>
   </div>`;
 
-  html += `<div class="col-cards" role="list" data-col-cards="${col.id}"></div>`;
+  html += `<div class="col-cards" role="list" data-col-cards="${escHtml(col.id)}"></div>`;
 
   html += `<div class="col-footer">
-    <button class="add-card-btn" data-col-id="${col.id}">
+    <button class="add-card-btn" data-col-id="${escHtml(col.id)}">
       <span class="acb-icon">+</span> Add card
     </button>
   </div>`;
@@ -1129,9 +1130,9 @@ function buildChecklist(card) {
   (card.checklist || []).forEach((item) => {
     const div = document.createElement("div");
     div.className = "cl-item";
-    div.innerHTML = `<input type="checkbox" class="cl-check" id="cl-${item.id}" ${item.done ? "checked" : ""}/>
-      <label class="cl-text${item.done ? " done" : ""}" for="cl-${item.id}">${escHtml(item.text)}</label>
-      <button class="cl-del-btn" data-cl-id="${item.id}" aria-label="Delete item">✕</button>`;
+    div.innerHTML = `<input type="checkbox" class="cl-check" id="cl-${escHtml(item.id)}" ${item.done ? "checked" : ""}/>
+      <label class="cl-text${item.done ? " done" : ""}" for="cl-${escHtml(item.id)}">${escHtml(item.text)}</label>
+      <button class="cl-del-btn" data-cl-id="${escHtml(item.id)}" aria-label="Delete item">✕</button>`;
     div.querySelector(".cl-check")?.addEventListener("change", (e) => {
       div.querySelector("label").classList.toggle("done", e.target.checked);
     });

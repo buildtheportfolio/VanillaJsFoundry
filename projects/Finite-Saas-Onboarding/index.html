@@ -3,320 +3,89 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>ActivityPulse — Heatmap Calendar</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700;800&family=Geist+Mono:wght@300;400;500;600&display=swap"
-      rel="stylesheet"
+    <title>Finite SaaS Onboarding — State-Machine Wizard</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d9488'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3EF%3C/text%3E%3C/svg%3E">
+    <meta
+      name="description"
+      content="A multi-step SaaS onboarding wizard driven by an explicit finite state machine with guards, branching transitions, history integration and a live inspector."
+    />
+    <meta name="foundry:category" content="DOM &amp; UI" />
+    <meta name="foundry:difficulty" content="Intermediate" />
+    <meta
+      name="foundry:tags"
+      content="state-machine,wizard,forms,history-api,validation"
     />
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div class="app" id="app">
-      <header class="topbar">
-        <div class="tb-left">
-          <div class="brand">
-            <div class="brand-mark" aria-hidden="true">
-              <div class="bm-grid">
-                <div class="bm-cell l0"></div>
-                <div class="bm-cell l2"></div>
-                <div class="bm-cell l4"></div>
-                <div class="bm-cell l1"></div>
-                <div class="bm-cell l3"></div>
-                <div class="bm-cell l4"></div>
-                <div class="bm-cell l3"></div>
-                <div class="bm-cell l2"></div>
-                <div class="bm-cell l1"></div>
-              </div>
-            </div>
-            <span class="brand-name">ActivityPulse</span>
-          </div>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+    <div class="shell">
+      <header class="top">
+        <div>
+          <p class="eyebrow">Finite state machine demo</p>
+          <h1>Finite SaaS Onboarding</h1>
+          <p class="lede">
+            A wizard whose every move is a declared transition. Demo only:
+            nothing you type is sent anywhere.
+          </p>
         </div>
-        <div class="tb-center">
-          <div class="mode-tabs" id="modeTabs" role="tablist">
-            <button
-              class="mt-btn active"
-              role="tab"
-              data-mode="commits"
-              aria-selected="true"
-            >
-              Commits
-            </button>
-            <button class="mt-btn" role="tab" data-mode="prs">
-              Pull Requests
-            </button>
-            <button class="mt-btn" role="tab" data-mode="reviews">
-              Reviews
-            </button>
-            <button class="mt-btn" role="tab" data-mode="issues">Issues</button>
-            <button class="mt-btn" role="tab" data-mode="hours">Hours</button>
-            <button class="mt-btn" role="tab" data-mode="custom">Custom</button>
-          </div>
-        </div>
-        <div class="tb-right">
-          <div class="theme-row" id="themeRow">
-            <span class="theme-label">THEME</span>
-            <button
-              class="theme-btn active"
-              data-theme="green"
-              title="Green"
-              style="--tc: #39d353"
-            ></button>
-            <button
-              class="theme-btn"
-              data-theme="orange"
-              title="Orange"
-              style="--tc: #ffa500"
-            ></button>
-            <button
-              class="theme-btn"
-              data-theme="blue"
-              title="Blue"
-              style="--tc: #58a6ff"
-            ></button>
-            <button
-              class="theme-btn"
-              data-theme="purple"
-              title="Purple"
-              style="--tc: #bd93f9"
-            ></button>
-            <button
-              class="theme-btn"
-              data-theme="pink"
-              title="Pink"
-              style="--tc: #ff79c6"
-            ></button>
-            <button
-              class="theme-btn"
-              data-theme="fire"
-              title="Fire"
-              style="--tc: #ff6b35"
-            ></button>
-            <button
-              class="theme-btn"
-              data-theme="ice"
-              title="Ice"
-              style="--tc: #70d7ff"
-            ></button>
-          </div>
-          <div class="tb-sep"></div>
-          <button class="tb-btn" id="btnExport" title="Export">⎘ Export</button>
-          <button class="tb-btn" id="btnRandomize" title="Randomize data">
-            ⟳ Data
-          </button>
-        </div>
+        <button type="button" class="btn ghost" id="startOver">Start over</button>
       </header>
 
-      <div class="page-layout">
-        <div class="main-col">
-          <div class="profile-strip">
-            <div class="ps-left">
-              <div class="avatar-wrap">
-                <div class="avatar" id="avatarEl" aria-hidden="true"></div>
-                <div
-                  class="avatar-badge"
-                  id="streakBadge"
-                  title="Current streak"
-                ></div>
-              </div>
-              <div class="profile-info">
-                <div class="profile-name" id="profileName">
-                  Aaqibhafeez Khan
-                </div>
-                <div class="gh-sync-row">
-                  <input type="text" id="ghUsername" placeholder="GitHub Username" class="gh-input" value="AaqibhafeezKhan" />
-                  <button id="btnSyncGH" class="gh-sync-btn">Sync</button>
-                </div>
-                <div class="profile-handle" id="profileHandle">
-                  Enter username to fetch real data
-                </div>
-              </div>
-            </div>
-            <div class="ps-right">
-              <div class="big-stats" id="bigStats"></div>
-            </div>
-          </div>
-
-          <div class="calendar-card" id="calendarCard">
-            <div class="cc-toolbar">
-              <div class="cc-toolbar-left">
-                <button
-                  class="year-nav-btn"
-                  id="btnPrevYear"
-                  aria-label="Previous year"
-                >
-                  ‹
-                </button>
-                <div
-                  class="year-display"
-                  id="yearDisplay"
-                  aria-live="polite"
-                ></div>
-                <button
-                  class="year-nav-btn"
-                  id="btnNextYear"
-                  aria-label="Next year"
-                >
-                  ›
-                </button>
-                <button
-                  class="year-btn"
-                  data-year-offset="-2"
-                  id="yearMinus2"
-                ></button>
-                <button
-                  class="year-btn"
-                  data-year-offset="-1"
-                  id="yearMinus1"
-                ></button>
-                <button
-                  class="year-btn active"
-                  data-year-offset="0"
-                  id="yearCurrent"
-                ></button>
-              </div>
-              <div class="cc-toolbar-right">
-                <div class="cell-size-control">
-                  <span class="csc-label">Size</span>
-                  <button class="csz-btn" data-size="sm">S</button>
-                  <button class="csz-btn active" data-size="md">M</button>
-                  <button class="csz-btn" data-size="lg">L</button>
-                </div>
-                <div class="tb-sep"></div>
-                <label class="toggle-wrap">
-                  <input type="checkbox" id="toggleWeekends" checked />
-                  <span class="tw-label">Weekends</span>
-                </label>
-                <label class="toggle-wrap">
-                  <input type="checkbox" id="toggleAnimation" checked />
-                  <span class="tw-label">Animate</span>
-                </label>
-              </div>
-            </div>
-
-            <div class="calendar-scroll-wrap">
-              <div class="calendar-inner" id="calendarInner">
-                <div class="day-labels" id="dayLabels">
-                  <div class="dl-spacer"></div>
-                  <div class="dl-item" data-day="1">Mon</div>
-                  <div class="dl-item" data-day="2"></div>
-                  <div class="dl-item" data-day="3">Wed</div>
-                  <div class="dl-item" data-day="4"></div>
-                  <div class="dl-item" data-day="5">Fri</div>
-                  <div class="dl-item" data-day="6"></div>
-                  <div class="dl-item" data-day="0">Sun</div>
-                </div>
-                <div class="calendar-svg-wrap">
-                  <div class="month-labels" id="monthLabels"></div>
-                  <svg
-                    id="heatmapSvg"
-                    role="img"
-                    aria-label="Activity heatmap calendar"
-                  >
-                    <title id="svgTitle">Activity heatmap</title>
-                  </svg>
-                </div>
-              </div>
-            </div>
-
-            <div class="legend-row">
-              <span class="lr-label">Less</span>
-              <div class="legend-cells" id="legendCells"></div>
-              <span class="lr-label">More</span>
-              <div class="level-detail" id="levelDetail"></div>
-            </div>
-          </div>
-
-          <div class="charts-row" id="chartsRow">
-            <div class="mini-chart-card" id="monthChart">
-              <div class="mcc-title">Monthly Activity</div>
-              <div class="mcc-body" id="monthChartBody"></div>
-            </div>
-
-            <div class="mini-chart-card" id="weekdayChart">
-              <div class="mcc-title">Day of Week</div>
-              <div class="mcc-body" id="weekdayChartBody"></div>
-            </div>
-
-            <div class="mini-chart-card" id="trendChart">
-              <div class="mcc-title">12-Week Trend</div>
-              <div class="mcc-body" id="trendChartBody"></div>
-            </div>
-
-            <div class="mini-chart-card" id="distributionChart">
-              <div class="mcc-title">Distribution</div>
-              <div class="mcc-body" id="distributionChartBody"></div>
-            </div>
-
-            <div class="mini-chart-card" id="punchCard">
-              <div class="mcc-title">Activity Density (Punch Card)</div>
-              <div class="mcc-body" id="punchCardBody"></div>
-            </div>
-          </div>
+      <section class="resume" id="resume" aria-label="Resume saved progress" hidden>
+        <p id="resumeText"></p>
+        <div class="resume-actions">
+          <button type="button" class="btn primary" id="resumeBtn">Resume where you left off</button>
+          <button type="button" class="btn ghost" id="resumeReset">Start over</button>
         </div>
+      </section>
 
-        <aside class="stats-sidebar" id="statsSidebar">
-          <div class="ss-section">
-            <div class="ss-title">YEAR SUMMARY</div>
-            <div class="summary-grid" id="summaryGrid"></div>
-          </div>
+      <nav class="stepper-wrap" aria-label="Onboarding steps">
+        <ol class="stepper" id="stepper"></ol>
+        <p class="skip-note" id="skipNote" hidden></p>
+      </nav>
 
-          <div class="ss-section">
-            <div class="ss-title">GOAL PROGRESS</div>
-            <div class="goal-wrap" id="goalWrap"></div>
-          </div>
-
-          <div class="ss-section">
-            <div class="ss-title">STREAKS</div>
-            <div class="streaks-wrap" id="streaksWrap"></div>
-          </div>
-
-          <div class="ss-section">
-            <div class="ss-title">TOP WEEKS</div>
-            <div class="top-weeks" id="topWeeks"></div>
-          </div>
-
-          <div class="ss-section">
-            <div class="ss-title">TOP MONTHS</div>
-            <div class="top-months" id="topMonths"></div>
-          </div>
-
-          <div class="ss-section">
-            <div class="ss-title">PERCENTILES</div>
-            <div class="percentile-bars" id="percentileBars"></div>
-          </div>
-
-          <div class="ss-section">
-            <div class="ss-title">CALENDAR FACTS</div>
-            <div class="facts-list" id="factsList"></div>
-          </div>
-
-          <div class="ss-section">
-            <div class="ss-title">RECENT HIGHLIGHTS</div>
-            <div class="highlights-list" id="highlightsList"></div>
-          </div>
-        </aside>
+      <div class="progress">
+        <div
+          class="bar"
+          id="bar"
+          role="progressbar"
+          aria-label="Onboarding progress"
+          aria-valuemin="0"
+          aria-valuemax="100"
+          aria-valuenow="0"
+        >
+          <div class="bar-fill" id="barFill"></div>
+        </div>
+        <p class="bar-label" id="barLabel"></p>
       </div>
-    </div>
 
-    <div class="tooltip" id="tooltip" role="tooltip" aria-live="polite"></div>
+      <main class="card" id="main">
+        <p class="notice" id="notice" hidden></p>
+        <form id="wizard" novalidate>
+          <div id="stepHost"></div>
+        </form>
+      </main>
 
-    <div class="modal-backdrop hidden" id="exportModal">
-      <div class="modal-box">
-        <div class="modal-header">
-          <span class="modal-title">Export Heatmap</span>
-          <button class="modal-close" id="exportClose">✕</button>
+      <p class="sr-status" id="status" role="status" aria-live="polite"></p>
+
+      <details class="inspector" id="inspector">
+        <summary>Machine inspector</summary>
+        <div class="insp-body">
+          <dl class="insp-meta" id="inspMeta"></dl>
+          <h2 class="insp-h">Events and guards</h2>
+          <ul class="insp-events" id="inspEvents"></ul>
+          <h2 class="insp-h">Transition log</h2>
+          <ol class="insp-log" id="inspLog"></ol>
         </div>
-        <div class="export-options">
-          <button class="export-opt" id="exportSVG">⬡ Download SVG</button>
-          <button class="export-opt" id="exportPNG">⬡ Download PNG</button>
-          <button class="export-opt" id="exportJSON">⬡ Download JSON</button>
-          <button class="export-opt" id="exportCSV">⬡ Download CSV</button>
-        </div>
-      </div>
-    </div>
+      </details>
 
+      <p class="kbd-help">
+        Keyboard: <kbd>Enter</kbd> continue, <kbd>Alt</kbd>+<kbd>←</kbd> back,
+        <kbd>Alt</kbd>+<kbd>→</kbd> next.
+      </p>
+    </div>
     <script src="script.js"></script>
   </body>
 </html>

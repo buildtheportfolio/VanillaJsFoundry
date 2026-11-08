@@ -414,6 +414,10 @@ function createDivider(parentNode, afterIdx) {
   divEl.className = `divider dir-${parentNode.direction}`;
   divEl.setAttribute("tabindex", "0");
   divEl.setAttribute("role", "separator");
+  divEl.setAttribute("aria-valuemin", "0");
+  divEl.setAttribute("aria-valuemax", "100");
+  divEl.setAttribute("aria-valuenow", "50");
+  divEl.setAttribute("aria-label", "Resize panels");
   divEl.setAttribute("aria-orientation", parentNode.direction === "horizontal" ? "vertical" : "horizontal");
   divEl.dataset.dividerId = divId;
   divEl.dataset.parentId = parentNode.id;
@@ -929,10 +933,18 @@ document.addEventListener("DOMContentLoaded", () => {
   window.addEventListener("resize", handleWindowResize);
 
   const saved = (() => { try { const d = localStorage.getItem("splitforge_layout"); return d ? JSON.parse(d) : null; } catch { return null; } })();
+  let restored = false;
   if (saved?.root) {
-    rootNode = deserializeNode(saved.root);
-    normalizeNode(rootNode);
-    renderTree(rootNode, document.getElementById("splitRoot"));
+    try {
+      rootNode = deserializeNode(saved.root);
+      normalizeNode(rootNode);
+      renderTree(rootNode, document.getElementById("splitRoot"));
+      restored = true;
+    } catch (err) {
+      console.warn("Ignoring invalid saved layout", err);
+    }
+  }
+  if (restored) {
     document.querySelectorAll(".preset-btn").forEach(b => b.classList.remove("active"));
     const sbLayout = document.getElementById("sbLayout");
     if (sbLayout) sbLayout.textContent = `Layout: ${saved.presetName?.toUpperCase() || "SAVED"}`;

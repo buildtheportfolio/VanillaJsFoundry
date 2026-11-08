@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Schema Form Builder</title>
+    <title>Schema-Driven Form Builder — JSON Schema to live form</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%237c3aed'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3ES%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="Paste a JSON Schema and get a working, validated form: nested objects, arrays, enums, oneOf, conditional fields and a live JSON output." />
+    <meta name="foundry:category" content="DOM &amp; UI" />
+    <meta name="foundry:difficulty" content="Intermediate" />
+    <meta name="foundry:tags" content="json schema,forms,validation,dynamic ui,dom" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,6 +18,9 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+    <h1 class="sr-only">Schema-Driven Form Builder</h1>
     <div class="app">
       <header class="topbar">
         <div class="topbar-brand">
@@ -54,6 +62,7 @@
             <textarea
               class="schema-editor"
               id="schemaEditor"
+              aria-label="JSON schema"
               spellcheck="false"
               autocomplete="off"
               autocorrect="off"

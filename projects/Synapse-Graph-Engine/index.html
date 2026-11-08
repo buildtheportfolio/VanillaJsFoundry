@@ -4,6 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Synapse — Force-Directed Graph Engine</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%239333ea'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3ES%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="An interactive force-directed graph rendered in SVG with a Barnes-Hut physics simulation, written without any libraries." />
+    <meta name="foundry:category" content="Data Viz" />
+    <meta name="foundry:difficulty" content="Advanced" />
+    <meta name="foundry:tags" content="svg,force-directed,graph,barnes-hut,physics" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,7 +18,10 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
     <div class="app" id="app">
+      <h1 class="sr-only">Synapse — Force-Directed Graph Engine</h1>
       <header class="topbar">
         <div class="tb-left">
           <div class="brand">
@@ -103,42 +111,42 @@
             <div class="cp-title">PHYSICS ENGINE</div>
             <div class="cp-row">
               <label class="cp-label">Sim Speed</label>
-              <input class="cp-range" id="simSpeed" type="range" min="0.1" max="2" value="1" step="0.1" />
+              <input class="cp-range" id="simSpeed" aria-label="Simulation speed" type="range" min="0.1" max="2" value="1" step="0.1" />
               <span class="cp-val" id="simSpeedVal">1.0</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Repulsion</label>
-              <input class="cp-range" id="repulsion" type="range" min="50" max="2000" value="400" step="10" />
+              <input class="cp-range" id="repulsion" aria-label="Repulsion" type="range" min="50" max="2000" value="400" step="10" />
               <span class="cp-val" id="repulsionVal">400</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Link distance</label>
-              <input class="cp-range" id="linkDist" type="range" min="20" max="400" value="80" step="5" />
+              <input class="cp-range" id="linkDist" aria-label="Link distance" type="range" min="20" max="400" value="80" step="5" />
               <span class="cp-val" id="linkDistVal">80</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Link strength</label>
-              <input class="cp-range" id="linkStr" type="range" min="0.01" max="1" value="0.3" step="0.01" />
+              <input class="cp-range" id="linkStr" aria-label="Link strength" type="range" min="0.01" max="1" value="0.3" step="0.01" />
               <span class="cp-val" id="linkStrVal">0.30</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Gravity</label>
-              <input class="cp-range" id="gravity" type="range" min="0" max="0.2" value="0.05" step="0.005" />
+              <input class="cp-range" id="gravity" aria-label="Gravity" type="range" min="0" max="0.2" value="0.05" step="0.005" />
               <span class="cp-val" id="gravityVal">0.05</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Damping</label>
-              <input class="cp-range" id="damping" type="range" min="0.5" max="0.999" value="0.92" step="0.005" />
+              <input class="cp-range" id="damping" aria-label="Damping" type="range" min="0.5" max="0.999" value="0.92" step="0.005" />
               <span class="cp-val" id="dampingVal">0.920</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">θ (Barnes-Hut)</label>
-              <input class="cp-range" id="theta" type="range" min="0.1" max="2" value="0.8" step="0.05" />
+              <input class="cp-range" id="theta" aria-label="Barnes-Hut theta" type="range" min="0.1" max="2" value="0.8" step="0.05" />
               <span class="cp-val" id="thetaVal">0.80</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Collision r.</label>
-              <input class="cp-range" id="collision" type="range" min="0" max="50" value="12" step="1" />
+              <input class="cp-range" id="collision" aria-label="Collision radius" type="range" min="0" max="50" value="12" step="1" />
               <span class="cp-val" id="collisionVal">12</span>
             </div>
           </div>
@@ -146,17 +154,17 @@
             <div class="cp-title">APPEARANCE</div>
             <div class="cp-row">
               <label class="cp-label">Node size</label>
-              <input class="cp-range" id="nodeSize" type="range" min="3" max="30" value="8" step="0.5" />
+              <input class="cp-range" id="nodeSize" aria-label="Node size" type="range" min="3" max="30" value="8" step="0.5" />
               <span class="cp-val" id="nodeSizeVal">8</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Edge width</label>
-              <input class="cp-range" id="edgeWidth" type="range" min="0.5" max="5" value="1.5" step="0.25" />
+              <input class="cp-range" id="edgeWidth" aria-label="Edge width" type="range" min="0.5" max="5" value="1.5" step="0.25" />
               <span class="cp-val" id="edgeWidthVal">1.5</span>
             </div>
             <div class="cp-row">
               <label class="cp-label">Glow strength</label>
-              <input class="cp-range" id="glowStr" type="range" min="0" max="20" value="8" step="1" />
+              <input class="cp-range" id="glowStr" aria-label="Glow strength" type="range" min="0" max="20" value="8" step="1" />
               <span class="cp-val" id="glowStrVal">8</span>
             </div>
             <div class="cp-toggles">

@@ -6,133 +6,133 @@
 
 ## 📊 Summary Table
 
-| # | Project Name | Category | Difficulty |
-|---|---|---|---|
-| 1 | Trie-Powered Autocomplete Engine | DOM & UI | Intermediate |
-| 2 | Infinite Virtual Scroll | DOM & UI | Intermediate |
-| 3 | Schema-Driven Form Builder | DOM & UI | Intermediate |
-| 4 | Multi-Step Wizard with State Machine | DOM & UI | Intermediate |
-| 5 | CSS-in-JS Theme Engine | DOM & UI | Advanced |
-| 6 | Accessible Modal Stack Manager | DOM & UI | Intermediate |
-| 7 | Rich Text Editor (no contenteditable libs) | DOM & UI | Advanced |
-| 8 | Resizable Split-Pane Layout | DOM & UI | Intermediate |
-| 9 | Command Palette (⌘K) | DOM & UI | Intermediate |
-| 10 | Drag-to-Reorder Kanban Board | DOM & UI | Advanced |
-| 11 | Raycast-style Spotlight Search | DOM & UI | Advanced |
-| 12 | Snake [CLASSIC] | Games | Beginner |
-| 13 | Tetris [CLASSIC] | Games | Intermediate |
-| 14 | Nonogram / Picross Puzzle | Games | Intermediate |
-| 15 | Minesweeper with Procedural Generation [CLASSIC] | Games | Intermediate |
-| 16 | Wordle Clone with Hard Mode & Stats | Games | Beginner |
-| 17 | 2D Platformer with Physics | Games | Advanced |
-| 18 | Tower Defense Engine | Games | Advanced |
-| 19 | Dungeon Crawler (Roguelite) | Games | Advanced |
-| 20 | Chess with Legal Move Validation | Games | Advanced |
-| 21 | Sokoban Puzzle Game | Games | Intermediate |
-| 22 | Typing Speed Trainer with WPM Graph | Games | Beginner |
-| 23 | Gravity Pong (curved trajectories) | Games | Intermediate |
-| 24 | Infinite Runner with Procedural Terrain | Games | Advanced |
-| 25 | Cellular Automaton Explorer (Conway + rules) | Games | Intermediate |
-| 26 | Live Bar Chart Race | Data Viz | Intermediate |
-| 27 | SVG Force-Directed Graph | Data Viz | Advanced |
-| 28 | Heatmap Calendar (GitHub-style) | Data Viz | Intermediate |
-| 29 | Real-Time Candlestick Chart | Data Viz | Advanced |
-| 30 | Treemap Visualizer | Data Viz | Intermediate |
-| 31 | Animated Sankey Diagram | Data Viz | Advanced |
-| 32 | Radar / Spider Chart | Data Viz | Intermediate |
-| 33 | World Choropleth Map (SVG + GeoJSON) | Data Viz | Advanced |
-| 34 | Live CSV → Chart Transformer | Data Viz | Intermediate |
-| 35 | REST API Explorer (Postman-lite) | APIs & Async | Intermediate |
-| 36 | GitHub Profile Dashboard | APIs & Async | Beginner |
-| 37 | WebSocket Chat Room | APIs & Async | Intermediate |
-| 38 | Server-Sent Events Live Feed | APIs & Async | Intermediate |
-| 39 | OAuth PKCE Flow from Scratch | APIs & Async | Advanced |
-| 40 | GraphQL Query Builder & Tester | APIs & Async | Advanced |
-| 41 | Paginated Infinite API Feed | APIs & Async | Beginner |
-| 42 | Multi-source News Aggregator | APIs & Async | Intermediate |
-| 43 | Geolocation Heatmap | Browser APIs | Intermediate |
-| 44 | Clipboard Manager | Browser APIs | Beginner |
-| 45 | Web Share + File Drop Zone | Browser APIs | Beginner |
-| 46 | Push Notification Scheduler | Browser APIs | Intermediate |
-| 47 | Speech-to-Text Note Taker | Browser APIs | Intermediate |
-| 48 | Text-to-Speech Audiobook Player | Browser APIs | Intermediate |
-| 49 | Drag-and-Drop File Organizer | Browser APIs | Intermediate |
-| 50 | Bluetooth Device Dashboard | Browser APIs | Advanced |
-| 51 | USB HID Input Visualizer | Browser APIs | Advanced |
-| 52 | Barcode / QR Scanner (camera) | Browser APIs | Intermediate |
-| 53 | Offline-First Notes App (Service Worker) | Storage & State | Intermediate |
-| 54 | IndexedDB Photo Gallery | Storage & State | Intermediate |
-| 55 | Undo/Redo History Engine | Storage & State | Intermediate |
-| 56 | Encrypted Journal (Web Crypto API) | Storage & State | Advanced |
-| 57 | Multi-Tab State Sync (BroadcastChannel) | Storage & State | Advanced |
-| 58 | Time-Travel Debugger (state snapshots) | Storage & State | Advanced |
-| 59 | Progressive Web App Shell | Storage & State | Intermediate |
-| 60 | Particle System Engine | Animations | Intermediate |
-| 61 | Morphing SVG Blob | Animations | Intermediate |
-| 62 | Scroll-Driven Parallax Storytelling | Animations | Intermediate |
-| 63 | FLIP Animation Coordinator | Animations | Advanced |
-| 64 | Physics-Based Spring UI | Animations | Advanced |
-| 65 | Liquid/Metaball Simulation | Animations | Advanced |
-| 66 | CSS Custom Property Animator | Animations | Intermediate |
-| 67 | 3D Card Deck with Perspective | Animations | Intermediate |
-| 68 | Text Scramble / Glitch Reveal | Animations | Beginner |
-| 69 | Markdown Editor with Live Preview | Productivity | Beginner |
-| 70 | Pomodoro Timer with Session Analytics | Productivity | Beginner |
-| 71 | Habit Tracker with Streak Engine | Productivity | Intermediate |
-| 72 | Budget Ledger with Chart Summaries | Productivity | Intermediate |
-| 73 | Spaced Repetition Flashcard System | Productivity | Intermediate |
-| 74 | Mind Map Builder | Productivity | Advanced |
-| 75 | Code Snippet Manager with Syntax Highlight | Productivity | Intermediate |
-| 76 | Regex Tester & Explainer | Productivity | Intermediate |
-| 77 | Cron Expression Builder | Productivity | Intermediate |
-| 78 | Visual Color Palette Generator | Productivity | Beginner |
-| 79 | Audio Visualizer (FFT Bars) [CLASSIC] | Media | Intermediate |
-| 80 | Multi-Track Audio Mixer | Media | Advanced |
-| 81 | Webcam Filters & Effects | Media | Intermediate |
-| 82 | Video Annotation Timeline | Media | Advanced |
-| 83 | Procedural Music Sequencer | Media | Advanced |
-| 84 | Voice Pitch Detector | Media | Intermediate |
-| 85 | Screen Recorder (MediaRecorder API) | Media | Intermediate |
-| 86 | N-Body Gravitational Simulator | Math & Science | Advanced |
-| 87 | Fourier Series Visualizer | Math & Science | Intermediate |
-| 88 | Reaction-Diffusion System | Math & Science | Advanced |
-| 89 | Mandelbrot Set Explorer | Math & Science | Intermediate |
-| 90 | Sorting Algorithm Visualizer [CLASSIC] | Math & Science | Beginner |
-| 91 | Pathfinding Visualizer (A*, Dijkstra) | Math & Science | Intermediate |
-| 92 | Fluid Dynamics Sim (SPH) | Math & Science | Advanced |
-| 93 | Double Pendulum Chaos Simulator | Math & Science | Intermediate |
-| 94 | Perlin Noise Terrain Generator | Generative Art | Intermediate |
-| 95 | L-System Tree Renderer | Generative Art | Intermediate |
-| 96 | Truchet Tile Pattern Engine | Generative Art | Beginner |
-| 97 | Voronoi Diagram Generator | Generative Art | Intermediate |
-| 98 | Generative Typography Poster | Generative Art | Intermediate |
-| 99 | Recursive Subdivision Art | Generative Art | Intermediate |
-| 100 | Flow Field Vector Art | Generative Art | Intermediate |
-| 101 | Spirograph / Hypotrochoid Plotter | Generative Art | Beginner |
-| 102 | JS Bundle Size Visualizer | Dev Tools | Intermediate |
-| 103 | DOM Tree Inspector (mini DevTools) | Dev Tools | Advanced |
-| 104 | CSS Specificity Calculator | Dev Tools | Beginner |
-| 105 | Performance Waterfall Profiler | Dev Tools | Advanced |
-| 106 | JSON Schema Validator & Diff | Dev Tools | Intermediate |
-| 107 | Console.log Time-Travel Replayer | Dev Tools | Advanced |
-| 108 | Network Request Interceptor Proxy | Dev Tools | Advanced |
-| 109 | Focus Trap & ARIA Live Region Tester | Accessibility | Intermediate |
-| 110 | Color Contrast Audit Tool | Accessibility | Beginner |
-| 111 | Keyboard Navigation Visualizer | Accessibility | Intermediate |
-| 112 | Screen Reader Simulation | Accessibility | Advanced |
-| 113 | Dyslexia-Friendly Reading Mode | Accessibility | Intermediate |
-| 114 | Motor-Impairment Dwell-Click UI | Accessibility | Advanced |
-| 115 | Swipe Gesture Navigation | Mobile/Touch | Beginner |
-| 116 | Pull-to-Refresh Feed | Mobile/Touch | Intermediate |
-| 117 | Pinch-to-Zoom Image Viewer | Mobile/Touch | Intermediate |
-| 118 | Haptic Feedback Drumpad | Mobile/Touch | Intermediate |
-| 119 | Touch-Drawing Canvas App | Mobile/Touch | Intermediate |
-| 120 | Bottom Sheet & Snap Points | Mobile/Touch | Advanced |
-| 121 | In-Browser Pose Estimator (TF.js) | AI/ML | Advanced |
-| 122 | Handwriting Digit Classifier (TF.js) | AI/ML | Intermediate |
-| 123 | Real-Time Object Detector (TF.js) | AI/ML | Advanced |
-| 124 | Sentiment Analyzer (TF.js toxicity) | AI/ML | Intermediate |
-| 125 | Face Mesh AR Filter (TF.js) | AI/ML | Advanced |
+| # | Project Name | Category | Difficulty | Status |
+|---|---|---|---|---|
+| 1 | Trie-Powered Autocomplete Engine | DOM & UI | Intermediate | [Built](../projects/Trie-Engine/) |
+| 2 | Infinite Virtual Scroll | DOM & UI | Intermediate | [Built](../projects/Infinite-Virtual-Scroll/) |
+| 3 | Schema-Driven Form Builder | DOM & UI | Intermediate | [Built](../projects/Schema-Driven-Form-Builder/) |
+| 4 | Multi-Step Wizard with State Machine | DOM & UI | Intermediate | [Built](../projects/Finite-Saas-Onboarding/) |
+| 5 | CSS-in-JS Theme Engine | DOM & UI | Advanced | [Built](../projects/CSS-in-JS-Theme-Engine/) |
+| 6 | Accessible Modal Stack Manager | DOM & UI | Intermediate | [Built](../projects/ModalStackManager/) |
+| 7 | Rich Text Editor (no contenteditable libs) | DOM & UI | Advanced | [Built](../projects/QuillBot/) |
+| 8 | Resizable Split-Pane Layout | DOM & UI | Intermediate | [Built](../projects/SplitMaker/) |
+| 9 | Command Palette (⌘K) | DOM & UI | Intermediate | [Built](../projects/Nexus-Dashboard/) |
+| 10 | Drag-to-Reorder Kanban Board | DOM & UI | Advanced | [Built](../projects/Clayboard/) |
+| 11 | Raycast-style Spotlight Search | DOM & UI | Advanced | [Built](../projects/Raycast-Spotlight-Search/) |
+| 12 | Snake [CLASSIC] | Games | Beginner | Planned |
+| 13 | Tetris [CLASSIC] | Games | Intermediate | [Built](../projects/Tetris/) |
+| 14 | Nonogram / Picross Puzzle | Games | Intermediate | Planned |
+| 15 | Minesweeper with Procedural Generation [CLASSIC] | Games | Intermediate | Planned |
+| 16 | Wordle Clone with Hard Mode & Stats | Games | Beginner | [Built](../projects/Wordle-Clone/) |
+| 17 | 2D Platformer with Physics | Games | Advanced | Planned |
+| 18 | Tower Defense Engine | Games | Advanced | Planned |
+| 19 | Dungeon Crawler (Roguelite) | Games | Advanced | Planned |
+| 20 | Chess with Legal Move Validation | Games | Advanced | Planned |
+| 21 | Sokoban Puzzle Game | Games | Intermediate | Planned |
+| 22 | Typing Speed Trainer with WPM Graph | Games | Beginner | Planned |
+| 23 | Gravity Pong (curved trajectories) | Games | Intermediate | Planned |
+| 24 | Infinite Runner with Procedural Terrain | Games | Advanced | Planned |
+| 25 | Cellular Automaton Explorer (Conway + rules) | Games | Intermediate | Planned |
+| 26 | Live Bar Chart Race | Data Viz | Intermediate | [Built](../projects/DataRace/) |
+| 27 | SVG Force-Directed Graph | Data Viz | Advanced | [Built](../projects/Synapse-Graph-Engine/) |
+| 28 | Heatmap Calendar (GitHub-style) | Data Viz | Intermediate | [Built](../projects/ActivityPulse/) |
+| 29 | Real-Time Candlestick Chart | Data Viz | Advanced | Planned |
+| 30 | Treemap Visualizer | Data Viz | Intermediate | Planned |
+| 31 | Animated Sankey Diagram | Data Viz | Advanced | Planned |
+| 32 | Radar / Spider Chart | Data Viz | Intermediate | Planned |
+| 33 | World Choropleth Map (SVG + GeoJSON) | Data Viz | Advanced | Planned |
+| 34 | Live CSV → Chart Transformer | Data Viz | Intermediate | Planned |
+| 35 | REST API Explorer (Postman-lite) | APIs & Async | Intermediate | Planned |
+| 36 | GitHub Profile Dashboard | APIs & Async | Beginner | Planned |
+| 37 | WebSocket Chat Room | APIs & Async | Intermediate | Planned |
+| 38 | Server-Sent Events Live Feed | APIs & Async | Intermediate | Planned |
+| 39 | OAuth PKCE Flow from Scratch | APIs & Async | Advanced | Planned |
+| 40 | GraphQL Query Builder & Tester | APIs & Async | Advanced | Planned |
+| 41 | Paginated Infinite API Feed | APIs & Async | Beginner | Planned |
+| 42 | Multi-source News Aggregator | APIs & Async | Intermediate | Planned |
+| 43 | Geolocation Heatmap | Browser APIs | Intermediate | Planned |
+| 44 | Clipboard Manager | Browser APIs | Beginner | Planned |
+| 45 | Web Share + File Drop Zone | Browser APIs | Beginner | Planned |
+| 46 | Push Notification Scheduler | Browser APIs | Intermediate | Planned |
+| 47 | Speech-to-Text Note Taker | Browser APIs | Intermediate | Planned |
+| 48 | Text-to-Speech Audiobook Player | Browser APIs | Intermediate | Planned |
+| 49 | Drag-and-Drop File Organizer | Browser APIs | Intermediate | Planned |
+| 50 | Bluetooth Device Dashboard | Browser APIs | Advanced | Planned |
+| 51 | USB HID Input Visualizer | Browser APIs | Advanced | Planned |
+| 52 | Barcode / QR Scanner (camera) | Browser APIs | Intermediate | Planned |
+| 53 | Offline-First Notes App (Service Worker) | Storage & State | Intermediate | Planned |
+| 54 | IndexedDB Photo Gallery | Storage & State | Intermediate | Planned |
+| 55 | Undo/Redo History Engine | Storage & State | Intermediate | Planned |
+| 56 | Encrypted Journal (Web Crypto API) | Storage & State | Advanced | [Built](../projects/Encrypted-Journal/) |
+| 57 | Multi-Tab State Sync (BroadcastChannel) | Storage & State | Advanced | Planned |
+| 58 | Time-Travel Debugger (state snapshots) | Storage & State | Advanced | [Built](../projects/Time-Travel-Debugger/) |
+| 59 | Progressive Web App Shell | Storage & State | Intermediate | Planned |
+| 60 | Particle System Engine | Animations | Intermediate | Planned |
+| 61 | Morphing SVG Blob | Animations | Intermediate | Planned |
+| 62 | Scroll-Driven Parallax Storytelling | Animations | Intermediate | Planned |
+| 63 | FLIP Animation Coordinator | Animations | Advanced | Planned |
+| 64 | Physics-Based Spring UI | Animations | Advanced | Planned |
+| 65 | Liquid/Metaball Simulation | Animations | Advanced | Planned |
+| 66 | CSS Custom Property Animator | Animations | Intermediate | Planned |
+| 67 | 3D Card Deck with Perspective | Animations | Intermediate | Planned |
+| 68 | Text Scramble / Glitch Reveal | Animations | Beginner | Planned |
+| 69 | Markdown Editor with Live Preview | Productivity | Beginner | Planned |
+| 70 | Pomodoro Timer with Session Analytics | Productivity | Beginner | Planned |
+| 71 | Habit Tracker with Streak Engine | Productivity | Intermediate | Planned |
+| 72 | Budget Ledger with Chart Summaries | Productivity | Intermediate | Planned |
+| 73 | Spaced Repetition Flashcard System | Productivity | Intermediate | Planned |
+| 74 | Mind Map Builder | Productivity | Advanced | Planned |
+| 75 | Code Snippet Manager with Syntax Highlight | Productivity | Intermediate | Planned |
+| 76 | Regex Tester & Explainer | Productivity | Intermediate | Planned |
+| 77 | Cron Expression Builder | Productivity | Intermediate | Planned |
+| 78 | Visual Color Palette Generator | Productivity | Beginner | Planned |
+| 79 | Audio Visualizer (FFT Bars) [CLASSIC] | Media | Intermediate | Planned |
+| 80 | Multi-Track Audio Mixer | Media | Advanced | Planned |
+| 81 | Webcam Filters & Effects | Media | Intermediate | Planned |
+| 82 | Video Annotation Timeline | Media | Advanced | Planned |
+| 83 | Procedural Music Sequencer | Media | Advanced | Planned |
+| 84 | Voice Pitch Detector | Media | Intermediate | Planned |
+| 85 | Screen Recorder (MediaRecorder API) | Media | Intermediate | Planned |
+| 86 | N-Body Gravitational Simulator | Math & Science | Advanced | Planned |
+| 87 | Fourier Series Visualizer | Math & Science | Intermediate | Planned |
+| 88 | Reaction-Diffusion System | Math & Science | Advanced | [Built](../projects/Reaction-Diffusion/) |
+| 89 | Mandelbrot Set Explorer | Math & Science | Intermediate | Planned |
+| 90 | Sorting Algorithm Visualizer [CLASSIC] | Math & Science | Beginner | Planned |
+| 91 | Pathfinding Visualizer (A*, Dijkstra) | Math & Science | Intermediate | Planned |
+| 92 | Fluid Dynamics Sim (SPH) | Math & Science | Advanced | Planned |
+| 93 | Double Pendulum Chaos Simulator | Math & Science | Intermediate | Planned |
+| 94 | Perlin Noise Terrain Generator | Generative Art | Intermediate | Planned |
+| 95 | L-System Tree Renderer | Generative Art | Intermediate | Planned |
+| 96 | Truchet Tile Pattern Engine | Generative Art | Beginner | Planned |
+| 97 | Voronoi Diagram Generator | Generative Art | Intermediate | Planned |
+| 98 | Generative Typography Poster | Generative Art | Intermediate | Planned |
+| 99 | Recursive Subdivision Art | Generative Art | Intermediate | Planned |
+| 100 | Flow Field Vector Art | Generative Art | Intermediate | Planned |
+| 101 | Spirograph / Hypotrochoid Plotter | Generative Art | Beginner | Planned |
+| 102 | JS Bundle Size Visualizer | Dev Tools | Intermediate | Planned |
+| 103 | DOM Tree Inspector (mini DevTools) | Dev Tools | Advanced | Planned |
+| 104 | CSS Specificity Calculator | Dev Tools | Beginner | Planned |
+| 105 | Performance Waterfall Profiler | Dev Tools | Advanced | Planned |
+| 106 | JSON Schema Validator & Diff | Dev Tools | Intermediate | Planned |
+| 107 | Console.log Time-Travel Replayer | Dev Tools | Advanced | Planned |
+| 108 | Network Request Interceptor Proxy | Dev Tools | Advanced | Planned |
+| 109 | Focus Trap & ARIA Live Region Tester | Accessibility | Intermediate | Planned |
+| 110 | Color Contrast Audit Tool | Accessibility | Beginner | Planned |
+| 111 | Keyboard Navigation Visualizer | Accessibility | Intermediate | Planned |
+| 112 | Screen Reader Simulation | Accessibility | Advanced | Planned |
+| 113 | Dyslexia-Friendly Reading Mode | Accessibility | Intermediate | Planned |
+| 114 | Motor-Impairment Dwell-Click UI | Accessibility | Advanced | Planned |
+| 115 | Swipe Gesture Navigation | Mobile/Touch | Beginner | Planned |
+| 116 | Pull-to-Refresh Feed | Mobile/Touch | Intermediate | Planned |
+| 117 | Pinch-to-Zoom Image Viewer | Mobile/Touch | Intermediate | Planned |
+| 118 | Haptic Feedback Drumpad | Mobile/Touch | Intermediate | Planned |
+| 119 | Touch-Drawing Canvas App | Mobile/Touch | Intermediate | Planned |
+| 120 | Bottom Sheet & Snap Points | Mobile/Touch | Advanced | Planned |
+| 121 | In-Browser Pose Estimator (TF.js) | AI/ML | Advanced | Planned |
+| 122 | Handwriting Digit Classifier (TF.js) | AI/ML | Intermediate | Planned |
+| 123 | Real-Time Object Detector (TF.js) | AI/ML | Advanced | Planned |
+| 124 | Sentiment Analyzer (TF.js toxicity) | AI/ML | Intermediate | Planned |
+| 125 | Face Mesh AR Filter (TF.js) | AI/ML | Advanced | Planned |
 
 ---
 

@@ -1,0 +1,380 @@
+{
+  "version": 1,
+  "count": 22,
+  "projects": [
+    {
+      "name": "ActivityPulse",
+      "slug": "ActivityPulse",
+      "title": "ActivityPulse — GitHub Heatmap Calendar",
+      "description": "A GitHub-style contribution heatmap calendar for a GitHub profile, with streaks, stats and export.",
+      "category": "Data Viz",
+      "tags": [
+        "heatmap",
+        "svg",
+        "github-api",
+        "calendar",
+        "fetch"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "ATLAS World Explorer",
+      "slug": "ATLAS-World-Explorer",
+      "title": "Atlas — World Countries Explorer",
+      "description": "Explore every country in the world with live REST Countries data: search, filter, compare and browse flags, capitals, languages and currencies.",
+      "category": "APIs & Async",
+      "tags": [
+        "rest-api",
+        "fetch",
+        "countries",
+        "search",
+        "offline-cache"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Clayboard",
+      "slug": "Clayboard",
+      "title": "Clayboard — Drag-to-Reorder Kanban Board",
+      "description": "A drag-to-reorder Kanban board with columns, cards, checklists and WIP limits, saved in your browser.",
+      "category": "DOM & UI",
+      "tags": [
+        "kanban",
+        "drag-and-drop",
+        "localstorage",
+        "dom",
+        "productivity"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "CSS In JS Theme Engine",
+      "slug": "CSS-in-JS-Theme-Engine",
+      "title": "CSS-in-JS Theme Engine — design tokens via Constructable Stylesheets",
+      "description": "A runtime CSS-in-JS theme engine: edit design tokens live, switch presets, compute derived tokens, and watch CSS variables update through Constructable Stylesheets.",
+      "category": "DOM & UI",
+      "tags": [
+        "css-in-js",
+        "design tokens",
+        "theming",
+        "constructable stylesheets",
+        "css variables"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "DataRace",
+      "slug": "DataRace",
+      "title": "DataRace — Live Bar Chart Race",
+      "description": "A live animated bar chart race that ranks competing entries as their values change over time.",
+      "category": "Data Viz",
+      "tags": [
+        "bar-chart-race",
+        "animation",
+        "svg",
+        "sorting",
+        "requestanimationframe"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Encrypted Journal",
+      "slug": "Encrypted-Journal",
+      "title": "Encrypted Journal - Web Crypto Vault",
+      "description": "A passphrase-protected private journal encrypted in your browser with PBKDF2 and AES-GCM via the Web Crypto API.",
+      "category": "Storage & State",
+      "tags": [
+        "web-crypto",
+        "aes-gcm",
+        "pbkdf2",
+        "localstorage",
+        "privacy"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-11-08"
+    },
+    {
+      "name": "Finite Saas Onboarding",
+      "slug": "Finite-Saas-Onboarding",
+      "title": "Finite SaaS Onboarding — State-Machine Wizard",
+      "description": "A multi-step SaaS onboarding wizard driven by an explicit finite state machine with guards, branching transitions, history integration and a live inspector.",
+      "category": "DOM & UI",
+      "tags": [
+        "state-machine",
+        "wizard",
+        "forms",
+        "history-api",
+        "validation"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Infinite Virtual Scroll",
+      "slug": "Infinite-Virtual-Scroll",
+      "title": "Infinite Virtual Scroll — Windowed List",
+      "description": "An infinite virtual scroller that renders only the visible rows so huge lists stay fast.",
+      "category": "DOM & UI",
+      "tags": [
+        "virtual-scroll",
+        "intersection-observer",
+        "performance",
+        "dom",
+        "infinite-scroll"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "ModalStackManager",
+      "slug": "ModalStackManager",
+      "title": "Modal Stack Manager — Accessible by Design",
+      "description": "An accessible modal stack manager with focus trapping, scroll locking, inert backgrounds and focus restoration.",
+      "category": "DOM & UI",
+      "tags": [
+        "modal",
+        "accessibility",
+        "focus-trap",
+        "aria",
+        "dom"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Nexus Dashboard",
+      "slug": "Nexus-Dashboard",
+      "title": "Command Palette (⌘K) — Nexus workspace dashboard",
+      "description": "A project-workspace dashboard with a keyboard-driven command palette (Ctrl/Cmd+K): fuzzy search, scopes, pinned and recent commands, previews.",
+      "category": "DOM & UI",
+      "tags": [
+        "command palette",
+        "fuzzy search",
+        "keyboard shortcuts",
+        "dashboard",
+        "localStorage"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "QuillBot",
+      "slug": "QuillBot",
+      "title": "Quill — Rich Text Editor",
+      "description": "A from-scratch rich text editor built on the Selection and Range APIs, with formatting, find and replace, tables and export.",
+      "category": "DOM & UI",
+      "tags": [
+        "contenteditable",
+        "selection-api",
+        "range",
+        "sanitizing",
+        "editor"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Raycast Spotlight Search",
+      "slug": "Raycast-Spotlight-Search",
+      "title": "Spotlight Search — Raycast-style launcher over Helix docs",
+      "description": "A Raycast-style spotlight search: fuzzy-find, filter and jump through the Helix design system docs with a keyboard-driven launcher.",
+      "category": "DOM & UI",
+      "tags": [
+        "spotlight",
+        "fuzzy search",
+        "keyboard",
+        "command launcher",
+        "mutationobserver"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Reaction Diffusion",
+      "slug": "Reaction-Diffusion",
+      "title": "Reaction-Diffusion Lab: Gray-Scott Patterns",
+      "description": "A live Gray-Scott reaction-diffusion simulator where you paint chemicals, tune feed and kill rates, and watch Turing patterns grow.",
+      "category": "Math & Science",
+      "tags": [
+        "gray-scott",
+        "turing-patterns",
+        "simulation",
+        "canvas",
+        "float32array"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-11-08"
+    },
+    {
+      "name": "Schema Driven Form Builder",
+      "slug": "Schema-Driven-Form-Builder",
+      "title": "Schema-Driven Form Builder — JSON Schema to live form",
+      "description": "Paste a JSON Schema and get a working, validated form: nested objects, arrays, enums, oneOf, conditional fields and a live JSON output.",
+      "category": "DOM & UI",
+      "tags": [
+        "json schema",
+        "forms",
+        "validation",
+        "dynamic ui",
+        "dom"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "SimplyJS",
+      "slug": "SimplyJS",
+      "title": "Vanilla JS Starter — Landing Page Demo",
+      "description": "A lightweight vanilla JavaScript starter landing page with an interactive counter, scroll-reveal cards and active-nav highlighting.",
+      "category": "DOM & UI",
+      "tags": [
+        "landing-page",
+        "starter",
+        "intersection-observer",
+        "css",
+        "dom"
+      ],
+      "difficulty": "Beginner",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "SplitMaker",
+      "slug": "SplitMaker",
+      "title": "SplitMaker — Resizable Layout Engine",
+      "description": "Build resizable split-pane layouts by dragging dividers, nesting panes and saving the layout.",
+      "category": "DOM & UI",
+      "tags": [
+        "split-pane",
+        "resize",
+        "drag",
+        "layout",
+        "localstorage"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Synapse Graph Engine",
+      "slug": "Synapse-Graph-Engine",
+      "title": "Synapse — Force-Directed Graph Engine",
+      "description": "An interactive force-directed graph rendered in SVG with a Barnes-Hut physics simulation, written without any libraries.",
+      "category": "Data Viz",
+      "tags": [
+        "svg",
+        "force-directed",
+        "graph",
+        "barnes-hut",
+        "physics"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Tetris",
+      "slug": "Tetris",
+      "title": "Tetris - Canvas Block Stacker",
+      "description": "A complete Tetris with SRS rotation, hold, ghost piece, lock delay, scoring and touch controls, drawn on a crisp canvas.",
+      "category": "Games",
+      "tags": [
+        "canvas",
+        "game-loop",
+        "touch",
+        "keyboard",
+        "audio"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-11-08"
+    },
+    {
+      "name": "TheVanillaLab",
+      "slug": "TheVanillaLab",
+      "title": "TheVanillaLab — Vanilla JS Demo Playground",
+      "description": "A playground of small vanilla JavaScript demos: tabs, theme toggle, localStorage counter and notes, fetch, toasts and form validation.",
+      "category": "DOM & UI",
+      "tags": [
+        "demos",
+        "localStorage",
+        "fetch",
+        "forms",
+        "theming"
+      ],
+      "difficulty": "Beginner",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Time Travel Debugger",
+      "slug": "Time-Travel-Debugger",
+      "title": "Time-Travel Debugger: Redux-style State Snapshots",
+      "description": "A from-scratch Redux-like store that records every action as an immutable snapshot, with a debugger to scrub, replay, branch, diff and export state history.",
+      "category": "Storage & State",
+      "tags": [
+        "redux",
+        "state",
+        "undo",
+        "debugger",
+        "snapshots"
+      ],
+      "difficulty": "Advanced",
+      "status": "Built",
+      "updated": "2026-11-08"
+    },
+    {
+      "name": "Trie Engine",
+      "slug": "Trie-Engine",
+      "title": "Trie Engine — Autocomplete",
+      "description": "Trie-powered prefix-tree autocomplete with fuzzy matching, keyboard navigation and search history.",
+      "category": "DOM & UI",
+      "tags": [
+        "trie",
+        "autocomplete",
+        "data-structures",
+        "keyboard",
+        "search"
+      ],
+      "difficulty": "Intermediate",
+      "status": "Built",
+      "updated": "2026-09-09"
+    },
+    {
+      "name": "Wordle Clone",
+      "slug": "Wordle-Clone",
+      "title": "Wordle Clone — Hard Mode & Stats",
+      "description": "A word-guessing game with a daily puzzle, unlimited practice, Hard Mode, colour-blind colours and saved statistics.",
+      "category": "Games",
+      "tags": [
+        "game",
+        "keyboard",
+        "localStorage",
+        "animation",
+        "accessibility"
+      ],
+      "difficulty": "Beginner",
+      "status": "Built",
+      "updated": "2026-11-08"
+    }
+  ]
+}

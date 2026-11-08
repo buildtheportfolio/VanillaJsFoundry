@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reaction-Diffusion Lab: Gray-Scott Patterns</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%239333ea'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3ER%3C/text%3E%3C/svg%3E">
+  <meta name="description" content="A live Gray-Scott reaction-diffusion simulator where you paint chemicals, tune feed and kill rates, and watch Turing patterns grow.">
+  <meta name="foundry:category" content="Math &amp; Science">
+  <meta name="foundry:difficulty" content="Advanced">
+  <meta name="foundry:tags" content="gray-scott,turing-patterns,simulation,canvas,float32array">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+  <main class="app" id="app">
+    <header class="top">
+      <div>
+        <p class="eyebrow">Math &amp; Science / Chemistry in a grid</p>
+        <h1>Reaction-Diffusion Lab</h1>
+        <p class="lede">Two virtual chemicals feed, react and diffuse. Paint chemical B on the canvas and watch Gray-Scott patterns grow.</p>
+      </div>
+      <div class="stats" aria-live="off">
+        <div class="stat"><span class="stat-label">FPS</span><span class="stat-val" id="fps">0</span></div>
+        <div class="stat"><span class="stat-label">Iterations</span><span class="stat-val" id="iter">0</span></div>
+      </div>
+    </header>
+
+    <div class="layout">
+      <section class="stage" aria-label="Simulation">
+        <div class="canvas-wrap" id="canvasWrap">
+          <canvas id="sim" width="256" height="256" aria-label="Reaction-diffusion simulation. Paint with the pointer to add chemical B." role="img"></canvas>
+          <div class="overlay" id="loading" role="status">Seeding the grid...</div>
+          <div class="overlay error" id="error" role="alert" hidden>
+            <strong>Canvas 2D is not available.</strong>
+            <span>This simulation needs a browser with HTML canvas support. Try a current version of Chrome, Firefox, Safari or Edge.</span>
+          </div>
+          <div class="badge" id="pausedBadge" hidden>Paused</div>
+        </div>
+        <div class="transport" role="group" aria-label="Playback controls">
+          <button type="button" id="play" class="primary" aria-keyshortcuts="Space">Pause</button>
+          <button type="button" id="stepBtn" aria-keyshortcuts="S">Step</button>
+          <button type="button" id="reset" aria-keyshortcuts="R">Reset</button>
+          <button type="button" id="clear">Clear</button>
+          <button type="button" id="random">Random seed</button>
+          <button type="button" id="export">Save PNG</button>
+        </div>
+        <p class="hints" aria-label="Keyboard shortcuts">
+          <kbd>Space</kbd> play/pause <kbd>S</kbd> step <kbd>R</kbd> reset <kbd>E</kbd> erase mode.
+          Drag on the canvas to paint; right-click or erase mode removes B.
+        </p>
+      </section>
+
+      <aside class="panel" aria-label="Controls">
+        <section class="card">
+          <h2>Presets</h2>
+          <div class="presets" id="presets" role="group" aria-label="Parameter presets"></div>
+          <p class="preset-name" id="presetName">Preset: Mitosis</p>
+        </section>
+
+        <section class="card">
+          <h2>Parameters</h2>
+          <div class="row"><label for="f">Feed (f)</label><output id="fOut" for="f">0.0367</output></div>
+          <input type="range" id="f" min="0" max="0.1" step="0.0001" value="0.0367">
+          <div class="row"><label for="k">Kill (k)</label><output id="kOut" for="k">0.0625</output></div>
+          <input type="range" id="k" min="0.03" max="0.075" step="0.0001" value="0.0625">
+          <div class="row"><label for="da">Diffusion A (Da)</label><output id="daOut" for="da">1.00</output></div>
+          <input type="range" id="da" min="0.1" max="1.2" step="0.01" value="1">
+          <div class="row"><label for="db">Diffusion B (Db)</label><output id="dbOut" for="db">0.50</output></div>
+          <input type="range" id="db" min="0.05" max="1.2" step="0.01" value="0.5">
+        </section>
+
+        <section class="card">
+          <h2>Parameter map</h2>
+          <canvas id="map" width="300" height="190" aria-label="Feed and kill parameter map. Click to choose f and k."></canvas>
+          <p class="map-info" id="mapInfo">f 0.0367, k 0.0625</p>
+          <p class="fine">Approximate Pearson regions. Click or drag to set f and k; the ring marks the current values.</p>
+        </section>
+
+        <section class="card">
+          <h2>Simulation</h2>
+          <div class="row"><label for="steps">Steps per frame</label><output id="stepsOut" for="steps">8</output></div>
+          <input type="range" id="steps" min="1" max="24" step="1" value="8">
+          <div class="row"><label for="brush">Brush size</label><output id="brushOut" for="brush">8</output></div>
+          <input type="range" id="brush" min="1" max="30" step="1" value="8">
+          <div class="grid2">
+            <div>
+              <label for="size" class="small">Grid size</label>
+              <select id="size">
+                <option value="128">128 x 128</option>
+                <option value="256" selected>256 x 256</option>
+                <option value="384">384 x 384</option>
+              </select>
+            </div>
+            <div>
+              <label for="palette" class="small">Palette</label>
+              <select id="palette"></select>
+            </div>
+          </div>
+          <div class="toggles">
+            <label class="check"><input type="checkbox" id="wrap" checked> Wrap edges</label>
+            <label class="check"><input type="checkbox" id="erase"> Erase mode</label>
+          </div>
+          <div class="swatch" id="swatch" aria-hidden="true"></div>
+        </section>
+      </aside>
+    </div>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>

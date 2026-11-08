@@ -129,7 +129,6 @@ function setupVirtualScroll() {
 function makeRow() {
   const el = document.createElement("div");
   el.className = "vrow";
-  el.setAttribute("role", "row");
 
   const idEl = document.createElement("span"); idEl.className = "vrow-id";
   const statEl = document.createElement("span"); statEl.className = "vrow-status";
@@ -486,7 +485,7 @@ const ThemeManager = {
       root.style.setProperty("--text", "#0f172a");
       root.style.setProperty("--border", "#e2e8f0");
     }
-    localStorage.setItem("appTheme", State.theme);
+    try { localStorage.setItem("appTheme", State.theme); } catch {}
   }
 };
 

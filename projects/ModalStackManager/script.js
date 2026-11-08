@@ -475,6 +475,7 @@ class ModalStackManager {
 
     const body = document.createElement("div");
     body.className = "modal-body";
+    // config.body strings are trusted static markup supplied by the host page; pass an Element for anything dynamic.
     if (typeof config.body === "string") body.innerHTML = config.body;
     else if (config.body instanceof Element) body.appendChild(config.body);
     frag.appendChild(body);

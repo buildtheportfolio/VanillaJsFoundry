@@ -3,13 +3,21 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Infinite virtual scroll</title>
+  <title>Infinite Virtual Scroll — Windowed List</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232563eb'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3EI%3C/text%3E%3C/svg%3E">
+  <meta name="description" content="An infinite virtual scroller that renders only the visible rows so huge lists stay fast." />
+  <meta name="foundry:category" content="DOM & UI" />
+  <meta name="foundry:difficulty" content="Intermediate" />
+  <meta name="foundry:tags" content="virtual-scroll,intersection-observer,performance,dom,infinite-scroll" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+  <h1 class="sr-only">Infinite virtual scroll list</h1>
   <div class="app">
 
     <header class="topbar">

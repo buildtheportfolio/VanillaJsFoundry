@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Encrypted Journal - Web Crypto Vault</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230d9488'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3EE%3C/text%3E%3C/svg%3E">
+  <meta name="description" content="A passphrase-protected private journal encrypted in your browser with PBKDF2 and AES-GCM via the Web Crypto API.">
+  <meta name="foundry:category" content="Storage & State">
+  <meta name="foundry:difficulty" content="Advanced">
+  <meta name="foundry:tags" content="web-crypto,aes-gcm,pbkdf2,localstorage,privacy">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Newsreader:opsz,wght@6..72,400;6..72,500;6..72,600&display=swap">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+  <div id="toasts" class="toasts" role="status" aria-live="polite"></div>
+
+  <!-- Error state: no crypto / storage blocked / corrupt vault -->
+  <section id="view-error" class="screen" hidden>
+    <div class="card">
+      <div class="badge badge-danger" aria-hidden="true">!</div>
+      <h1 class="screen-title" id="error-title">Journal unavailable</h1>
+      <p id="error-text" class="muted"></p>
+      <div id="error-actions" class="row" hidden>
+        <button type="button" class="btn" id="error-import">Import backup</button>
+        <button type="button" class="btn btn-danger" id="error-destroy">Destroy stored data</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Loading state while checking environment -->
+  <section id="view-loading" class="screen">
+    <div class="card center"><span class="spinner big" aria-hidden="true"></span><p class="muted">Preparing secure storage...</p></div>
+  </section>
+
+  <!-- First run: create vault -->
+  <section id="view-setup" class="screen" hidden>
+    <form class="card" id="setup-form" autocomplete="off">
+      <div class="brand"><span class="logo" aria-hidden="true"></span><h1 class="screen-title">Encrypted Journal</h1></div>
+      <p class="muted">Create a vault. Everything you write is encrypted in this browser with a key derived from your passphrase. There is no recovery if you forget it.</p>
+      <label class="field">
+        <span>Passphrase</span>
+        <input type="password" id="setup-pass" autocomplete="new-password" required minlength="10" spellcheck="false">
+      </label>
+      <div class="meter" id="setup-meter" data-level="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <p class="hint" id="setup-strength">Use at least 10 characters. A few random words works well.</p>
+      <label class="field">
+        <span>Confirm passphrase</span>
+        <input type="password" id="setup-confirm" autocomplete="new-password" required spellcheck="false">
+      </label>
+      <p class="error" id="setup-error" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary wide" id="setup-submit"><span class="spinner" aria-hidden="true"></span><span class="label">Create vault</span></button>
+      <div class="row links">
+        <button type="button" class="link" data-open="import">Import a backup</button>
+        <button type="button" class="link" data-open="about">How it's encrypted</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Locked -->
+  <section id="view-lock" class="screen" hidden>
+    <form class="card" id="lock-form">
+      <div class="brand"><span class="logo locked" aria-hidden="true"></span><h1 class="screen-title">Journal locked</h1></div>
+      <p class="muted" id="lock-note">Enter your passphrase to decrypt your entries.</p>
+      <label class="field">
+        <span>Passphrase</span>
+        <input type="password" id="lock-pass" autocomplete="current-password" required spellcheck="false">
+      </label>
+      <p class="error" id="lock-error" role="alert" hidden></p>
+      <button type="submit" class="btn btn-primary wide" id="lock-submit"><span class="spinner" aria-hidden="true"></span><span class="label">Unlock</span></button>
+      <div class="row links">
+        <button type="button" class="link" data-open="import">Import a backup</button>
+        <button type="button" class="link" data-open="about">How it's encrypted</button>
+        <button type="button" class="link danger" data-open="destroy">Destroy vault</button>
+      </div>
+    </form>
+  </section>
+
+  <!-- Unlocked app -->
+  <div id="view-app" class="app" hidden>
+    <aside class="pane list-pane" id="list-pane">
+      <header class="pane-head">
+        <h1 class="app-title">Encrypted Journal</h1>
+        <div class="row tight">
+          <button type="button" class="icon-btn" id="btn-settings" title="Settings" aria-label="Settings">&#9881;</button>
+          <button type="button" class="btn small" id="btn-lock" title="Lock (Ctrl/Cmd+L)">Lock</button>
+        </div>
+      </header>
+      <div class="list-tools">
+        <input type="search" id="search" placeholder="Search entries and tags" aria-label="Search entries" autocomplete="off" spellcheck="false">
+        <button type="button" class="btn btn-primary small" id="btn-new" title="New entry (Ctrl/Cmd+N)">New</button>
+      </div>
+      <p class="autolock" id="autolock"></p>
+      <ul class="entries" id="entries" aria-label="Entries"></ul>
+      <p class="empty" id="list-empty" hidden></p>
+    </aside>
+
+    <main class="pane detail-pane" id="detail-pane">
+      <div class="placeholder" id="detail-empty">
+        <p>Select an entry or start a new one.</p>
+        <button type="button" class="btn btn-primary" id="btn-new-2">Write an entry</button>
+      </div>
+      <form class="editor" id="editor" hidden autocomplete="off">
+        <div class="editor-bar">
+          <button type="button" class="btn small back" id="btn-back">Entries</button>
+          <span class="status" id="save-status" aria-live="polite">Saved</span>
+          <button type="button" class="btn small" id="btn-save" title="Save now (Ctrl/Cmd+S)">Save</button>
+          <button type="button" class="btn small btn-danger-ghost" id="btn-delete">Delete</button>
+        </div>
+        <input type="text" id="f-title" class="title-input" placeholder="Untitled entry" maxlength="200" aria-label="Title">
+        <div class="meta-row">
+          <fieldset class="moods" id="f-mood" aria-label="Mood"></fieldset>
+          <input type="text" id="f-tags" placeholder="Tags, comma separated" aria-label="Tags" maxlength="200" spellcheck="false">
+        </div>
+        <textarea id="f-body" placeholder="Write freely. This text is encrypted before it touches storage." aria-label="Entry body"></textarea>
+        <p class="stamps" id="stamps"></p>
+      </form>
+    </main>
+  </div>
+
+  <!-- Settings -->
+  <dialog id="dlg-settings">
+    <div class="dlg">
+      <header class="dlg-head"><h2>Settings</h2><button type="button" class="icon-btn" data-close aria-label="Close">&times;</button></header>
+      <label class="field">
+        <span>Auto-lock after inactivity</span>
+        <select id="timeout-select">
+          <option value="1">1 minute</option>
+          <option value="5">5 minutes</option>
+          <option value="15">15 minutes</option>
+          <option value="30">30 minutes</option>
+          <option value="60">1 hour</option>
+        </select>
+      </label>
+      <div class="stack">
+        <button type="button" class="btn" data-open="changepw">Change passphrase</button>
+        <button type="button" class="btn" id="btn-export">Export encrypted backup</button>
+        <button type="button" class="btn" data-open="import">Import backup</button>
+        <button type="button" class="btn" data-open="about">How it's encrypted</button>
+        <button type="button" class="btn btn-danger" data-open="destroy">Destroy vault</button>
+      </div>
+    </div>
+  </dialog>
+
+  <!-- Change passphrase -->
+  <dialog id="dlg-changepw">
+    <form class="dlg" id="changepw-form" autocomplete="off">
+      <header class="dlg-head"><h2>Change passphrase</h2><button type="button" class="icon-btn" data-close aria-label="Close">&times;</button></header>
+      <p class="muted">A new random salt and key are generated and every entry is re-encrypted.</p>
+      <label class="field"><span>Current passphrase</span><input type="password" id="cp-old" autocomplete="current-password" required spellcheck="false"></label>
+      <label class="field"><span>New passphrase</span><input type="password" id="cp-new" autocomplete="new-password" required minlength="10" spellcheck="false"></label>
+      <div class="meter" id="cp-meter" data-level="0" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+      <p class="hint" id="cp-strength">Use at least 10 characters.</p>
+      <label class="field"><span>Confirm new passphrase</span><input type="password" id="cp-confirm" autocomplete="new-password" required spellcheck="false"></label>
+      <p class="error" id="cp-error" role="alert" hidden></p>
+      <div class="row end"><button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="cp-submit"><span class="spinner" aria-hidden="true"></span><span class="label">Re-encrypt</span></button></div>
+    </form>
+  </dialog>
+
+  <!-- Import -->
+  <dialog id="dlg-import">
+    <form class="dlg" id="import-form" autocomplete="off">
+      <header class="dlg-head"><h2>Import encrypted backup</h2><button type="button" class="icon-btn" data-close aria-label="Close">&times;</button></header>
+      <label class="field"><span>Backup file (.json)</span><input type="file" id="imp-file" accept="application/json,.json"></label>
+      <p class="hint" id="imp-file-info"></p>
+      <label class="field"><span>Backup passphrase</span><input type="password" id="imp-pass" autocomplete="off" required spellcheck="false"></label>
+      <label class="check" id="imp-replace-row" hidden><input type="checkbox" id="imp-replace"><span>I understand this replaces the vault currently stored in this browser.</span></label>
+      <p class="error" id="imp-error" role="alert" hidden></p>
+      <div class="row end"><button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary" id="imp-submit"><span class="spinner" aria-hidden="true"></span><span class="label">Import</span></button></div>
+    </form>
+  </dialog>
+
+  <!-- Destroy -->
+  <dialog id="dlg-destroy">
+    <form class="dlg" id="destroy-form" autocomplete="off">
+      <header class="dlg-head"><h2>Destroy vault</h2><button type="button" class="icon-btn" data-close aria-label="Close">&times;</button></header>
+      <p>This permanently deletes the encrypted vault from this browser. Without an exported backup it cannot be recovered.</p>
+      <label class="field"><span>Type <strong>DESTROY</strong> to confirm</span><input type="text" id="destroy-input" autocomplete="off" spellcheck="false"></label>
+      <div class="row end"><button type="button" class="btn" data-close>Cancel</button>
+        <button type="submit" class="btn btn-danger" id="destroy-submit" disabled>Destroy forever</button></div>
+    </form>
+  </dialog>
+
+  <!-- About -->
+  <dialog id="dlg-about">
+    <div class="dlg">
+      <header class="dlg-head"><h2>How it's encrypted</h2><button type="button" class="icon-btn" data-close aria-label="Close">&times;</button></header>
+      <ol class="about">
+        <li><strong>Key derivation.</strong> Your passphrase goes through PBKDF2 (HMAC-SHA-256, 600,000 iterations) with a random 16-byte salt to produce a 256-bit AES key.</li>
+        <li><strong>Encryption.</strong> The whole journal is sealed with AES-GCM using a brand new random 12-byte IV on every save. GCM also authenticates the data, so a wrong passphrase or tampering fails cleanly.</li>
+        <li><strong>Storage.</strong> Only a versioned envelope of salt, IV and ciphertext (base64) is saved in localStorage. Your passphrase and plaintext are never stored.</li>
+        <li><strong>In memory.</strong> The key is a non-extractable CryptoKey. Locking, auto-lock and closing the tab drop it along with decrypted entries.</li>
+        <li><strong>Limits.</strong> Anyone with your device and unlimited guesses can attack a weak passphrase offline, and malicious browser extensions or scripts on a compromised device can read what you type. Choose a long passphrase and keep a backup.</li>
+      </ol>
+    </div>
+  </dialog>
+
+  <script src="script.js"></script>
+</body>
+</html>

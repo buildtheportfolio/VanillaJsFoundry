@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Tetris - Canvas Block Stacker</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23059669'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3ET%3C/text%3E%3C/svg%3E">
+  <meta name="description" content="A complete Tetris with SRS rotation, hold, ghost piece, lock delay, scoring and touch controls, drawn on a crisp canvas.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Intermediate">
+  <meta name="foundry:tags" content="canvas,game-loop,touch,keyboard,audio">
+  <meta name="color-scheme" content="dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+  <div class="app">
+    <header class="top">
+      <h1>Tetris</h1>
+      <div class="top-actions">
+        <button type="button" class="btn small" id="pauseBtn">Pause</button>
+        <button type="button" class="btn small" id="muteBtn" aria-pressed="true">Sound: off</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <section class="panel hold" aria-label="Hold piece">
+        <h2>Hold</h2>
+        <canvas id="holdCv" aria-hidden="true"></canvas>
+      </section>
+
+      <section class="panel stats" aria-label="Statistics">
+        <dl>
+          <div><dt>Score</dt><dd id="scoreEl">0</dd></div>
+          <div><dt>High</dt><dd id="highEl">0</dd></div>
+          <div><dt>Lines</dt><dd id="linesEl">0</dd></div>
+          <div><dt>Best lines</dt><dd id="bestLinesEl">0</dd></div>
+          <div><dt>Level</dt><dd id="levelEl">1</dd></div>
+        </dl>
+      </section>
+
+      <section class="board-col" aria-label="Game board">
+        <div class="board-wrap" id="boardWrap">
+          <canvas id="boardCv" role="img" aria-label="Tetris playfield, 10 columns by 20 rows"></canvas>
+          <div class="toast" id="toast" aria-live="polite"></div>
+          <div class="overlay" id="overlay">
+            <div class="overlay-card">
+              <h2 id="ovTitle">Tetris</h2>
+              <p id="ovMsg">Stack the blocks and clear lines.</p>
+              <p class="ov-sub" id="ovSub"></p>
+              <button type="button" class="btn primary" id="ovBtn">Start game</button>
+              <p class="ov-hint" id="ovHint">Press Enter to start</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="pad" id="pad" aria-label="Touch controls">
+          <button type="button" class="btn" data-act="hold">Hold</button>
+          <button type="button" class="btn" data-act="ccw" aria-label="Rotate counter-clockwise">&#x27F2;</button>
+          <button type="button" class="btn" data-act="cw" aria-label="Rotate clockwise">&#x27F3;</button>
+          <button type="button" class="btn" data-act="drop">Drop</button>
+          <button type="button" class="btn" data-act="left" aria-label="Move left">&#x25C0;</button>
+          <button type="button" class="btn" data-act="down" aria-label="Soft drop">&#x25BC;</button>
+          <button type="button" class="btn" data-act="right" aria-label="Move right">&#x25B6;</button>
+          <button type="button" class="btn" data-act="pause">Pause</button>
+        </div>
+      </section>
+
+      <section class="panel next" aria-label="Next pieces">
+        <h2>Next</h2>
+        <canvas id="nextCv" aria-hidden="true"></canvas>
+      </section>
+
+      <section class="panel help" aria-label="Controls">
+        <h2>Controls</h2>
+        <ul>
+          <li><span><kbd>&larr;</kbd> <kbd>&rarr;</kbd></span> Move</li>
+          <li><span><kbd>&darr;</kbd></span> Soft drop</li>
+          <li><span><kbd>Space</kbd></span> Hard drop</li>
+          <li><span><kbd>&uarr;</kbd> <kbd>X</kbd></span> Rotate right</li>
+          <li><span><kbd>Z</kbd></span> Rotate left</li>
+          <li><span><kbd>C</kbd> <kbd>Shift</kbd></span> Hold</li>
+          <li><span><kbd>P</kbd> <kbd>Esc</kbd></span> Pause</li>
+          <li><span><kbd>M</kbd></span> Sound</li>
+        </ul>
+        <p class="touch-tip">Touch: drag the board sideways to move, tap to rotate, swipe down to drop, swipe up to hold.</p>
+      </section>
+    </main>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>

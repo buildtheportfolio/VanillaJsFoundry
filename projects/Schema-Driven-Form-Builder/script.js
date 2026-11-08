@@ -663,6 +663,18 @@ const el = (tag, attrs = {}, ...children) => {
   return e;
 };
 
+function safeRegexTest(pattern, val) {
+  try {
+    return new RegExp(pattern).test(val);
+  } catch {
+    return true;
+  }
+}
+
+function qa(s) {
+  return String(s).replace(/["\\]/g, "\\$&");
+}
+
 let rootSchema = null;
 let formSchema = null;
 let conditionalWatchers = [];
@@ -724,7 +736,7 @@ function typeBadge(schema) {
 }
 
 function buildLabel(title, name, required, schema) {
-  const id = `field-${name}`;
+  const id = String(name).startsWith("field-") ? name : `field-${name}`;
   const lbl = el("label", { class: "field-label", for: id });
   lbl.append(title || name);
   if (required)
@@ -797,7 +809,7 @@ function validateInput(input, schema, id) {
     if (
       schema.pattern &&
       typeof val === "string" &&
-      !new RegExp(schema.pattern).test(val)
+      !safeRegexTest(schema.pattern, val)
     )
       errors.push(
         schema["x-errorMessage"] || `Must match pattern: ${schema.pattern}`,
@@ -1575,12 +1587,12 @@ function applyConditionals(schema, form, root) {
   const check = () => {
     let match = watchFields.every((k) => {
       const input =
-        form.querySelector(`[name="${k}"]`) ||
-        form.querySelector(`[name="${k}"]:checked`);
+        form.querySelector(`[name="${qa(k)}"]`) ||
+        form.querySelector(`[name="${qa(k)}"]:checked`);
       if (!input) return false;
       const val =
         input.type === "radio"
-          ? (form.querySelector(`[name="${k}"]:checked`) || {}).value
+          ? (form.querySelector(`[name="${qa(k)}"]:checked`) || {}).value
           : input.value;
       const cond = ifProps[k];
       if (cond.const !== undefined) return val === String(cond.const);
@@ -1629,7 +1641,7 @@ function applyConditionals(schema, form, root) {
   form.append(conditionalBlock);
 
   watchFields.forEach((k) => {
-    const inputs = form.querySelectorAll(`[name="${k}"]`);
+    const inputs = form.querySelectorAll(`[name="${qa(k)}"]`);
     inputs.forEach((inp) => inp.addEventListener("change", check));
   });
 
@@ -1643,13 +1655,13 @@ function applyDependencies(schema, form, root) {
 
   Object.entries(schema.dependencies).forEach(([triggerField, dep]) => {
     const check = () => {
-      const trigger = form.querySelector(`[name="${triggerField}"]`);
+      const trigger = form.querySelector(`[name="${qa(triggerField)}"]`);
       const val = trigger
         ? trigger.type === "checkbox"
           ? trigger.checked
           : trigger.value
         : null;
-      const depBlock = form.querySelector(`.dep-block-${triggerField}`);
+      const depBlock = form.querySelector(`.dep-block-${CSS.escape(String(triggerField))}`);
       if (!depBlock) return;
 
       let isActive = false;
@@ -1676,7 +1688,7 @@ function applyDependencies(schema, form, root) {
       updateProgress();
     };
 
-    const trigger = form.querySelector(`[name="${triggerField}"]`);
+    const trigger = form.querySelector(`[name="${qa(triggerField)}"]`);
     if (trigger) {
       trigger.addEventListener("change", check);
       dependencyWatchers.push(check);
@@ -1746,7 +1758,7 @@ function collectFormData(form, schema, root) {
       .forEach((f) => {
         const name = f.dataset.condName;
         if (name) {
-          const inp = f.querySelector(`[name="${name}"]`);
+          const inp = f.querySelector(`[name="${qa(name)}"]`);
           if (inp && !inp.disabled)
             result[name] = inp.type === "checkbox" ? inp.checked : inp.value;
         }
@@ -1758,9 +1770,9 @@ function collectFormData(form, schema, root) {
 
 function extractField(form, schema, path, root) {
   const ns = normalizeSchema(schema, root);
-  const inp = form.querySelector(`[name="${path}"]`);
+  const inp = form.querySelector(`[name="${qa(path)}"]`);
   if (!inp) {
-    const radio = form.querySelector(`[name="${path}"]:checked`);
+    const radio = form.querySelector(`[name="${qa(path)}"]:checked`);
     if (radio)
       return ns.type === "boolean" ? radio.value === "true" : radio.value;
     return undefined;
@@ -1778,10 +1790,10 @@ function extractField(form, schema, path, root) {
 
 function extractArrayField(form, schema, path, root) {
   const arrayWrap =
-    form.querySelector(`[id^="arrwrap-field-${path}"]`) ||
-    form.querySelector(`[data-path="${path}"] .array-wrap`);
+    form.querySelector(`[id^="arrwrap-field-${qa(path)}"]`) ||
+    form.querySelector(`[data-path="${qa(path)}"] .array-wrap`);
   if (!arrayWrap) {
-    const checkboxes = form.querySelectorAll(`[name="${path}[]"]:checked`);
+    const checkboxes = form.querySelectorAll(`[name="${qa(path)}[]"]:checked`);
     if (checkboxes.length) return [...checkboxes].map((c) => c.value);
     return [];
   }
@@ -1797,12 +1809,12 @@ function extractArrayField(form, schema, path, root) {
     if (itemSchema.type === "object" && itemSchema.properties) {
       const obj = {};
       Object.entries(itemSchema.properties).forEach(([k]) => {
-        const inp = item.querySelector(`[name="${path}.${i}.${k}"]`);
+        const inp = item.querySelector(`[name="${qa(path)}.${qa(i)}.${qa(k)}"]`);
         if (inp) obj[k] = inp.type === "checkbox" ? inp.checked : inp.value;
       });
       result.push(obj);
     } else {
-      const inp = item.querySelector(`[name="${path}.${i}"]`);
+      const inp = item.querySelector(`[name="${qa(path)}.${qa(i)}"]`);
       if (inp)
         result.push(inp.type === "number" ? Number(inp.value) : inp.value);
     }
@@ -1827,8 +1839,8 @@ function validateForm(form, schema, root) {
 
   const reqFields = schema.required || [];
   reqFields.forEach((k) => {
-    const inp = form.querySelector(`[name="${k}"]`);
-    const radio = form.querySelector(`[name="${k}"]:checked`);
+    const inp = form.querySelector(`[name="${qa(k)}"]`);
+    const radio = form.querySelector(`[name="${qa(k)}"]:checked`);
     if (!inp && !radio) return;
     if (inp && !inp.value && inp.type !== "checkbox") {
       showError(`field-${k}`, "This field is required");
@@ -1866,7 +1878,7 @@ function updateProgress() {
   ];
   const filled = allInputs.filter((inp) => {
     if (inp.type === "radio")
-      return !!form.querySelector(`[name="${inp.name}"]:checked`);
+      return !!form.querySelector(`[name="${qa(inp.name)}"]:checked`);
     if (inp.type === "checkbox") return true;
     return inp.value !== "";
   });
@@ -2104,7 +2116,11 @@ document.addEventListener("DOMContentLoaded", () => {
       showBanner("error", "⚠ Cannot build — fix JSON parse errors first");
       return;
     }
-    buildForm(parsed);
+    try {
+      buildForm(parsed);
+    } catch (err) {
+      showBanner("error", "⚠ Cannot build form: " + err.message);
+    }
   });
 
   btnFormat.addEventListener("click", () => {

@@ -83,7 +83,8 @@ const HISTORY_MAX = 8;
 const History = {
   load() {
     try {
-      return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      const parsed = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
+      return Array.isArray(parsed) ? parsed.filter(w => typeof w === "string").slice(0, HISTORY_MAX) : [];
     } catch {
       return [];
     }
@@ -102,6 +103,7 @@ const History = {
     try { localStorage.removeItem(HISTORY_KEY); } catch {}
   }
 };
+let wordListFailed = false;
 async function loadWordList() {
   if (location.protocol === "file:") {
     console.info("Running on file:// — using built-in word list.");
@@ -119,6 +121,7 @@ async function loadWordList() {
       .filter(w => w.length >= 2 && /^[a-z]+$/.test(w));
   } catch (_) {
     console.warn("Remote word list unavailable — using bundled fallback.");
+    wordListFailed = true;
     return FALLBACK_WORDS;
   }
 }
@@ -283,7 +286,11 @@ class AutocompleteUI {
       hist.forEach(w => this.trie.boost(w));
       this._animateCount(this.$wordCount, this.trie.wordCount);
       this._animateCount(this.$nodeCount, this.trie.nodeCount);
-      this._setStatus("ready", `Trie ready · ${this.trie.wordCount.toLocaleString()} words indexed`);
+      if (wordListFailed) {
+        this._setStatus("error", `Could not load the online word list — using built-in list (${this.trie.wordCount.toLocaleString()} words)`);
+      } else {
+        this._setStatus("ready", `Trie ready · ${this.trie.wordCount.toLocaleString()} words indexed`);
+      }
       this.$input.disabled = false;
       this.$input.focus();
       this._bindEvents();
@@ -434,7 +441,12 @@ class AutocompleteUI {
     this.currentItems = suggestions;
     this.$list.innerHTML = "";
     if (suggestions.length === 0) {
-      this.$list.innerHTML = `<li class="no-results">no matches for "<em>${this._escHtml(prefix)}</em>"</li>`;
+      const nr = document.createElement("li");
+      nr.className = "no-results";
+      const em = document.createElement("em");
+      em.textContent = prefix;
+      nr.append('no matches for "', em, '"');
+      this.$list.appendChild(nr);
       this._openList();
       return;
     }
@@ -544,7 +556,8 @@ class AutocompleteUI {
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
-      .replace(/"/g, "&quot;");
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
   }
 }
 document.addEventListener("DOMContentLoaded", () => {

@@ -1566,6 +1566,15 @@ function buildPreviewComponents() {
   );
 }
 
+function escapeHtml(s) {
+  return String(s)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
 function refreshCSSOutput() {
   const pre = document.getElementById("cobPre");
   if (!pre) return;
@@ -1575,7 +1584,7 @@ function refreshCSSOutput() {
     let html = `<span class="tok-sel">:root</span> {\n`;
     tokens.forEach((v, k) => {
       const resolved = engine.get(k);
-      html += `  <span class="tok-prop">--${k}</span>: <span class="tok-val">${resolved}</span>;\n`;
+      html += `  <span class="tok-prop">--${escapeHtml(k)}</span>: <span class="tok-val">${escapeHtml(resolved)}</span>;\n`;
     });
     html += `}`;
     pre.innerHTML = html;
@@ -1586,19 +1595,19 @@ function refreshCSSOutput() {
       try {
         const rules = [...sheet.cssRules];
         rules.forEach((r) => {
-          html += `<span class="tok-sel">${r.selectorText || "@rule"}</span> {\n  ${r.cssText
+          html += `<span class="tok-sel">${escapeHtml(r.selectorText || "@rule")}</span> {\n  ${escapeHtml(r.cssText
             .replace(/[^{]+\{/, "")
             .replace("}", "")
             .trim()
             .split(";")
             .filter(Boolean)
             .map((p) => p.trim())
-            .join(";\n  ")}\n}\n\n`;
+            .join(";\n  "))}\n}\n\n`;
         });
       } catch {}
     });
-    pre.textContent =
-      html || "(No rules injected via Constructable Stylesheets)";
+    if (html) pre.innerHTML = html;
+    else pre.textContent = "(No rules injected via Constructable Stylesheets)";
   } else if (STATE.activeOutputTab === "diff") {
     if (!STATE.prevTokenSnapshot) {
       pre.textContent = "// Enable diff mode to see changes";
@@ -1611,14 +1620,14 @@ function refreshCSSOutput() {
       const prevV = prev.get(k);
       const resolved = engine.get(k);
       if (!prevV) {
-        html += `<span class="tok-added">+ --${k}: ${resolved};</span>\n`;
+        html += `<span class="tok-added">+ --${escapeHtml(k)}: ${escapeHtml(resolved)};</span>\n`;
       } else if (prevV !== v) {
-        html += `<span class="tok-removed">- --${k}: ${engine.get(k)};</span>\n<span class="tok-added">+ --${k}: ${resolved};</span>\n`;
+        html += `<span class="tok-removed">- --${escapeHtml(k)}: ${escapeHtml(engine.get(k))};</span>\n<span class="tok-added">+ --${escapeHtml(k)}: ${escapeHtml(resolved)};</span>\n`;
       }
     });
     prev.forEach((v, k) => {
       if (!current.has(k))
-        html += `<span class="tok-removed">- --${k}: ${engine.get(k)};</span>\n`;
+        html += `<span class="tok-removed">- --${escapeHtml(k)}: ${escapeHtml(engine.get(k))};</span>\n`;
     });
     pre.innerHTML =
       html ||

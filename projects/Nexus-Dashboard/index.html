@@ -5,9 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="Nexus Dashboard - A modern, performant workspace with an advanced command palette interface."
+      content="A project-workspace dashboard with a keyboard-driven command palette (Ctrl/Cmd+K): fuzzy search, scopes, pinned and recent commands, previews."
     />
-    <title>Nexus Workspace — Command Palette</title>
+    <title>Command Palette (⌘K) — Nexus workspace dashboard</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%232563eb'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3EN%3C/text%3E%3C/svg%3E">
+    <meta name="foundry:category" content="DOM &amp; UI" />
+    <meta name="foundry:difficulty" content="Intermediate" />
+    <meta name="foundry:tags" content="command palette,fuzzy search,keyboard shortcuts,dashboard,localStorage" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -17,6 +21,8 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
     <div class="app" id="app">
       <header class="app-header">
         <div class="ah-left">

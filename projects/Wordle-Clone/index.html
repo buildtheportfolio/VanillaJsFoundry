@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Wordle Clone — Hard Mode &amp; Stats</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%239333ea'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3EW%3C/text%3E%3C/svg%3E">
+  <meta name="description" content="A word-guessing game with a daily puzzle, unlimited practice, Hard Mode, colour-blind colours and saved statistics.">
+  <meta name="foundry:category" content="Games">
+  <meta name="foundry:difficulty" content="Beginner">
+  <meta name="foundry:tags" content="game,keyboard,localStorage,animation,accessibility">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,700;9..144,800&amp;family=Inter:wght@500;600;700&amp;display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
+  <div class="app" id="app">
+    <header class="top">
+      <div class="top-side">
+        <button class="icon-btn" id="btn-help" type="button" aria-label="How to play" aria-haspopup="dialog">?</button>
+      </div>
+      <div class="brand">
+        <h1>Wordle Clone</h1>
+        <div class="modes" role="group" aria-label="Game mode">
+          <button type="button" class="mode-btn" id="mode-daily" aria-pressed="true">Daily</button>
+          <button type="button" class="mode-btn" id="mode-practice" aria-pressed="false">Practice</button>
+        </div>
+      </div>
+      <div class="top-side right">
+        <button class="icon-btn" id="btn-stats" type="button" aria-label="Statistics" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M4 20V10h4v10H4Zm6 0V4h4v16h-4Zm6 0v-7h4v7h-4Z"/></svg>
+        </button>
+        <button class="icon-btn" id="btn-settings" type="button" aria-label="Settings" aria-haspopup="dialog">
+          <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M19.4 13a7.5 7.5 0 0 0 0-2l2-1.6-2-3.4-2.4 1a7.6 7.6 0 0 0-1.7-1L15 3.4h-4l-.4 2.6a7.6 7.6 0 0 0-1.7 1l-2.4-1-2 3.4 2 1.6a7.5 7.5 0 0 0 0 2l-2 1.6 2 3.4 2.4-1c.5.4 1.1.8 1.7 1l.4 2.6h4l.4-2.6c.6-.2 1.2-.6 1.7-1l2.4 1 2-3.4-2-1.6ZM13 15.5a3.5 3.5 0 1 1 0-7 3.5 3.5 0 0 1 0 7Z" transform="translate(-1 .6)"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="status-line" id="status-line"><span id="mode-label">Daily puzzle</span><span class="hard-badge" id="hard-badge" hidden>Hard</span></div>
+
+    <main class="stage">
+      <div class="board" id="board" role="grid" aria-label="Game board"></div>
+    </main>
+
+    <div class="new-wrap"><button type="button" class="primary-btn" id="btn-new" hidden>New word</button></div>
+
+    <section class="keyboard" id="keyboard" aria-label="On-screen keyboard"></section>
+  </div>
+
+  <div class="toasts" id="toasts" aria-hidden="true"></div>
+  <div class="sr-only" id="live" role="status" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Help -->
+  <div class="overlay" id="dlg-help" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="help-title">
+      <button class="close-btn" type="button" data-close aria-label="Close">&times;</button>
+      <h2 id="help-title">How to play</h2>
+      <p>Guess the five-letter word in six tries. After each guess the tiles show how close you were.</p>
+      <ul class="help-list">
+        <li><span class="ex correct">W</span> is in the word and in the right spot.</li>
+        <li><span class="ex present">O</span> is in the word but in a different spot.</li>
+        <li><span class="ex absent">R</span> is not in the word.</li>
+      </ul>
+      <p><strong>Hard Mode</strong> forces you to reuse every hint you have found: green letters stay in place and yellow letters must appear in later guesses. Switch it on in Settings before your first guess.</p>
+      <p><strong>Daily</strong> gives everyone the same word each local day. <strong>Practice</strong> is unlimited and does not affect your statistics.</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="overlay" id="dlg-stats" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="stats-title">
+      <button class="close-btn" type="button" data-close aria-label="Close">&times;</button>
+      <h2 id="stats-title">Statistics</h2>
+      <p class="muted" id="stats-note">Daily games only.</p>
+      <dl class="stat-grid" id="stat-grid"></dl>
+      <h3>Guess distribution</h3>
+      <div class="dist" id="dist"></div>
+      <div class="stats-foot" id="stats-foot" hidden>
+        <div class="next"><span>Next daily word in</span><strong id="countdown">--:--:--</strong></div>
+        <button type="button" class="primary-btn" id="btn-share">Share</button>
+      </div>
+      <label class="share-fallback" id="share-fallback" hidden>
+        <span>Copy blocked. Select and copy your result:</span>
+        <textarea id="share-text" rows="7" readonly></textarea>
+      </label>
+    </div>
+  </div>
+
+  <!-- Settings -->
+  <div class="overlay" id="dlg-settings" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+      <button class="close-btn" type="button" data-close aria-label="Close">&times;</button>
+      <h2 id="settings-title">Settings</h2>
+      <div class="setting">
+        <div><label for="set-hard">Hard Mode</label><p class="muted" id="hard-desc">Reuse every revealed hint. Can only be changed before your first guess.</p></div>
+        <button type="button" role="switch" class="switch" id="set-hard" aria-checked="false" aria-describedby="hard-desc"><span></span></button>
+      </div>
+      <div class="setting">
+        <div><label for="set-contrast">High contrast colours</label><p class="muted" id="contrast-desc">Orange and blue instead of green and yellow.</p></div>
+        <button type="button" role="switch" class="switch" id="set-contrast" aria-checked="false" aria-describedby="contrast-desc"><span></span></button>
+      </div>
+      <div class="setting">
+        <div><label for="set-theme">Theme</label><p class="muted">Follows your system by default.</p></div>
+        <select id="set-theme">
+          <option value="auto">System</option>
+          <option value="light">Light</option>
+          <option value="dark">Dark</option>
+        </select>
+      </div>
+      <p class="muted" id="storage-warn" hidden>Browser storage is blocked, so progress and statistics will not be saved after you leave.</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

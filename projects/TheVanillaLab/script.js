@@ -29,7 +29,11 @@ function toast(type, msg) {
   const c = document.getElementById("toastContainer");
   const el = document.createElement("div");
   el.className = `toast ${type}`;
-  el.innerHTML = `<span class="toast-dot"></span><span>${msg}</span>`;
+  const dot = document.createElement("span");
+  dot.className = "toast-dot";
+  const txt = document.createElement("span");
+  txt.textContent = msg;
+  el.append(dot, txt);
   c.appendChild(el);
   const remove = () => {
     el.classList.add("removing");
@@ -102,7 +106,14 @@ function initNotes() {
     list.innerHTML = "";
     notes.forEach((n, i) => {
       const li = document.createElement("li");
-      li.innerHTML = `<span>${n}</span><button class="note-del" data-i="${i}">✕</button>`;
+      const span = document.createElement("span");
+      span.textContent = n;
+      const del = document.createElement("button");
+      del.className = "note-del";
+      del.dataset.i = i;
+      del.setAttribute("aria-label", "Delete note");
+      del.textContent = "✕";
+      li.append(span, del);
       list.appendChild(li);
     });
     store.set("notes", notes);

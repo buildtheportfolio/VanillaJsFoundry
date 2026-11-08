@@ -3,7 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>VanillaKit — Starter</title>
+    <title>TheVanillaLab — Vanilla JS Demo Playground</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23059669'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3ET%3C/text%3E%3C/svg%3E">
+    <meta name="description" content="A playground of small vanilla JavaScript demos: tabs, theme toggle, localStorage counter and notes, fetch, toasts and form validation." />
+    <meta name="foundry:category" content="DOM &amp; UI" />
+    <meta name="foundry:difficulty" content="Beginner" />
+    <meta name="foundry:tags" content="demos,localStorage,fetch,forms,theming" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -13,6 +18,8 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
+  <a class="foundry-back" href="../../">← Foundry</a>
+  <noscript><p class="foundry-noscript">This project needs JavaScript. Please enable it in your browser to continue.</p></noscript>
     <div class="noise"></div>
     <div class="orbs">
       <div class="orb orb-1"></div>
@@ -21,7 +28,7 @@
     </div>
 
     <nav>
-      <div class="logo">Vanilla<em>Kit</em></div>
+      <div class="logo">Vanilla<em>Lab</em></div>
       <div class="nav-right">
         <div class="pill-tabs" id="mainTabs">
           <button class="pill-tab active" data-tab="home">Home</button>
@@ -37,7 +44,7 @@
     <div class="wrap">
       <section class="panel active" id="tab-home">
         <div class="hero-text">
-          <div class="eyebrow">Starter Kit</div>
+          <div class="eyebrow">Demo Playground</div>
           <h1>Build fast.<br /><span class="grad">No frameworks.</span></h1>
           <p class="lead">
             A modern, opinionated foundation for building rich experiences with

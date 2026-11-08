@@ -3,30 +3,71 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="A hub of small, self-contained Vanilla JavaScript projects.">
+  <meta name="description" content="Vanilla JS Foundry: a searchable gallery of small, self-contained projects built with plain HTML, CSS and JavaScript.">
+  <meta name="color-scheme" content="light dark">
   <title>Vanilla JS Foundry</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231d4ed8'/%3E%3Ctext x='16' y='23' font-size='19' font-weight='700' text-anchor='middle' fill='white' font-family='system-ui,sans-serif'%3EF%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <a class="skip-link" href="#projects">Skip to projects</a>
+
   <header class="hero">
     <div class="shell">
-      <p class="eyebrow">BUILD THE PORTFOLIO</p>
-      <h1>Vanilla JS Foundry</h1>
-      <p class="intro">A growing collection of small, self-contained projects built with plain HTML, CSS and JavaScript.</p>
-      <div class="toolbar">
-        <input id="search" type="search" placeholder="Search projects..." autocomplete="off">
-        <span id="count" class="count"></span>
+      <div class="topbar">
+        <p class="eyebrow">Build the portfolio</p>
+        <button id="theme-toggle" class="btn btn-ghost" type="button" aria-pressed="false">
+          <span id="theme-label">Theme: auto</span>
+        </button>
       </div>
+      <h1>Vanilla JS Foundry</h1>
+      <p class="intro">A growing collection of small, self-contained projects built with plain HTML, CSS and JavaScript. No frameworks, no build step.</p>
     </div>
   </header>
 
-  <main class="shell">
-    <section id="projects" class="projects" aria-live="polite"></section>
-    <p id="status" class="status">Loading projects…</p>
+  <main class="shell" id="main">
+    <noscript><p class="notice">The project gallery needs JavaScript. Without it you can still browse the <code>projects/</code> folders directly.</p></noscript>
+
+    <section class="controls" aria-label="Find a project">
+      <div class="field field-search">
+        <label for="search">Search projects <span class="hint">(press <kbd>/</kbd>)</span></label>
+        <input id="search" type="search" placeholder="Try &quot;wordle&quot;, &quot;canvas&quot; or &quot;crypto&quot;" autocomplete="off" spellcheck="false">
+      </div>
+      <div class="field">
+        <label for="difficulty">Difficulty</label>
+        <select id="difficulty">
+          <option value="">All levels</option>
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="sort">Sort by</label>
+        <select id="sort">
+          <option value="az">A &ndash; Z</option>
+          <option value="newest">Newest</option>
+        </select>
+      </div>
+      <div class="field field-action">
+        <button id="surprise" class="btn btn-primary" type="button">Surprise me</button>
+      </div>
+    </section>
+
+    <section aria-labelledby="chips-label" class="chips-wrap">
+      <h2 id="chips-label" class="sr-only">Filter by category</h2>
+      <div id="chips" class="chips" role="group" aria-labelledby="chips-label"></div>
+    </section>
+
+    <p id="count" class="count" role="status" aria-live="polite"></p>
+
+    <section id="projects" class="projects" aria-label="Projects" tabindex="-1">
+      <p id="status" class="status">Loading projects&hellip;</p>
+    </section>
   </main>
 
   <footer class="shell footer">
-    <span>Vanilla HTML · CSS · JavaScript</span>
+    <p>Vanilla HTML &middot; CSS &middot; JavaScript &middot; Every project lives in <code>projects/&lt;Name&gt;/</code></p>
   </footer>
 
   <script src="script.js"></script>

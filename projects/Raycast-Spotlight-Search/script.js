@@ -244,8 +244,21 @@ let spOpen = false;
 let zoomLevel = 100;
 let sidebarHidden = false;
 let reindexTimer = null;
-let searchHistory = JSON.parse(localStorage.getItem("sp_history") || "[]");
-let recentItems = JSON.parse(localStorage.getItem("sp_recents") || "[]");
+function loadList(key) {
+  try {
+    const v = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(v) ? v : [];
+  } catch {
+    return [];
+  }
+}
+function saveList(key, list) {
+  try {
+    localStorage.setItem(key, JSON.stringify(list));
+  } catch {}
+}
+let searchHistory = loadList("sp_history");
+let recentItems = loadList("sp_recents");
 
 function uid() {
   return "si_" + Math.random().toString(36).slice(2, 9);
@@ -255,7 +268,8 @@ function esc(s) {
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function buildIndex() {
@@ -817,7 +831,7 @@ function executeItem(item, newTab = false) {
     20,
   );
   try {
-    localStorage.setItem("sp_recents", JSON.stringify(recentItems));
+    saveList("sp_recents", recentItems);
   } catch {}
   closeSpotlight();
 
@@ -1014,7 +1028,7 @@ function handleInput(value) {
   if (q && !searchHistory.includes(q)) {
     searchHistory = [q, ...searchHistory].slice(0, 50);
     try {
-      localStorage.setItem("sp_history", JSON.stringify(searchHistory));
+      saveList("sp_history", searchHistory);
     } catch {}
   }
 }

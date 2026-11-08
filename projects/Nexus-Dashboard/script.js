@@ -638,12 +638,25 @@ let isOpen = false;
 let selectedIndex = -1;
 let activeScope = "all";
 let activeResults = [];
-let recentIds = JSON.parse(localStorage.getItem("cmd_recent") || "[]");
-let pinnedIds = JSON.parse(localStorage.getItem("cmd_pinned") || "[]");
-let searchHistory = JSON.parse(
-  localStorage.getItem("cmd_search_history") || "[]",
-);
-let frequencyMap = JSON.parse(localStorage.getItem("cmd_freq") || "{}");
+function loadStored(key, fallback) {
+  try {
+    const v = JSON.parse(localStorage.getItem(key));
+    return v && typeof v === "object" && Array.isArray(v) === Array.isArray(fallback)
+      ? v
+      : fallback;
+  } catch {
+    return fallback;
+  }
+}
+function saveStored(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch {}
+}
+let recentIds = loadStored("cmd_recent", []);
+let pinnedIds = loadStored("cmd_pinned", []);
+let searchHistory = loadStored("cmd_search_history", []);
+let frequencyMap = loadStored("cmd_freq", {});
 let currentQuery = "";
 let kbdNavActive = false;
 let previewCmdId = null;
@@ -822,11 +835,12 @@ function buildHighlightedTitle(title, indices) {
 }
 
 function escHtml(str) {
-  return str
+  return String(str)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 function renderResults(results, query) {
@@ -1013,10 +1027,10 @@ function executeCommand(cmd) {
   frequencyMap[cmd.id] = (frequencyMap[cmd.id] || 0) + 1;
   if (currentQuery.trim() && !searchHistory.includes(currentQuery.trim())) {
     searchHistory = [currentQuery.trim(), ...searchHistory].slice(0, 20);
-    localStorage.setItem("cmd_search_history", JSON.stringify(searchHistory));
+    saveStored("cmd_search_history", searchHistory);
   }
-  localStorage.setItem("cmd_recent", JSON.stringify(recentIds));
-  localStorage.setItem("cmd_freq", JSON.stringify(frequencyMap));
+  saveStored("cmd_recent", recentIds);
+  saveStored("cmd_freq", frequencyMap);
 
   closePalette();
 
@@ -1050,15 +1064,14 @@ function showItemContextMenu(x, y, cmd) {
       action: () => {
         if (isPinned) pinnedIds = pinnedIds.filter((id) => id !== cmd.id);
         else pinnedIds = [cmd.id, ...pinnedIds].slice(0, 10);
-        localStorage.setItem("cmd_pinned", JSON.stringify(pinnedIds));
+        saveStored("cmd_pinned", pinnedIds);
         refreshResults();
       },
     },
     {
       label: "⎘ Copy command name",
       action: () => {
-        navigator.clipboard.writeText(cmd.title);
-        notify("Copied", "Command name copied", "📋");
+        copyText(cmd.title, "Command name copied");
       },
     },
     {
@@ -1238,7 +1251,7 @@ function notify(title, sub, icon = "◆", type = "success") {
   if (!stack) return;
   const n = document.createElement("div");
   n.className = `notif notif-${type}`;
-  n.innerHTML = `<span class="notif-icon" aria-hidden="true">${icon}</span><div class="notif-body"><div class="notif-title">${escHtml(title)}</div><div class="notif-sub">${escHtml(sub)}</div></div>`;
+  n.innerHTML = `<span class="notif-icon" aria-hidden="true">${escHtml(icon)}</span><div class="notif-body"><div class="notif-title">${escHtml(title)}</div><div class="notif-sub">${escHtml(sub)}</div></div>`;
   n.setAttribute("role", "status");
   n.setAttribute("aria-live", "polite");
   stack.prepend(n);
@@ -1273,10 +1286,16 @@ function closeIssue() {
   notify("Issue Closed", "Issue marked as done", "✅");
 }
 
+function copyText(text, okMsg) {
+  const p = navigator.clipboard?.writeText(text);
+  if (!p) return notify("Copy failed", "Clipboard is unavailable", "⚠", "error");
+  p.then(() => notify("Copied", okMsg, "📋")).catch(() =>
+    notify("Copy failed", "Clipboard permission denied", "⚠", "error"),
+  );
+}
+
 function copyURL() {
-  navigator.clipboard
-    .writeText(window.location.href)
-    .then(() => notify("Copied", "URL copied to clipboard", "📋"));
+  copyText(window.location.href, "URL copied to clipboard");
 }
 
 function setTheme(name) {
@@ -1312,7 +1331,9 @@ function toggleFullscreen() {
 }
 
 function clearCache() {
-  localStorage.clear();
+  try {
+    localStorage.clear();
+  } catch {}
   recentIds = [];
   frequencyMap = {};
   pinnedIds = [];
@@ -1340,9 +1361,7 @@ function copyState() {
     globalZoom,
     timestamp: new Date().toISOString(),
   };
-  navigator.clipboard
-    .writeText(JSON.stringify(state, null, 2))
-    .then(() => notify("Copied", "State JSON copied to clipboard", "📋"));
+  copyText(JSON.stringify(state, null, 2), "State JSON copied to clipboard");
 }
 
 function showShortcutGuide() {
@@ -1380,12 +1399,12 @@ function showCommandPreview(cmd) {
   const catMeta = CATEGORY_META[cmd.category] || {};
   ppBody.innerHTML = `
     <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px">
-      <div style="width:36px;height:36px;border-radius:8px;background:${catMeta.bg || "var(--bg-4)"};border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px">${cmd.icon}</div>
+      <div style="width:36px;height:36px;border-radius:8px;background:${catMeta.bg || "var(--bg-4)"};border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:18px">${escHtml(cmd.icon)}</div>
       <div><div style="font-size:14px;font-weight:600;color:var(--text)">${escHtml(cmd.title)}</div><div style="font-size:11px;color:var(--text-3)">${escHtml(cmd.category)} command</div></div>
     </div>
     <div style="font-size:12px;color:var(--text-2);line-height:1.6;margin-bottom:10px">${escHtml(cmd.sub || "No description available.")}</div>
     ${cmd.kbd?.length ? `<div style="display:flex;align-items:center;gap:6px;margin-top:8px"><span style="font-size:10px;color:var(--text-3);margin-right:4px">SHORTCUT</span>${cmd.kbd.map((k) => `<kbd style="font-family:var(--font-mono);font-size:11px;background:var(--bg-4);border:1px solid var(--border-3);border-bottom-width:2px;border-radius:4px;padding:3px 8px;color:var(--text-2)">${escHtml(k)}</kbd>`).join("")}</div>` : `<div style="font-size:10px;color:var(--text-3)">No keyboard shortcut assigned</div>`}
-    <div style="margin-top:10px;display:flex;gap:6px"><span style="font-size:9px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:999px;background:${catMeta.bg || "var(--bg-4)"};color:${catMeta.color || "#999"};text-transform:uppercase">${catMeta.label || cmd.category}</span>${pinnedIds.includes(cmd.id) ? `<span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(252,211,77,0.1);color:#FCD34D;font-weight:700">📌 PINNED</span>` : ""}${recentIds.includes(cmd.id) ? `<span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(110,231,183,0.08);color:var(--sage);font-weight:700">RECENT</span>` : ""}</div>
+    <div style="margin-top:10px;display:flex;gap:6px"><span style="font-size:9px;font-weight:700;letter-spacing:0.1em;padding:2px 8px;border-radius:999px;background:${catMeta.bg || "var(--bg-4)"};color:${catMeta.color || "#999"};text-transform:uppercase">${escHtml(catMeta.label || cmd.category)}</span>${pinnedIds.includes(cmd.id) ? `<span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(252,211,77,0.1);color:#FCD34D;font-weight:700">📌 PINNED</span>` : ""}${recentIds.includes(cmd.id) ? `<span style="font-size:9px;padding:2px 8px;border-radius:999px;background:rgba(110,231,183,0.08);color:var(--sage);font-weight:700">RECENT</span>` : ""}</div>
     <div style="margin-top:8px;font-size:10px;color:var(--text-3)">Used ${frequencyMap[cmd.id] || 0} times</div>
   `;
   previewPanel.classList.remove("hidden");
@@ -1472,7 +1491,7 @@ document.addEventListener("DOMContentLoaded", () => {
         if (cmdId) {
           if (!pinnedIds.includes(cmdId)) {
             pinnedIds = [cmdId, ...pinnedIds].slice(0, 10);
-            localStorage.setItem("cmd_pinned", JSON.stringify(pinnedIds));
+            saveStored("cmd_pinned", pinnedIds);
             notify("Pinned", "Command pinned", "📌");
             refreshResults();
           }
